@@ -8,7 +8,7 @@ var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
 
-console.log(8814);
+console.log(9921);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -500,7 +500,7 @@ var App = {
         var me = this;
 
         setTimeout(function() {
-            sessionStorage.setItem('me.cacheData', JSON.stringify(me.cacheData));
+            // sessionStorage.setItem('me.cacheData', JSON.stringify(me.cacheData));
         }, 0);
 
         return me.cacheData;
@@ -1213,10 +1213,6 @@ var App = {
 
         var list = baseOrder;
 
-        $(me).on('mainMeetingBySidDataReady', function() { //获取分会场数据 ready
-            console.log('mainMeetingBySidDataReady');
-        })
-
         me.getNowTime({
             callback: function() {
                 var now = moment.unix(me.cacheData.now),
@@ -1553,7 +1549,7 @@ var App = {
             var _data = data || {};
             me.pageTabItemShow(_data);
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
-            console.log('mainMeetingBySidDataReady');
+            // console.log('mainMeetingBySidDataReady');
             // me.cacheData.mainMeeting
             me.renderPageTab();
             $('.section-item').lazyelement({
