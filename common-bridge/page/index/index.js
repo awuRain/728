@@ -1082,6 +1082,7 @@ var App = {
                 "5": { "is_can_get": 1 }
             };
             me.renderCoupon();
+            console.log(1);
             return me;
         }
         Bridge.Loader.get({
@@ -1162,7 +1163,8 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderBanner();
+            .renderBanner()
+            .renderSubSessionTab();
         $('.J-loading').text('').hide();
         return me;
     },
@@ -1831,25 +1833,12 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').hide();
             $('[tab-id="' + tabId + '"]').show()
         }).on('tap', '.subSessionTab-btn', function() {
-            $('.J-section-item-subSessionTab').addClass('active');
-        }).on('tap', '.J-section-item-subSessionTab .close-btn', function() {
-            $('.J-section-item-subSessionTab').removeClass('active');
+            console.log(2);
+            $('.subSessionTab').addClass('active');
+        }).on('tap', '.subSessionTab .close-btn', function() {
+            $('.subSessionTab').removeClass('active');
         });
 
-        /*
-        yang
-         */
-
-        if ($('.J-section-item-subSessionTab').hasClass('active')) {
-            $('body').on('tap', ':not(.J-section-item-subSessionTab)', function(e) {
-                console.log(1);
-                $('.J-section-item-subSessionTab').removeClass('active');
-            })
-        }
-
-        /*
-        yang
-         */
         return this;
     }
 };
