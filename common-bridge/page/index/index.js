@@ -193,14 +193,14 @@ var App = {
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
-            tpl = me.cacheData.tpl_layout || $('#tpl-layout').html(),
+            tpl = me.tpl_layout || $('#tpl-layout').html(),
             _settings = opts || {},
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
             activeDate;
 
-        me.cacheData.tpl_layout = tpl;
+        me.tpl_layout = tpl;
         me.baseOrder_Key = {};
 
         activeDate = new Date(me.baseOrder[1].activeDate);
@@ -241,13 +241,13 @@ var App = {
     },
     createSection: function(opts) { //创建 section
         var me = this,
-            tpl = me.cacheData.tpl_section || $('#tpl-section').html(),
+            tpl = me.tpl_section || $('#tpl-section').html(),
             _settings = opts || {},
             html = Juicer(tpl, {
                 cacheData: me.cacheData,
                 settings: _settings
             });
-        me.cacheData.tpl_section = tpl;
+        me.tpl_section = tpl;
         return html
     },
     getPageConfig: function(opts) { //获取文案配置
@@ -500,7 +500,7 @@ var App = {
         var me = this;
 
         setTimeout(function() {
-            // sessionStorage.setItem('me.cacheData', JSON.stringify(me.cacheData));
+            sessionStorage.setItem('me.cacheData', JSON.stringify(me.cacheData));
         }, 0);
 
         return me.cacheData;
@@ -688,7 +688,7 @@ var App = {
     },
     renderFixprice: function(opts) { //获取爆款折扣
         var me = this,
-            tpl = me.cacheData.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
             html = '',
             mainMeeting = me.cacheData.fixPrice || {},
@@ -714,7 +714,7 @@ var App = {
             return me;
         }
 
-        me.cacheData.tpl_mainMeeting = tpl;
+        me.tpl_mainMeeting = tpl;
 
         // me.reSizeImg({
         //     type: 'baby'
@@ -795,7 +795,7 @@ var App = {
     },
     renderPromotionList: function(opts) { //渲染爆款抢购区域
         var me = this,
-            tpl = me.cacheData.tpl_promotionList || $('#tpl-promotionList').html(),
+            tpl = me.tpl_promotionList || $('#tpl-promotionList').html(),
             _settings = opts || {},
             createFlag = function(status) {
                 var text, className;
@@ -862,7 +862,7 @@ var App = {
                 }
             })
         });
-        me.cacheData.tpl_promotionList = tpl;
+        me.tpl_promotionList = tpl;
         $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').show();
         $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
         $('.J-loading').hide();
@@ -875,7 +875,7 @@ var App = {
     createTicketList: function(opts) { //创建门票卡片
         var me = this,
             _settings = opts || {},
-            tpl = me.cacheData.tpl_ticketList || $('#tpl-ticketList').html(),
+            tpl = me.tpl_ticketList || $('#tpl-ticketList').html(),
             html = Juicer(tpl, {
                 direction: _settings.direction || 'horizontal',
                 cacheData: me.cacheData,
@@ -884,7 +884,7 @@ var App = {
                 flags: _settings.flags || [],
                 type: _settings.type || ''
             });
-        me.cacheData.tpl_ticketList = tpl;
+        me.tpl_ticketList = tpl;
         return html;
     },
     getMainMeeting: function() { //获取全量的分会场数据
@@ -938,7 +938,7 @@ var App = {
     },
     renderMainMeeting: function(opts) { //渲染单个分会场数据
         var me = this,
-            tpl = me.cacheData.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
             html = '',
             mainMeeting = me.cacheData.mainMeeting || {},
@@ -965,7 +965,7 @@ var App = {
             return me;
         }
 
-        me.cacheData.tpl_mainMeeting = tpl;
+        me.tpl_mainMeeting = tpl;
 
         // me.reSizeImg({
         //     type: 'baby'
