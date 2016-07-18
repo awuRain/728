@@ -1,1 +1,1 @@
-require('ui/flexible/index');
+require('../../widgets/ui/flexible/index');

@@ -2,7 +2,7 @@ var deploy = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/';
 //var deploy = 'http://tc-lvyou-24.epc.baidu.com:8080/';
 // var deploy = 'http://cq01-cp01-centos41-testing001-3.epc.baidu.com:8080/';
 //var deploy = 'http://cp01-yxtocp060.vm.baidu.com:8080/';
-//var deploy = 'http://cq01-ocean-147.epc.baidu.com:8080/';
+// var deploy = 'http://cq01-ocean-147.epc.baidu.com:8080/';
 //var deploy = 'http://cq01-cp01-centos41-testing001-3.epc.baidu.com:8080/';
 
 var cdndomain = ['http://cp01-qa-lvyou-001.cp01.baidu.com:8080'];
@@ -43,11 +43,8 @@ fis.config.merge({
         'pkg/modules-combine.js': [
             '/modules/**.js'
         ],
-        'pkg/plan-detail-combine.js': [
-            '/widgets/plan/detail/**.js'
-        ],
-        'pkg/plan-summary-combine.js': [
-            '/widgets/plan/summary/**.js'
+        'pkg/page-combine.js': [
+            '/page/**.js'
         ]
     },
     deploy: {
@@ -73,11 +70,24 @@ fis.config.set('roadmap.path', [{
     release: '/static/pkg/$1',
     url: '/event/s/728_promotion_m/static/pkg/$1'
 }, {
-    reg: /^\/page\/(.*\.js)$/i,
-    isMod: true,
-    //发布到/static/js/xxx目录下
+    //图片
+    reg: /^\/page\/(.*\.(?:png|gif|webp|jpg))$/i,
+    isMod: false,
     release: '/page/$1',
-    url: '/event/s/728_promotion_m/page/$1'
+    url: '/event/s/728_promotion_m/$1'
+}, {
+    reg: /^\/page\/(.*)\.(?:css|less)$/i,
+    release: '/page/$1' + '.css',
+    url: '/event/s/728_promotion_m/$1' + '.css',
+}, {
+    //page目录下的其他文件
+    reg: /^\/page\/(.*)\.(js)$/i,
+    //是组件化的，会被jswrapper包装
+    isMod: true,
+    //id是去掉modules和.js后缀中间的部分
+    id: '$1',
+    release: '/page/$1' + '.js',
+    url: '/event/s/728_promotion_m/$1' + '.js'
 }, {
     reg: /^\/lib\/(.*\.js)$/i,
     //非组件化
@@ -116,27 +126,13 @@ fis.config.set('roadmap.path', [{
 }, {
     reg: /^\/widgets\/(.*)\.(?:css|less)$/i,
     release: '/static/widgets/$1' + '.css',
-    url: '/event/s/728_promotion_m/nuomi/static/widgets/$1' + '.css',
-},  {
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.css',
+}, {
     //图片
     reg: /^\/widgets\/(.*\.(?:png|gif|webp|jpg))$/i,
     isMod: false,
     release: '/static/widgets/$1',
     url: '/event/s/728_promotion_m/static/widgets/$1'
-}, {
-    //图片
-    reg: /^\/page\/(.*\.(?:png|gif|webp|jpg))$/i,
-    isMod: false,
-    release: '/page/$1',
-    url: '/event/s/728_promotion_m/page/$1'
-}, {
-    reg: /^\/page\/(.*)\.(?:css|less)$/i,
-    release: '/static/page/$1' + '.css',
-    url: '/event/s/728_promotion_m/static/page/$1' + '.css',
-}, {
-    reg: /^\/widgets\/(.*)\.(?:less|css)$/i,
-    release: '/static/widgets/$1' + '.css',
-    url: '/event/s/728_promotion_m/static/widgets/$1' + '.css',
 }, {
     reg: /^\/widgets\/(.*)\.(?:html)$/i,
     release: '/static/widgets/$1' + '.html',
@@ -165,7 +161,10 @@ fis.config.set('roadmap.path', [{
 fis.config.set('settings.postpackager.autoload.useInlineMap', true);
 
 fis.config.set('modules.parser.less', 'less');
+
 //将less文件编译为css
 fis.config.set('roadmap.ext.less', 'css');
+
 fis.config.set('modules.spriter', 'csssprites');
+
 fis.config.set('modules.postprocessor.css', 'autoprefixer');
