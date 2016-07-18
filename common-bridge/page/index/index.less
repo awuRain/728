@@ -971,19 +971,31 @@ header {
 footer {
     width: 100%;
     background: #ffd200;
-    padding: 50/16rem 0 0 0;
-    // &:before {
-    //     content: '';
-    //     display: block;
-    //     width: 100%;
-    //     padding-bottom: 4%;
-    //     background: url('./img/footer-bg.jpg');
-    //     background-size: cover;
-    // }
+    padding: 30/16rem 0 0 0; 
+    .arc {
+        width: 100%;
+        padding-bottom: 6%;
+        overflow: hidden;
+        position: relative;
+        background-color: #fff;
+        &:after {
+            content: '';
+            background-color: #fff;
+            position: absolute;
+            display: block;
+            width: 120%;
+            transform: translate(-10%, -67%);
+            padding-bottom: 17%;
+            background-color: #ffd200;
+            border: 2/16rem solid #111;
+            border-radius: 50%;
+        }
+    }
     .footer-cont-wrap {
         background-color: #fff;
-        border-top: 2px solid #483f41;
+        border-top: 2px solid #231815;
     }
+
     .footer-cont {
         background-color: #fff;
         width: 80%;
@@ -998,34 +1010,35 @@ footer {
         height: 21/16rem;
         display: inline-block;
     }
-    .subSessionTab-btn,
-    .mainSessionTab-btn {
+    .subSessionTab-btn, .mainSessionTab-btn {
         margin-top: -1%;
-        width: 20%;
+        width: 23%;
         &:after {
             content: '';
             display: block;
             width: 100%;
-            background-image: url('./img/subsession.jpg');
+            background-image: url('./img/session.jpg');
+            background-position: 0 0;
             background-size: cover;
             padding-bottom: 36%;
         }
     }
     .mainSessionTab-btn {
         &:after {
-            background-image: url('./img/mainsession.jpg');
+            background-image: url('./img/session.jpg');
+            background-position: 100% 0;
         }
     }
     .game-btn {
         position: relative;
-        width: 42%;
+        width: 38%;
         margin: 0 6% 0 7%;
         &:before {
             content: '';
             position: absolute;
-            top: -40/16rem;
+            top: -30/16rem;
             width: 100%;
-            padding-bottom: 65%;
+            padding-bottom: 64%;
             background-image: url('./img/game.png');
             background-size: cover;
         }
@@ -1053,24 +1066,29 @@ footer {
                 padding-bottom: 90%;
             }
         }
+
         //  yang 要改nuomi.less !!
+        
         .date-list-wrap {
             .border-top-orange;
             .border-bottom-orange;
         }
+
         //  yang 要改nuomi.less !!
+        
         .date-list {
             position: relative;
             background: linear-gradient(left, #ffff00 1%, #ffff00 50%, #e50018 51%, #e50018 100%);
             width: 100%;
             overflow-x: scroll;
             overflow-y: hidden;
+            
             -webkit-overflow-scrolling: touch;
             ul {
                 overflow: hidden;
                 width: 3000/16rem;
                 .flex;
-            }
+            }        
             li {
                 background-size: cover;
                 position: relative;
@@ -1092,7 +1110,9 @@ footer {
                     // height: 100%;
                     padding-bottom: 10%;
                     width: 18/16rem;
-                    background-image: url('./img/dates02.jpg');
+                    background-image: url('./img/dates.jpg');
+                    background-position: 100% 0;
+                    background-repeat: no-repeat;
                     background-size: cover;
                     // position: absolute;
                     // top: 0;
@@ -1106,7 +1126,8 @@ footer {
                     }
                     &:after {
                         content: '';
-                        background-image: url('./img/dates01.jpg');
+                        background-image: url('./img/dates.jpg');
+                        background-position: 0 0;
                     }
                 }
             }
@@ -1291,15 +1312,16 @@ footer {
         .flex-pack-center;
         .coupon1 {
             display: inline-block;
-            width: 37%;
+            width: 37%;  
             &:after {
                 content: '';
                 width: 100%;
                 display: inline-block;
                 padding-bottom: 115%;
-                background-image: url('./img/coupon01.jpg');
+                background-image: url('./img/coupon.jpg');
+                background-position: 0 0;
                 background-size: cover;
-            }
+            }          
         }
         .coupon2 {
             display: inline-block;
@@ -1309,7 +1331,8 @@ footer {
                 width: 100%;
                 display: inline-block;
                 padding-bottom: 74%;
-                background-image: url('./img/coupon02.jpg');
+                background-image: url('./img/coupon.jpg');
+                background-position: 98% 0;
                 background-size: cover;
             }
         }

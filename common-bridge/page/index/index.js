@@ -1165,6 +1165,14 @@ var App = {
             .renderFooter()
             .renderBanner()
             .renderSubSessionTab();
+
+
+        // final-test
+
+        me.renderCoupon();
+
+        // final-test
+
         $('.J-loading').text('').hide();
         return me;
     },
