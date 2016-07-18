@@ -1,0 +1,55 @@
+
+var utils = {
+
+    //初始化，做环境嗅探，系统判断
+    init: function(){
+        this.device = this.isIos()?'ios': (this.isAndroid()?'android':'other');
+        if(this.isBaiduMap()) {
+            this.client = 'map';
+        }
+        else if(this.isNuomi()) {
+            this.client = 'nuomi';
+        }
+        else if(this.isBaiduTravel()) {
+            this.client = 'lvyou';
+        }
+        else if(this.isWechat()) {
+            this.client = 'wechat';
+        }
+        else {
+            this.client = 'webapp';
+        }
+    },
+    //判断是百度旅游客户端
+    isBaiduTravel: function(){
+        return /baidutravel/i.test(navigator.userAgent);
+    },
+    //判断是百度地图客户端
+    isBaiduMap: function(){
+        return /baidumap/i.test(navigator.userAgent);
+    },
+    //判断是否是糯米客户端
+    isNuomi: function(){
+        return /Nuomi/i.test(navigator.userAgent);
+    },
+    //判断是否是微信客户端
+    isWechat: function() {
+        return /micromessenger/i.test(navigator.userAgent)
+    },
+    //判断是否是ios系统
+    isIos: function(){
+        return !!window.navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    },
+    //判断是否是安卓系统
+    isAndroid: function(){
+        return window.navigator.userAgent.indexOf('Android') > -1 || window.navigator.userAgent.indexOf('Adr') > -1;
+    }
+
+
+
+};
+
+utils.init();
+
+module.exports = utils;
+

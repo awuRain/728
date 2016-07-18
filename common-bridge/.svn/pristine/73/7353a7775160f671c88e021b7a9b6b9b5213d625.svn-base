@@ -1,0 +1,107 @@
+<link rel="import" href="/page/layout/header.html?__inline">
+    <style>
+        html {
+            background: #fff;
+        }
+        .ul-ctn{
+           padding: 10px;
+        }
+        .ul-ctn section {
+            height: 40px;
+            line-height: 40px;
+            background: #2f9be0;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+        }
+        .header  {
+            margin: 20px;
+            margin-bottom: 0px;
+            display: -webkit-box;
+        }
+        .header .right-ctn {
+           width: 40%;
+        }
+        .header .left-ctn {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-box-flex:1;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+        }
+        .header .left-ctn .r1 {
+            font-size: 15px;
+            font-weight: bold;
+            color: rgb(130, 130, 130);
+        }
+        .header .left-ctn .r2 {
+            margin-top: 20px;
+            color: #2f9be0;
+            font-weight: bold;
+            font-size: 23px;
+            font-family: cursive;
+        }
+        fieldset {
+            font-size: 12px;
+            margin: 0 0 10px;
+            color: #333;
+            border: 1px solid #aaa;
+            padding: 10px;
+        }
+        fieldset section {
+            margin-bottom: 5px;
+        }
+    </style>
+    <div class="header">
+        <div class="left-ctn">
+            <div class="r1">百度旅游通用js-sdk</div>
+            <div class="r2">common-bridge</div>
+        </div>
+        <div class="right-ctn">
+            <img src="/page/bridge/bridge.png" width="100%">
+        </div>
+    </div>
+    <div class="ul-ctn">
+        <fieldset>
+            <legend>定位相关sdk</legend>
+            <section class="J_Sid">返回当前省份sid</section>
+            <section class="J_Cityname">返回当前城市名</section>
+            <section class="J_Yw">返回当前精度、纬度</section>
+        </fieldset>
+        <fieldset>
+            <legend>登录相关sdk</legend>
+            <section class="J_Tologin">打开登录界面</section>
+            <section class="J_Islogin">检查用户是否登录</section>
+        </fieldset>
+        <fieldset>
+            <legend>分享相关sdk</legend>
+            <section class="J_Share">调用分享组件</section>
+            <section class="J_Wechatshare">点我之后微信里分享的内容就变了</section>
+        </fieldset>
+        <fieldset>
+            <legend>页面路由相关sdk</legend>
+            <section class="J_Pushwindow_List">打开景点列表页</section>
+            <section class="J_Pushwindow">打开订单填写</section>
+            <section class="J_Pushwindow_Detail">打开POI详情页</section>
+
+        </fieldset>
+        <fieldset>
+            <legend>数据请求相关sdk</legend>
+            <section class="J_Get">发送get请求</section>
+            <section class="J_Jsonp">发送jsonp请求</section>
+        </fieldset>
+        <fieldset>
+            <legend>ui相关sdk</legend>
+            <section class="J_Title">设置页面标题</section>
+        </fieldset>
+        <fieldset>
+            <legend>系统环境相关sdk</legend>
+            <section class="J_Native">获取客户端信息</section>
+            <section class="J_Zujian">获取当前组件的版本号</section>
+        </fieldset>
+    </div>
+   <script>
+       ready(function(){
+           require.async('./index.js');
+       });
+   </script>

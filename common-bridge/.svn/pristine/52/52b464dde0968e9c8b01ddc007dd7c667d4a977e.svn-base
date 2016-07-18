@@ -1,0 +1,8 @@
+var $ = require('zepto');
+var Bridge = require('Bridge');
+
+
+
+$('.J_Native').on('tap', function(){
+    BNJS.page.start('bainuo://tuandetail?tuanid=30722633&tsmcid=||OZSK_LanZ_NA_55499_0', {});
+});

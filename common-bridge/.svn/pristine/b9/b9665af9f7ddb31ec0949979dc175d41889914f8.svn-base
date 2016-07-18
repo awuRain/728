@@ -1,0 +1,109 @@
+/**
+ * 糯米容器内的相关js bridge
+ * @author yanbin01@baidu.com zoujing@baidu.com
+ */
+
+var bridge =  {
+
+    /**
+     * 调用分享组件
+     * @param params: 参数对象，包括分享标题、内容、图片、链接等信息
+     * @param callback: 分享成功调用函数
+     * @param fallback: 分享失败调用函数
+     */
+    share: function(params, callback, fallback){
+        params.onSuccess = callback || function(){};
+        params.onFail = fallback || function(){}
+        BNJS.ui.share(params);
+    },
+
+    /**
+     * 新开一个页面，包括新开一个组件化线上页面或者新开一个组件业务页面
+     * @param params: url打开页面链接 data需要传递到下一个页面的参数
+     */
+    pushWindow: function(params){
+        BNJS.page.start(params.nuomi, params.data);
+    },
+
+    /**
+     * 拿到当前省份的sid
+     */
+    getProvinceSid: function(callback){
+        var self = this;
+        var city_code = BNJS.location.cityCode;
+        callback && callback(city_code);
+    },
+
+    /**
+     * 以NA作为代理和服务器进行数据交互
+     */
+    Loader: {
+        /**
+         * 对get异步请求的封装
+         */
+        get: function(data){
+            BNJS.http.get({
+                url: data.url,
+                params: data.data || {},
+                onSuccess: data.success || function(){},
+                onFail: data.fail
+            });
+        },
+        /**
+         * 对post异步请求的封装
+         */
+        post: function(data){
+            BNJS.http.post({
+                url: data.url,
+                params: data.data || {},
+                onSuccess: data.success || function(){},
+                onFail: data.fail
+            });
+        }
+    },
+
+    /**
+     * 打开登录界面
+     */
+    toLogin: function(callback, fallback){
+        BNJS.account.login({
+            onSuccess: function(){
+                callback && callback();
+            },
+            onFail: function(res){
+                fallback && fallback();
+            }
+        });
+    },
+
+    /**
+     * 判断用户是否登录
+     * @param callback
+     */
+    isLogin: function(callback){
+        var login = BNJS.account.isLogin;
+        callback && callback(login);
+    },
+
+    /**
+     * 在糯米端获得客户端信息
+     */
+    getNativeInfo: function(callback){
+        callback && callback({
+            "bduid":BNJS.account.uid,
+            "cuid":BNJS.env.cuid,
+            "ov":BNJS.env.appVersion,
+            "bduss":BNJS.account.bduss
+        });
+    },
+
+    /**
+     * 设置页面的title
+     * @param title
+     */
+    setTitle: function(title){
+        BNJS.ui.title.setTitle(title);
+    }
+};
+
+module.exports = bridge;

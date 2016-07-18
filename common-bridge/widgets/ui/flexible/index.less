@@ -1,0 +1,50 @@
+@rem-baseline: 64px !default;
+@rem-fallback: false !default;
+@rem-px-only: false !default;
+@font-baseline: 12px !default;
+@export-body-font: true !default;
+
+
+.opacity(@opacity) {
+  opacity: @opacity;
+  // IE8 filter
+  @opacity-ie: (@opacity * 100);
+  filter: ~"alpha(opacity=@{opacity-ie})";
+}
+
+.fontsize(@px) when (isnumber(@px)),(get-unit(@px)="") {
+    @px: @px * 1px;
+}
+
+.fontsize(@px) {
+    font-size: @px/@font-baseline/2 * 100%;
+}
+
+.px2rem(@name, @px) when (isnumber(@px)),(get-unit(@px)="") {
+    @px: @px * 1px;
+}
+.px2rem(@name, @px) {
+    @name: @px / @rem-baseline * 1rem;
+}
+
+[data-dpr="1"] body when (@export-body-font = true){
+    font-size: @font-baseline;
+}
+[data-dpr="2"] body when (@export-body-font = true){
+    font-size: @font-baseline * 2;
+}
+[data-dpr="2.5"] body when (@export-body-font = true){
+    font-size: @font-baseline * 2.5;
+}
+[data-dpr="2.75"] body when (@export-body-font = true){
+    font-size: @font-baseline * 2.75;
+}
+[data-dpr="3"] body when (@export-body-font = true){
+    font-size: @font-baseline * 3;
+}
+
+.rem-baseline(@zoom: 100%) {
+  font-size: @zoom / 16px * @rem-baseline;
+}
+
+

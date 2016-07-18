@@ -1,0 +1,154 @@
+.c-float-modePop {
+  text-align: center;
+}
+.c-float-modePop .warnMsg {
+  color: #fff;
+}
+.c-float-modePop button {
+  padding: 6px 9px 6px 9px;
+  color: #157afb;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #404040), color-stop(100%, #2e2e2e));
+  border: none;
+}
+.c-float-shade {
+  width: 100%;
+  display: block;
+  position: absolute;
+  z-index: 99;
+  background-color: #000;
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+}
+.c-float-mask {
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  height:100%;
+  width:100%;
+  z-index: 9998;
+  background:rgba(0,0,0,0.7);
+  opacity:0;
+  -webkit-transition:opacity 0.3s linear 0s;
+}
+.c-float-shade.hide {
+  display: none;
+}
+.c-float-mask.hide {
+  display: none;
+}
+.c-float-popWrap {
+  width: 270px;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  z-index: 9999;
+  position: fixed;
+  overflow: hidden;
+  left:50%;
+  top:50%;
+  margin-left:-135px;
+  -webkit-transition:opacity 0.3s linear 0s;
+}
+.c-float-popWrap .c-float-modePop {
+  background-color: rgba(0,0,0,0.7);
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 15px 20px;
+}
+.c-float-popWrap .c-float-modePop .warnMsg {
+  padding: 0px;
+  font-size: 15px;
+  line-height:22px;
+  color: #fff;
+  font-weight:normal;
+}
+.c-float-popWrap .c-float-modePop .content {
+  line-height:1.5;
+}
+.c-float-popWrap .c-float-modePop .doBtn {
+}
+.c-float-popWrap.hide {
+  display: none;
+  -webkit-box-shadow: none;
+}
+.c-float-popWrap.show {
+  display: block;
+}
+.c-float-popWrap.msgMode .c-float-modePop .content,
+.c-float-popWrap.msgMode .c-float-modePop .doBtn {
+  display: none;
+}
+.c-float-popWrap.alertMode .c-float-modePop .content {
+  display: none;
+}
+.c-float-popWrap.alertMode .c-float-modePop .doBtn .cancel {
+  display: none;
+}
+.c-float-popWrap.alertMode,
+.c-float-popWrap.confirmMode {
+  width:270px;
+}
+.c-float-popWrap.alertMode .c-float-modePop,
+.c-float-popWrap.confirmMode .c-float-modePop {
+  background:#fff;
+  padding:0;
+  color:#202325;
+}
+.c-float-popWrap.alertMode .c-float-modePop .content,
+.c-float-popWrap.confirmMode .c-float-modePop .content {
+  padding:15px 20px;
+  border-bottom: 1px solid #d6d9dc;
+}
+.c-float-popWrap.alertMode .c-float-modePop .warnMsg,
+.c-float-popWrap.confirmMode .c-float-modePop .warnMsg {
+  padding:12px 20px;
+  display:-webkit-box;
+  -webkit-box-align:center;
+  -webkit-box-pack:center;
+  text-align:center;
+  font-weight:bold;
+}
+.c-float-popWrap.alertMode .c-float-modePop .warnMsg,
+.c-float-popWrap.alertMode .c-float-modePop .doBtn,
+.c-float-popWrap.confirmMode .c-float-modePop .warnMsg,
+.c-float-popWrap.confirmMode .c-float-modePop .doBtn {
+  border-bottom:1px solid #d6d9dc;
+  color: #202325;
+}
+.c-float-popWrap.alertMode .c-float-modePop .doBtn,
+.c-float-popWrap.confirmMode .c-float-modePop .doBtn {
+  border-bottom:none;
+  display:-webkit-box;
+  -webkit-box-align:center;
+}
+
+.c-float-popWrap.alertMode .c-float-modePop .content,
+.c-float-popWrap.confirmMode .c-float-modePop .content {
+  display:block;
+  color:#202325;
+  padding:15px 20px;
+  line-height:24px;
+  font-size:15px;
+  text-align:left;
+  font-weight:bold;
+}
+
+.c-float-modePop button {
+  -webkit-box-flex:1;
+  color: #157afb;
+  background: #fff;
+  height:48px;
+  font-size: 18px;
+  display:block;
+}
+.c-float-modePop button.cancel {
+  border-right:1px solid #b2b2b2;
+}
+.c-float-modePop button.cancel {
+}
+.c-float-modePop button.ok {
+  font-weight:bold;
+}

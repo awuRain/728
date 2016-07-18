@@ -1,0 +1,38 @@
+/**
+ * 微信容器内的相关jsbridge
+ * @author yanbin01@baidu.com zoujing@baidu.com
+ *
+ */
+
+var bridge =  {
+
+    /**
+     * webapp环境下页面跳转
+     * @param params
+     */
+    pushWindow: function(params){
+        var self = this;
+        if(location.host == 'map.baidu.com') {
+            location.href = params['map-webapp'];
+        }
+        else if(location.host == 'lvyou.baidu.com')  {
+            location.href = params['nuomi-webapp'];
+        }
+        else {
+            location.href = params['nuomi-webapp'];
+        }
+    },
+
+    /**
+     * 拿到当前省份的sid
+     */
+    getProvinceSid: function(){
+
+    }
+
+
+};
+
+module.exports = bridge;
+
+
