@@ -55,13 +55,13 @@ fis.config.merge({
             receiver: deploy + '/static/receiver.php',
             from: '/static',
             subOnly: true,
-            to: '/home/lv/webroot/static/728_promotion/static',
+            to: '/home/lv/webroot/event/s/728_promotion_m/static',
             exclude: /.*\.(?:svn|cvs|tar|rar|psd).*/
         }, {
             receiver: deploy + '/static/receiver.php',
             from: '/page',
             subOnly: true,
-            to: '/home/lv/webroot/static/728_promotion/page',
+            to: '/home/lv/webroot/event/s/728_promotion_m/',
             exclude: /.*\.(?:svn|cvs|tar|rar|psd).*/
         }]
     }
@@ -71,20 +71,20 @@ fis.config.set('roadmap.path', [{
     reg: /^\/pkg\/(.*\.(?:css|js))$/i,
     isMod: false,
     release: '/static/pkg/$1',
-    url: '/static/728_promotion/static/pkg/$1'
+    url: '/event/s/728_promotion_m/static/pkg/$1'
 }, {
     reg: /^\/page\/(.*\.js)$/i,
     isMod: true,
     //发布到/static/js/xxx目录下
     release: '/page/$1',
-    url: '/static/728_promotion/page/$1'
+    url: '/event/s/728_promotion_m/page/$1'
 }, {
     reg: /^\/lib\/(.*\.js)$/i,
     //非组件化
     isMod: false,
     //发布到/static/js/xxx目录下
     release: '/static/lib/$1',
-    url: '/static/728_promotion/static/lib/$1'
+    url: '/event/s/728_promotion_m/static/lib/$1'
 }, {
     //一级同名组件，可以引用短路径，比如modules/jquery/juqery.js
     //直接引用为var $ = require('jquery');
@@ -94,7 +94,7 @@ fis.config.set('roadmap.path', [{
     //id为文件夹名
     id: '$1',
     release: '/static/modules/$1/$1' + '.js',
-    url: '/static/728_promotion/static/modules/$1/$1' + '.js'
+    url: '/event/s/728_promotion_m/static/modules/$1/$1' + '.js'
 }, {
     //modules目录下的其他文件
     reg: /^\/modules\/(.*)\.(js)$/i,
@@ -103,7 +103,7 @@ fis.config.set('roadmap.path', [{
     //id是去掉modules和.js后缀中间的部分
     id: '$1',
     release: '/static/modules/$1' + '.js',
-    url: '/static/728_promotion/static/modules/$1' + '.js'
+    url: '/event/s/728_promotion_m/static/modules/$1' + '.js'
 }, {
     //widgets
     reg: /^\/widgets\/(.*)\.(js)$/i,
@@ -112,43 +112,43 @@ fis.config.set('roadmap.path', [{
     //id是去掉modules和.js后缀中间的部分
     id: '$1',
     release: '/static/widgets/$1' + '.js',
-    url: '/static/728_promotion/static/widgets/$1' + '.js',
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.js',
 }, {
     reg: /^\/widgets\/(.*)\.(?:css|less)$/i,
     release: '/static/widgets/$1' + '.css',
-    url: '/event/s/wy_promotion/nuomi/static/widgets/$1' + '.css',
+    url: '/event/s/728_promotion_m/nuomi/static/widgets/$1' + '.css',
 },  {
     //图片
     reg: /^\/widgets\/(.*\.(?:png|gif|webp|jpg))$/i,
     isMod: false,
     release: '/static/widgets/$1',
-    url: '/static/728_promotion/static/widgets/$1'
+    url: '/event/s/728_promotion_m/static/widgets/$1'
 }, {
     //图片
     reg: /^\/page\/(.*\.(?:png|gif|webp|jpg))$/i,
     isMod: false,
     release: '/page/$1',
-    url: '/static/728_promotion/page/$1'
+    url: '/event/s/728_promotion_m/page/$1'
 }, {
     reg: /^\/page\/(.*)\.(?:css|less)$/i,
     release: '/static/page/$1' + '.css',
-    url: '/static/728_promotion/static/page/$1' + '.css',
+    url: '/event/s/728_promotion_m/static/page/$1' + '.css',
 }, {
     reg: /^\/widgets\/(.*)\.(?:less|css)$/i,
     release: '/static/widgets/$1' + '.css',
-    url: '/static/728_promotion/static/widgets/$1' + '.css',
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.css',
 }, {
     reg: /^\/widgets\/(.*)\.(?:html)$/i,
     release: '/static/widgets/$1' + '.html',
-    url: '/static/728_promotion/static/widgets/$1' + '.html',
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.html',
 }, {
     reg: /^\/widgets\/(.*)\.(?:json)$/i,
     release: '/static/widgets/$1' + '.json',
-    url: '/static/728_promotion/static/widgets/$1' + '.json',
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.json',
 }, {
     reg: /^\/widgets\/(.*)\.(eot|svg|ttf|woff)$/i,
     release: '/static/widgets/$1' + '.$2',
-    url: '/static/728_promotion/static/widgets/$1' + '.$2',
+    url: '/event/s/728_promotion_m/static/widgets/$1' + '.$2',
     useDomain: false
 }, {
     //其他css文件
