@@ -1137,20 +1137,18 @@ footer {
 
 // yang 页内导航
 .page-tab {
-    position: fixed;
-    left: 0;
-    top: 0;
+    position: relative;
     width: 100%;
+    background-color: #ff9600;
     text-align: center;
-    transition: all .2s .1s;
-    opacity: 0;
-    display: none;
     border: #ea7e00 2/16rem solid;
     border-right: 0 transparent solid;
     border-left: 0 transparent solid;
     &.active {
         opacity: 1;
-        display: block;
+        left: 0;
+        top: 0;
+        position: fixed;
     }
     .tab-btn {
         position: absolute;
@@ -1158,24 +1156,37 @@ footer {
         right: 0;
         height: 100%;
         background: #ff2a00;
+        z-index: 30;
         &:after {
             content: '';
-            display: block;
+            display: inline-block;
+            width: 22/16rem;
             height: 100%;
-            padding-right: 100%;
+            background-color: #ff2a00;
+        }
+        &:before {
+            content: '';
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            height: 60%;
+            position: absolute;
+            background-image: url('./img/nav-btn-icon.jpg');
+            background-size: cover;
         }
     }
     .tab-list {
         overflow-x: scroll;
-        -webkit-overflow-scrolling: touch;
         overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
         ul {
-            background-color: #ff9600;
             background-size: 100% auto;
             width: 1000/16rem;
             padding: 7/16rem 0;
             .flex;
             li {
+                font-size: 12/16rem;
                 color: #fff;
                 padding: 0 20/16rem;
                 border-left: 1/16rem #fff solid;

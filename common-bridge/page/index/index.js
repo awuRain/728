@@ -1476,7 +1476,7 @@ var App = {
             cacheData: me.cacheData,
             activeInfo: ACTIVEINFO
         });
-        $(html).appendTo('body');
+        $('.J-placeholder-page-tab').html(html);
         return me;
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
