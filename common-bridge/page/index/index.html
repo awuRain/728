@@ -428,11 +428,20 @@
             class_hot = 0,
             class_out = 0;
     %>
-    <section class="coupon">
-        <div class="coupon-cont">
-            <a class="coupon1"></a><a class="coupon2"></a>
-        </div>
-    </section>
+
+    {@if pageConfig.coupon.is_open == 1}
+        <section class="coupon">
+            {@if channel.name == 'nuomi'}
+                <div class="coupon-cont">
+                    <a class="coupon1"></a><a class="coupon2"></a>
+                </div>
+            {@else}
+                <div class="coupon-cont">
+                    <a class="coupon1"></a><a class="coupon2"></a>
+                </div>
+            {@/if}
+        </section>
+    {@/if}
 </script>
 
 <script type="text/template" id="tpl-pageTab">
