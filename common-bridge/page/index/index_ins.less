@@ -4,9 +4,6 @@
 @defaultColor: #333;
 @backgroundColor: #7c296d;
 @color-section-yellow: #ffd200;
-@color-section-purple: #7c296d;
-@color-border-yellow: #e5a722;
-@color-border-purple: #34002a;
 @backgroundColor-3: #fd6300;
 @backgroundColorBtn: #f68300;
 @backgroundColorCoupon-1: #fe8c06;
@@ -59,8 +56,7 @@ body,
 }
 
 body {
-    overflow-x: hidden;
-    background: @color-section-purple;
+    background: @backgroundColor;
     color: @defaultColor;
 }
 
@@ -112,6 +108,7 @@ body {
     }
     &.btn-help {
         background-position: 0 50%;
+
     }
     &.btn-toTop {
         background-position: 0 100%;
@@ -168,7 +165,7 @@ body {
     display: block;
     position: relative;
     transition: all .1s;
-    border: 2px @color-border-purple solid;
+    border: 2px rgba(0, 0, 0, .2) solid;
     border-radius: 4/16rem;
     background: rgba(255, 255, 255, .8);
     overflow: hidden;
@@ -266,13 +263,12 @@ body {
         .flex-v;
         .flex-1;
         .flex-pack-justify;
-        overflow: hidden;
         position: relative;
         padding: 35/712*100% 30/712*100% 38/712*100%;
     }
     &.ticket-item-v {
         .ticket-main {
-            padding: 0 10/323.1*100% 7/323.1*100%;
+            padding: 0 20/323.1*100% 7/323.1*100%;
         }
     }
     .ticket-title {
@@ -446,7 +442,7 @@ body {
                     margin-right: -.3em;
                     background: url(./img/price-discount.png) no-repeat;
                     background-size: auto 100%;
-                    transform: translate3d(100%, -60%, 0);
+                    transform: translate3d(100%, -50%, 0);
                 }
             }
             &.price-nounit {
@@ -555,17 +551,17 @@ body {
     padding: 0 0 40/750*100%;
     position: relative;
     z-index: 1;
-    margin-top: 40/750*100%;
+    background: @backgroundColor;
     &:before {
         display: block;
         position: absolute;
         left: 50%;
         top: 0;
         transform: translate3d(-50%, -50%, 0);
-        width: 250%;
-        padding-bottom: 100%;
-        margin-top: 40%;
+        width: 100%;
+        padding-bottom: 40/750*100%;
         border-radius: 100%;
+        background: @backgroundColor;
         content: '\20';
         z-index: -1;
     }
@@ -593,7 +589,7 @@ body {
             display: block;
             content: '\20';
             padding-bottom: 100/600*100%;
-            background: url(./img/section-title.png) no-repeat;
+            background: red url(./img/section-title.png) no-repeat;
             background-size: 100% auto;
         }
     }
@@ -627,21 +623,18 @@ body {
     }
     .more-link {
         display: block;
-        margin: 0 15/750*100%;
+        margin: 0 16/750*100%;
         img {
             display: block;
             width: 100%;
             height: auto;
-            border: 2px @color-border-yellow solid;
+            border: 2px rgba(0, 0, 0, .2) solid;
             border-radius: 3/16rem;
         }
     }
 }
 
 .section-item-inner {
-    &:before {
-        display: none;
-    }
     .section-item-title {
         width: 560/750*100%;
         margin: 0 auto;
@@ -651,7 +644,7 @@ body {
             display: block;
             content: '\20';
             padding-bottom: 60/560*100%;
-            background: url(./img/section-inner-title.png) no-repeat;
+            background: blue url(./img/section-inner-title.png) no-repeat;
             background-size: 100% auto;
         }
     }
@@ -666,33 +659,11 @@ body {
 }
 
 .page {
-    &>.section-item {
+    .section-item {
         &:nth-child(2n) {
-            background: @color-section-purple;
-            &:before {
-                background: @color-section-purple;
-            }
-            .ticket-item {
-                border-color: @color-border-purple;
-            }
-            .more-link {
-                img {
-                    border-color: @color-border-purple;
-                }
-            }
-        }
-        &:nth-child(2n+1) {
             background: @color-section-yellow;
             &:before {
                 background: @color-section-yellow;
-            }
-            .ticket-item {
-                border-color: @color-border-yellow;
-            }
-            .more-link {
-                img {
-                    border-color: @color-border-yellow;
-                }
             }
         }
     }
@@ -882,17 +853,15 @@ body {
 
 .BN-list {
     &.BN-list-cols2 {}
-    ul {
-        padding: 0 15/750*100%;
-    }
+    ul {}
     &.BN-list-cols2 {
         .clearfix;
-        // margin: 0 15/750*100%;
+        margin: 0 16/750*100%;
     }
     li {
-        // margin-left: 15/750*100%;
-        margin-bottom: 15/750*100%;
-        // padding-right: 15/750*100%;
+        margin-left: 15/750*100%;
+        margin-bottom: 16/750*100%;
+        padding-right: 15/750*100%;
         overflow: hidden;
     }
     &.BN-list-cols2 {
@@ -900,11 +869,11 @@ body {
         li {
             float: left;
             width: 50%;
-            // margin-left: 0;
-            margin-bottom: 7.5/360*100%;
-            padding-right: 7.5/2/360*100%;
+            margin-left: 0;
+            margin-bottom: 5/359*100%;
+            padding-right: 2/359*100%;
             &:nth-child(2n+2) {
-                padding-left: 7.5/2/360*100%;
+                padding-left: 2/359*100%;
                 padding-right: 0;
             }
             &:after {
@@ -979,7 +948,7 @@ html.nuomi {
         margin-bottom: 10/16rem;
     }
     .flayer-bd {
-        height: 65%;
+        height: 55%;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         transform: translateZ(0);
@@ -1311,7 +1280,6 @@ footer {
     }
 }
 
-// 页中导航
 .page-tab {
     position: relative;
     z-index: 50;

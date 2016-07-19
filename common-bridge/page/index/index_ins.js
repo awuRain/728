@@ -110,7 +110,7 @@ var App = {
             } else if (location.host == 'lvyou.baidu.com' || me.params.na_from == 'nuomi') {
                 me.cacheData.channel.name = 'nuomi';
             } else {
-                me.cacheData.channel.name = 'nuomi';
+                me.cacheData.channel.name = 'map_scope';
             }
 
             me.getPageConfig();
@@ -124,7 +124,7 @@ var App = {
         attrs: {
             'section-type': 'promotionList'
         },
-        type: 'poi'
+        'type': 'poi'
     }, {
         id: 'fixPrice',
         title: '爆款折扣',
@@ -133,7 +133,7 @@ var App = {
         attrs: {
             'section-type': 'fixPrice'
         },
-        type: 'sku'
+        'type': 'sku'
     }, {
         id: 'mainMeeting',
         title: '嗨翻出游主题趴'
@@ -148,55 +148,56 @@ var App = {
         id: 'scene_hotel',
         title: '景酒一日游专题',
         meeting: '景酒',
+        activeDate: '2016-07-17',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        cardNum: 4
+        'type': 'link'
     }, {
         id: 'baby',
         title: '亲子分会场',
         meeting: '亲子分会场',
+        activeDate: '2016-07-16',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 4
+        'type': 'link'
     }, {
         id: 'qixi',
         title: '七夕专题',
         meeting: '七夕',
+        activeDate: '2016-07-18',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 4
+        'type': 'link'
     }, {
         id: 'slow_life',
         title: '慢生活专题',
         meeting: '慢生活',
+        activeDate: '2016-07-19',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 4
+        'type': 'link'
     }, {
         id: 'olympic',
         title: '奥运专题',
         meeting: '奥运',
+        activeDate: '2016-07-20',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 4
+        'type': 'link'
     }, {
         id: 'scenic',
         title: '名胜古迹',
         meeting: '名胜',
+        activeDate: '2016-07-21',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi',
-        cardNum: 4
+        'type': 'poi'
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
@@ -205,54 +206,35 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _activeTime, _endTime;
+            activeDate, endDate;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
 
-        // activeDate = new Date(me.baseOrder[1].activeDate);
-        // endDate = new Date(me.baseOrder[1].endDate);
+        activeDate = new Date(me.baseOrder[1].activeDate);
+        endDate = new Date(me.baseOrder[1].endDate);
 
-        // if (me.cacheData.now < activeDate || me.cacheData.now > endDate) { //未到模块展现时间,折扣模块不会被渲染
-        //     me.baseOrder.splice(1, 1);
-        // }
+        if (me.cacheData.now < activeDate || me.cacheData.now > endDate) { //未到模块展现时间,折扣模块不会被渲染
+            me.baseOrder.splice(1, 1);
+        }
 
         if (me.cacheData.channel.name == 'map_scope') {
             me.mainMeetingOrder.length = 0;
         }
 
         for (var i = 0, len = me.mainMeetingOrder.length; i < len; i++) { //调整分会场顺序
-            _item = $.extend(me.mainMeetingOrder[i]);
-            pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
-            _activeDate = pageConfigItem.activeDate;
-            if (me.cacheData.now >= new Date(_activeDate) - 0) {
-                me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
-                    cardNum: 10
-                }));
+            if (me.cacheData.now >= new Date(me.mainMeetingOrder[i].activeDate) - 0) {
+                me.mainMeetingOrder.unshift(me.mainMeetingOrder[i]);
                 me.mainMeetingOrder.splice(i + 1, 1);
                 break;
             }
         }
 
-        for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场所有模块 layout
-            _item = $.extend(me.baseOrder[i]);
-            _arr_innerHtml = [];
-            pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
-            _activeDate = pageConfigItem.activeDate;
-            _endDate = pageConfigItem.endDate;
-            _activeTime, _endTime;
-
-            me.baseOrder_Key[_item.id] = _item;
-
-            if (_activeDate && _endDate) {
-                _activeTime = new Date(_activeDate) - 0;
-                _endTime = new Date(_endDate) - 0;
-
-                if (!(me.cacheData.now >= _activeTime && _endTime > me.cacheData.now)) {
-                    continue;
-                }
-            }
-            if (_item.id == 'mainMeeting') { //组织分会场
+        me.baseOrder.forEach(function(item, index) { //组织主会场所有模块 layout
+            var _item = $.extend(item),
+                _arr_innerHtml = [];
+            me.baseOrder_Key[item.id] = item;
+            if (item.id == 'mainMeeting') { //组织分会场
                 _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
                 me.mainMeetingOrder.forEach(function(jtem, jndex) {
                     me.baseOrder_Key[jtem.id] = jtem;
@@ -262,7 +244,7 @@ var App = {
                 _item.innerHtml = _arr_innerHtml.join('');
             }
             arr_innerHtml.push(me.createSection(_item));
-        }
+        });
 
         html = Juicer($('#tpl-layout').html(), {
             cacheData: me.cacheData,
@@ -293,40 +275,23 @@ var App = {
             _settings = opts || {},
             deferred = $.Deferred();
 
-        $.getJSON('./config-' + me.cacheData.channel.name + '.json', {
-            t: T
-        }, function(res) {
-            console.log(res);
+        window.configReady = function(res) { //文案配置 ready 后
             me.cacheData.pageConfig = res || {};
             me.getNowTime().then(function() {
                 return me.renderLayout();
             }).then(function() {
                 me.renderBase()
-                me.initReady({
-                    pageConfig: res || PAGETEXT,
-                    is_init: 1
-                });
+                    .initReady({
+                        pageConfig: res || PAGETEXT,
+                        is_init: 1
+                    });
             });
             deferred.resolve();
+        };
+
+        $.getJSON('http://lvyou.baidu.com/event/s/dw_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
+            t: T
         });
-
-        // window.configReady = function(res) { //文案配置 ready 后
-        //     me.cacheData.pageConfig = res || {};
-        //     me.getNowTime().then(function() {
-        //         return me.renderLayout();
-        //     }).then(function() {
-        //         me.renderBase()
-        //             .initReady({
-        //                 pageConfig: res || PAGETEXT,
-        //                 is_init: 1
-        //             });
-        //     });
-        //     deferred.resolve();
-        // };
-
-        // $.getJSON('http://lvyou.baidu.com/event/s/dw_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
-        //     t: T
-        // });
 
         return deferred;
     },
@@ -720,6 +685,7 @@ var App = {
                 t: T
             }, me.params),
             success: function(res) {
+                console.log(res);
                 if (res.errno != 0) {
                     Bridge.toast('爆款折扣:' + res.msg);
                     deferred.reject();
@@ -760,9 +726,10 @@ var App = {
                 }
                 return '<em class="' + className + '">' + text + '</em>'
             };
+        console.log('_settings:', _settings);
 
         if ($.isEmptyObject(mainMeeting_sid)) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').removeClass('show').addClass('hide');
+            $('.J-placeholder-' + _settings.id).parents('.section-item').hide();
             $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
             return me;
         }
@@ -776,23 +743,21 @@ var App = {
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
-                id: _settings.id,
                 colsNum: 1,
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
-                        type: _settings['type'],
-                        cardNum: _settings['cardNum'],
+                        type: me.baseOrder_Key[_settings.id]['type'],
                         // direction: 'vertical',
                         data: mainMeeting_sid.list || [],
                         flags: [
                             // createFlag(me.cacheData.promotionList[me.cacheData.sid].list[0].status)
-                        ],
+                        ]
                     })
                 }
             })
         });
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').show();
         $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
@@ -872,7 +837,7 @@ var App = {
             show_tab1, show_tab2, html;
 
         if (promotionList_sid_list.length == 0) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').removeClass('show').addClass('hide');
+            $('.J-placeholder-' + _settings.id).parents('.section-item').hide();
             $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
             return me;
         }
@@ -918,9 +883,9 @@ var App = {
             })
         });
         me.tpl_promotionList = tpl;
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').show();
         $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
-        $('.J-loading').removeClass('show').addClass('hide');
+        $('.J-loading').hide();
         $(me).trigger('promotionListReady')
             .trigger('dataLoaded', [{
                 name: 'promotion'
@@ -937,8 +902,7 @@ var App = {
                 data: _settings.data || [],
                 attrs: _settings.attrs || {},
                 flags: _settings.flags || [],
-                type: _settings.type || '',
-                cardNum: _settings.cardNum || 4,
+                type: _settings.type || ''
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1013,11 +977,11 @@ var App = {
             };
 
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
-            $('#' + _settings.id).removeClass('show').addClass('hide')
+            $('#' + _settings.id).hide()
             $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
-        
+
         me.tpl_mainMeeting = tpl;
 
         // me.reSizeImg({
@@ -1027,13 +991,11 @@ var App = {
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
-                id: _settings.id,
                 colsNum: 2,
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
-                        type: _settings['type'],
-                        cardNum: _settings['cardNum'],
+                        type: me.baseOrder_Key[_settings.id]['type'],
                         direction: 'vertical',
                         data: mainMeeting_sid_id.list || [],
                         flags: [
@@ -1043,8 +1005,7 @@ var App = {
                 }
             })
         });
-        $('#' + _settings.id).removeClass('hide').addClass('show');
-        $('.J-placeholder-' + _settings.id).html(html);
+        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').show();
         $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
@@ -1227,7 +1188,7 @@ var App = {
 
         // final-test
 
-        $('.J-loading').text('').removeClass('show').addClass('hide');
+        $('.J-loading').text('').hide();
         return me;
     },
     renderCalendar: function() { //渲染每日专场
@@ -1494,6 +1455,7 @@ var App = {
         $(html).prependTo('body');
         return me;
     },
+    // 这一块应该是没有用的
     renderFooter: function() { //渲染footer
         var me = this,
             html = '';
@@ -1529,7 +1491,7 @@ var App = {
             html = '';
         if ($item.length) {
             html = $item.html();
-            html.length ? $item.removeClass('hide').addClass('show') : $item.removeClass('show').addClass('hide');
+            html.length ? $item.show() : $item.hide();
         }
         return me;
     },
@@ -1553,7 +1515,7 @@ var App = {
         }
         if (is_show) {
             setTimeout(function() {
-                $('.flayer-' + _settings.type).removeClass('hide').addClass('show');
+                $('.flayer-' + _settings.type).show();
             }, 50);
             return me;
         }
@@ -1614,7 +1576,7 @@ var App = {
                 onScrollStop: function(element) {
                     var id = $(element).attr('id'),
                         sectionType = $(element).attr('section-type');
-
+                        
                     if (sectionType == 'mainMeeting') { //渲染分会场
                         me.renderMainMeeting(me.baseOrder_Key[id]);
                     } else if (sectionType == 'promotionList') {
@@ -1690,7 +1652,6 @@ var App = {
 
             }
             $('.section-item').unlazyelement();
-            $('.section-item-inner').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
@@ -1715,7 +1676,7 @@ var App = {
                 id: id
             });
         }).on('tap', '.J-flayer-close', function() { //隐藏浮层
-            $('.flayer').removeClass('show').addClass('hide');
+            $('.flayer').hide();
         }).on('tap', '.J-btn-toTop', function() { //回到顶部
             $('.J-page-container').scrollTop(0);
             $('body').scrollTop(0);
@@ -1798,17 +1759,17 @@ var App = {
                     }, _params)
                 }
             });
-        }).on('tap', '.J-sku', function() { //进入sku详情页
-            var src = $(this).attr('data-src'),
-                ticket_id = $(this).attr('data-ticket_id'),
-                qunar_id = $(this).attr('data-qunar_id'),
-                ctrip_id = $(this).attr('data-ctrip_id');
+        }).on('tap', '.J-sku', function() { //进入门票详情页
+            var ticketid = $(this).data('ticketid'),
+                td_id = $(this).attr('data-td_id'),
+                qunar_id = $(this).attr('data-qunar_id');
 
-            var scope_id = src == 'qunar' ? qunar_id : ctrip_id;
+            var pids = ticketid,
+                scope_id = td_id;
 
             var __params = $.extend({
-                    pids: ticket_id,
-                    ticket_id: ticket_id,
+                    pids: pids,
+                    ticket_id: pids,
                     scope_id: scope_id,
                 }, _params),
                 _arr = [];
@@ -1820,15 +1781,15 @@ var App = {
             Bridge.pushWindow({
                 nuomi: "bainuo://component?compid=lvyou&comppage=detail",
                 "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/ticket/detail/detail.html?' + _arr.join('&'),
-                "map-android": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
-                "map-ios": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
+                "map-android": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + pids + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
+                "map-ios": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + pids + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
                 "map-webapp": 'http://map.baidu.com/mobile/webapp/scope/ticketDetail/qt=scope_getoneticket&src=qunar&' + _arr.join('&'),
                 data: __params
             });
-        }).on('tap', '.J-scenehotel', function() { //进入景酒详情页
-            var id = $(this).attr('data-id');
+        }).on('tap', '.J-Detail-hotel', function() { //进入景酒详情页
+            var product_id = $(this).data('product_id');
             var __params = $.extend({
-                    product_id: id
+                    product_id: product_id
                 }, _params),
                 _arr = [];
             for (var key in __params) {
@@ -1838,13 +1799,13 @@ var App = {
                 nuomi: "bainuo://component?compid=lvyou&comppage=sceneryhotel_detail",
                 "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/sceneryhotel/detail/detail.html?' + _arr.join('&'),
                 data: $.extend({
-                    product_id: id
+                    product_id: product_id
                 }, _params)
             });
-        }).on('tap', '.J-onedaytour', function() { //进入一日游详情页
-            var id = $(this).attr('data-id');
+        }).on('tap', '.J-Detail-oneDayTour', function() { //进入一日游详情页
+            var product_id = $(this).data('product_id');
             var __params = $.extend({
-                    product_id: id
+                    product_id: product_id
                 }, _params),
                 _arr = [];
             for (var key in __params) {
@@ -1854,7 +1815,7 @@ var App = {
                 nuomi: "bainuo://component?compid=lvyou&comppage=travel_detail",
                 "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/travel/detail/index.html?' + _arr.join('&'),
                 data: $.extend({
-                    product_id: id
+                    product_id: product_id
                 }, _params)
             });
         }).on('tap', '.J-page-tab li', function() { //页中导航 锚点
@@ -1882,8 +1843,8 @@ var App = {
         }).on('tap', '[tab-for]', function() { //tab 切换
             var tabId = $(this).attr('tab-for'),
                 tabRel = $(this).attr('tab-relFor');
-            $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
-            $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show')
+            $('[tab-rel="' + tabRel + '"]').hide();
+            $('[tab-id="' + tabId + '"]').show()
         }).on('tap', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
         }).on('tap', '.subSessionTab .close-btn', function() {
