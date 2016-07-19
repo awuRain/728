@@ -1427,8 +1427,8 @@ var App = {
 
         var bannerList = [
             { "mainTitle": "北京分会场", "subTitle": "我就是副标题", "url": "http://baidu.com" },
-            { "mainTitle": "杭州分会场", "subTitle": "我就是副标题", "url": "http://baidu.com" },
-            { "mainTitle": "美丽分会场", "subTitle": "我就是副标题", "url": "http://baidu.com" }
+            { "mainTitle": "杭州分会场", "subTitle": "他就是副标题", "url": "http://baidu.com" },
+            { "mainTitle": "美丽分会场", "subTitle": "谁就是副标题", "url": "http://baidu.com" }
         ];
 
         $('.J-placeholder-jumpBnr').remove();
@@ -1817,7 +1817,7 @@ var App = {
                     product_id: product_id
                 }, _params)
             });
-        }).on('tap', '.J-page-tab li', function() { //底 bar 锚点
+        }).on('tap', '.J-page-tab li', function() { //页中导航 锚点
             var $link = $(this),
                 href = $link.data('href'),
                 name = $link.data('name'),

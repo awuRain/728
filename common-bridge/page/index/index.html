@@ -425,13 +425,38 @@
     {@if pageConfig.coupon.is_open == 1}
         <section class="coupon">
             {@if channel.name == 'nuomi'}
+                <div>dwqedsafeaf1<div>
                 <div class="coupon-cont">
                     <a class="coupon1"></a><a class="coupon2"></a>
                 </div>
             {@else}
-                <div class="coupon-cont">
-                    <a class="coupon1"></a><a class="coupon2"></a>
-                </div>
+                <div>dwqedsafeaf2<div>
+                <ul class="coupon-list coupon-list-4 flex">
+                    {@each pageConfig.coupon.list as item,index}
+                        <%
+                            class_hot = item.is_hot == '1' ? 'coupon-item-hot' : '';
+                            mapDisCountStatusItem = mapDisCountStatus[item.id] || {};
+                            class_out = (mapDisCountStatusItem.is_can_get != 1 || item.can_get != 1) ? 'coupon-item-out coupon-item-picked' : '';
+                        %>
+                        <li>
+                            <section class="coupon-item ${class_out} ${class_hot} flex flex-pack-justify flex-v" data-id="${item.id}" pb-id="${item['pb-id']}">
+                                <div class="coupon-info-wrap">
+                                    <div class="coupon-wrap-item">
+                                        <div class="coupon-price">${item.price}</div>
+                                        <p class="coupon-tip">
+                                            <span>${item.title}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="coupon-pick-wrap flex-1">
+                                    <div class="coupon-wrap-item coupon-pick">
+                                        <span>点击领取</span>
+                                    </div>
+                                </div>
+                            </section>
+                        </li>
+                    {@/each}
+                </ul>
             {@/if}
         </section>
     {@/if}
@@ -483,7 +508,7 @@
             <div class="tab-list">
                 <ul>
                     {@each baseOrder as item}
-                        <li data-name="${item.name}" pb-id="${item['pb-id']}">
+                        <li data-name="${item.id}" pb-id="${item['pb-id']}">
                             <h1>${item.title}</h1>
                         </li>
                     {@/each}
