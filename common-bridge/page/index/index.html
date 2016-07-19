@@ -57,7 +57,7 @@
 <script type="text/template" id="tpl-ticketList">
     <%
         var arr_attrs = [],
-            id, uid, td_id, grounpon_id, qunar_id, min_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score,
+            id, uid, td_id, ticket_id, src, grounpon_id, qunar_id, ctrip_id, min_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score,
             className;
 
         for(var attr in attrs){
@@ -83,8 +83,11 @@
                 id = item.id || '';
                 uid = item.poi_uid || '';
                 td_id = item.td_id || '';
+                ticket_id = item.ticket_id || '';
+                src = item.src || '';
                 grounpon_id = item.grounpon_id || '',
                 qunar_id = item.qunar_id || '';
+                ctrip_id = item.ctrip_id || '';
                 min_price = item.min_price || 0;
                 current_price = item.current_price || item.price || 0;
                 market_price = item.market_price || item.ori_price || 0;
@@ -94,9 +97,14 @@
                 saleNum = item.saleNum;
                 webappUrl = item.webapp_url || '';
                 score = item.score || 0;
+                type = item.type || type;
+                switch(type){
+                    case 'onedaytour': className = 'J-onedaytour'; break;
+                    case 'scenehotel': className = 'J-scenehotel'; break;
+                }
             %>
             <li>
-                <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-qunar_id="${qunar_id}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}">
+                <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}">
                     <div class="ticket-item-container">
                         {@if flags.length}
                             <p class="flag-wrap">
@@ -130,12 +138,15 @@
                             {@/if}
                             <div class="price-wrap">
                                 {@if direction == 'vertical'}
-                                    <span class="price price-now price-floor"><em>${min_price}</em></span>
-                                    <button class="btn-buy">抢购</button>
-                                    <!-- <span class="price price-original price-marketPrice price-font10"><em>200</em></span> -->
+                                    <span class="price price-now price-floor"><em>${current_price}</em></span>
+                                    {@if type == 'onedaytour' || type == 'scenehotel'}
+                                        <button class="btn-buy">抢购</button>
+                                    {@else}
+                                        <span class="price price-original price-marketPrice price-font10"><em>${market_price}</em></span>
+                                    {@/if}
                                 {@else}
-                                    <span class="price price-now price-discount"><em>??</em></span>
-                                    <span class="price price-original price-originalPrice"><em>???</em></span>
+                                    <span class="price price-now price-discount"><em>${current_price}</em></span>
+                                    <span class="price price-original price-originalPrice"><em>${market_price}</em></span>
                                     <!-- <span class="price price-now"><em>10</em></span>
                                         <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
                                         <span class="price price-now price-nounit price-floor"><em>10</em></span>
@@ -191,22 +202,23 @@
     <div class="BN-list">
         $${data.tab1.html}
         $${data.tab2.html}
-        <p class="more-link">
-            <img src="./img/temp/hehe.jpg">
-        </p>
     </div>
 </script>
 
 <script type="text/template" id="tpl-mainMeeting">
     <%
         var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel;
+            pageConfig_id = pageConfig[data.id],
+            channel = cacheData.channel,
+            showBtmBanner = pageConfig_id.showBtmBanner || 0;
     %>
     <div class="BN-list BN-list-cols${data.colsNum}">
         $${data.list.html}
-        <p class="more-link">
-            <img src="./img/temp/hehe.jpg">
-        </p>
+        {@if pageConfig_id.showBtmBanner && pageConfig_id.banner_pic}
+            <p class="more-link J-jumpBnr" data-link="${pageConfig_id.banner_link}" pb-id="${pageConfig_id['pb-id']}">
+                <img src="${pageConfig_id.banner_pic}">
+            </p>
+        {@/if}
     </div>
 </script>
 
