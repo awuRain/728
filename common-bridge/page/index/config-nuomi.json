@@ -1,4 +1,4 @@
-window['configReady']({
+{
     "headerPic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
     "coupon": {
         "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
@@ -39,79 +39,100 @@ window['configReady']({
             "can_get": "0"
         }
     },
-    "banner": {
-        "pic": "",
-        "link": "",
-        "pb-id": "lv5240331"
+    "promotionList": {
+        "subTitle": "promotionList",
+        "activeDate": "2016-07-17",
+        "endDate": "2016-07-20",
+        "pb-id": ""
     },
-    "promotion": {
-        "subTitle": "撒欢不可错过，下单立减省钱",
-        "pb-id": "lv5236987"
+    "fixPrice": {
+        "subTitle": "fixPrice",
+        "activeDate": "2016-07-21",
+        "endDate": "2016-07-22",
+        "pb-id": ""
     },
-    "ticket": {
-        "subTitle": "精选秀丽美景，舒心超值相伴",
-        "pb-id": "lv5239806",
-        "moreLink-pb-id": "lv5236996",
-        "show_tag": "0"
+    "mainMeetingOrder": {
+        "subTitle": "mainMeetingOrder",
+        "pb-id": ""
     },
-    "oneDayTour": {
-        "subTitle": "发愁时间不够？一天照样high翻！",
-        "pb-id": "lv5236989",
-        "moreLink-pb-id": "lv5236990"
+    "playflower": {
+        "subTitle": "playflower",
+        "pb-id": ""
     },
-    "sceneryHotel": {
-        "subTitle": "景点酒店超值享，舒心假期耍风光",
-        "pb-id": "lv5236996",
-        "moreLink-pb-id": "lv5239813"
+    "scene_hotel": {
+        "subTitle": "scene_hotel",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "http://www.baidu.com",
+        "pb-id": "bbb"
     },
-    "autotrophy": {
-        "subTitle": "泉水暖暖养心灵，释放童心high不停",
-        "pb-id": "lv5239814",
-        "page-change": "lv5236999",
-        "show_tag": "1"
+    "baby": {
+        "subTitle": "baby",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "http://www.baidu.com",
+        "pb-id": "bbb"
     },
-    "foreign": {
-        "subTitle": "对焦全球美景，实惠bigger同行",
-        "pb-id": "lv5236995",
-        "page-change": "lv5239815"
+    "qixi": {
+        "subTitle": "qixi",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "",
+        "pb-id": "bbb"
     },
-    "ctrip": {
-        "subTitle": "躲避人山人海，寻觅国内小众体验",
-        "pb-id": "lv5239816",
-        "page-change": "lv5236998"
+    "slow_life": {
+        "subTitle": "slow_life",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "",
+        "pb-id": "bbb"
+    },
+    "olympic": {
+        "subTitle": "olympic",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "",
+        "pb-id": "bbb"
+    },
+    "scenic": {
+        "subTitle": "scenic",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "",
+        "pb-id": "bbb"
     },
     "pageTab": [{
         "title": "领取红包",
         "pb-id": "lv5228368",
-        "name":"coupon"
+        "name": "coupon"
     }, {
         "title": "立减专区",
         "pb-id": "lv5240117",
-        "name":"promotion"
+        "name": "promotion"
     }, {
         "title": "休闲娱乐",
         "pb-id": "lv5237283",
-        "name":"autotrophy"
+        "name": "autotrophy"
     }, {
         "title": "精选门票",
         "pb-id": "lv5237284",
-        "name":"ticket"
+        "name": "ticket"
     }, {
         "title": "一日玩乐",
         "pb-id": "lv5240118",
-        "name":"oneDayTour"
+        "name": "oneDayTour"
     }, {
         "title": "景酒套餐",
         "pb-id": "lv5237285",
-        "name":"sceneryHotel"
+        "name": "sceneryHotel"
     }, {
         "title": "海外景点",
         "pb-id": "lv5237286",
-        "name":"foreign"
+        "name": "foreign"
     }, {
         "title": "小众景点",
         "pb-id": "lv5237287",
-        "name":"ctrip"
+        "name": "ctrip"
     }],
     "share": {
         "title": "景点聚惠HIGH一夏，全场门票5折起！",
@@ -125,4 +146,4 @@ window['configReady']({
         "link": "",
         "pic": ""
     }
-});
+}
