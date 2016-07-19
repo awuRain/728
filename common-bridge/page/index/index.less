@@ -95,9 +95,9 @@ body {
 .btn {
     display: block;
     position: relative;
-    width: 40/16rem;
-    height: 30/16rem;
-    border-radius: 3/16rem;
+    width: 20/16rem;
+    height: 35/16rem;
+    border-radius: 5/16rem 0 0 5/16rem;
     background: @backgroundColorBtn url(./img/icon-btn.png?__inline) no-repeat;
     background-size: 100% auto;
     &:after {
@@ -972,12 +972,15 @@ body {
     z-index: 20;
     right: 0;
     bottom: 0;
-    margin: 0 12/16rem 10/16rem 0;
-    background-color: rgba(0, 0, 0, .8);
-    transform: translate3d(0, 300%, 0);
+    margin: 0 0 10/16rem 0;
+    background-color: #fff000;
+    border: 2/16rem solid #363636;
+    border-right: 0 solid transparent;
+    transform: translate3d(0, 200%, 0);
     transition: all .2s;
     opacity: 0;
     &.active {
+        display: block;
         transform: translate3d(0, 0, 0);
         opacity: 1;
     }
@@ -1406,6 +1409,15 @@ footer {
                 }
             }
         }
+    }
+}
+
+.tab-holder {
+    display: none;
+    opacity: 0;
+    height: 20/16rem;
+    &.active {
+        display: block;
     }
 }
 
