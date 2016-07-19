@@ -34,16 +34,21 @@
 
 <script type="text/template" id="tpl-section">
     <%
-        var arr_attrs = [];
+        var arr_attrs = [],
+            pageConfig = cacheData.pageConfig,
+            pageConfig_id = pageConfig[settings.id] || {},
+            channel = cacheData.channel;
 
         for(var attr in settings.attrs){
             arr_attrs.push(attr + '=' + settings.attrs[attr])
         }
+
+        console.log(pageConfig_id);
     %>
     <section class="section-item section-item-${settings.id} ${settings.className}" id="${settings.id}" ${arr_attrs.join(' ')}>
         <div class="section-item-hd">
             <h1 class="section-item-title">${settings.id}</h1>
-            <p class="section-item-subTitle"><span>${settings.id}</span></p>
+            <p class="section-item-subTitle"><span>${pageConfig_id.subTitle}</span></p>
         </div>
         <div class="section-item-bd J-placeholder-${settings.id}">
             {@if settings.innerHtml}
