@@ -227,7 +227,8 @@ var App = {
             _activeDate = pageConfigItem.activeDate;
             if (me.cacheData.now >= new Date(_activeDate) - 0) {
                 me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
-                    cardNum: 10
+                    cardNum: 10,
+                    className: 'section-item-top'
                 }));
                 me.mainMeetingOrder.splice(i + 1, 1);
                 break;
@@ -257,7 +258,7 @@ var App = {
                 _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
                 me.mainMeetingOrder.forEach(function(jtem, jndex) {
                     pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-                    jtem.className = 'section-item-inner';
+                    jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
                     jtem.activeDate = pageConfigItem.activeDate;
                     me.baseOrder_Key[jtem.id] = jtem;
                     _arr_innerHtml.push(me.createSection(jtem));
