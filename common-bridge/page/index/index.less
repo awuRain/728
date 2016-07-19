@@ -1179,10 +1179,10 @@ html.nuomi {
 
 // 顶部头图
 header {
-    margin-top: -11%;
+    margin-top: -23%;
     position: relative;
-    padding-top: 822/750*160%;
-    background-color: #fc2c3c;
+    padding-top: 1253/750*108%;
+    // background-color: #fc2c3c;
     background-repeat: no-repeat;
     background-position: 0 12%;
     background-size: 100% auto;
@@ -1382,7 +1382,6 @@ footer {
 // 页中导航
 .page-tab {
     position: relative;
-    z-index: 50;
     left: 0;
     top: 0;
     width: 100%;
@@ -1392,6 +1391,7 @@ footer {
     border-bottom: #ea7e00 2/16rem solid;
     &:before {}
     &.active {
+        z-index: 50;
         left: 0;
         top: 0;
         position: fixed;
@@ -1447,7 +1447,6 @@ footer {
 .tab-holder {
     display: none;
     opacity: 0;
-    height: 20/16rem;
     &.active {
         display: block;
     }
