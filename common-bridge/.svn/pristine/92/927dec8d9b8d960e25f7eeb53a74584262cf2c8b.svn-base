@@ -1,0 +1,60 @@
+define.cmd = 'cmd';
+
+var ready = function(callback){
+    //糯米
+    if(/nuomi/i.test(navigator.userAgent)) {
+        if (callback && typeof callback == 'function') {
+            if (window.BNJS && typeof window.BNJS == 'object' && BNJS._isAllReady) {
+                callback();
+            } else {
+                document.addEventListener('BNJSReady', function () {
+                    callback();
+                }, false)
+            }
+        }
+    }
+    //微信
+    else if(/micromessenger/i.test(navigator.userAgent)) {
+        //如果是微信容器，加载微信的jssdk
+        require.async(['/lib/jweixin.js','zepto'], function(wx, $){
+            var config = {};
+            //初始化微信权限验证配置
+            $.get('/wechat/ajax/getwechatsignpackage', {
+                url: location.href
+            }, function(res) {
+                config = res.data;
+                wx.config({
+                    debug:false,
+                    appId: config.appId,
+                    timestamp: config.timestamp,
+                    nonceStr: config.nonceStr,
+                    signature: config.signature,
+
+                    jsApiList: [
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                        'chooseImage',
+                        'previewImage',
+                        'uploadImage',
+                        'previewImage'
+                    ]
+                });
+
+                wx.error(function (res) {
+                    console.log(res);
+                });
+
+            }, "json");
+
+            wx.ready(function(){
+                callback && callback();
+            });
+        });
+    }
+    //other
+    else {
+        document.addEventListener("DOMContentLoaded", callback, false);
+    }
+}

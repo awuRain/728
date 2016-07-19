@@ -1,0 +1,45 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>百度旅游通用桥协议common-bridge</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../widgets/css-widgets/reset.css" />
+    <script src="/lib/mod.js"></script>
+    <style>
+        ul{
+           padding: 20px;
+        }
+        ul li {
+            height: 40px;
+            line-height: 40px;
+            background: rgb(109, 175, 171);
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li class="J_Share">调用分享组件</li>
+        <li class="J_Pushwindow">新开线上页面</li>
+        <li class="J_Get">发送get请求</li>
+        <li class="J_Jsonp">发送jsonp请求</li>
+        <li class="J_Sid">返回当前省份sid</li>
+        <li class="J_Tologin">打开登录界面</li>
+        <li class="J_Islogin">用户是否登录</li>
+        <li class="J_Title">设置页面标题</li>
+        <li class="J_Native">获取客户端信息</li>
+        <li class="J_Zujian">获取当前组件的版本号</li>
+    </ul>
+   <script>
+       require.async('./index.js');
+   </script>
+</body>
+</html>

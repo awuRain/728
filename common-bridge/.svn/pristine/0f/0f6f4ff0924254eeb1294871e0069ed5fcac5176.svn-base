@@ -1,0 +1,11 @@
+<link rel="import" href="/page/layout/header.html?__inline">
+
+<section>哈哈哈啊哈</section>
+
+<script>
+    ready(function(){
+        require.async('./index.js');
+    });
+</script>
+
+<link rel="import" href="/page/layout/footer.html?__inline">

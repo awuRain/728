@@ -1,0 +1,57 @@
+"autotrophy": {
+    "is_open": "1",
+    "data": {
+        "省sid": {
+            "sname": "省名称",
+            "list": [{
+                "nuomi": "详情页地址1",
+                "nuomi-webapp": "详情页地址1",
+                "title": "产品名称1",
+                "picUrl": "产品图1",
+                "price": "现价1",
+                "mprice": "市场价1",
+                "is_open": "1"
+            }, {
+                "nuomi": "详情页地址1",
+                "nuomi-webapp": "详情页地址1",
+                "title": "产品名称2",
+                "picUrl": "产品图2",
+                "price": "现价2",
+                "mprice": "市场价2",
+                "is_open": "1"
+            }, {
+                "url": "详情页地址n",
+                "title": "产品名称n",
+                "picUrl": "产品图n",
+                "price": "现价n",
+                "mprice": "市场价n",
+                "is_open": "0"
+            }]
+        },
+        "省2sid": {
+            "sname": "省2名称",
+            "list": [{
+                "url": "详情页地址1",
+                "title": "产品名称1",
+                "picUrl": "产品图1",
+                "price": "现价1",
+                "mprice": "市场价1",
+                "is_open": "1"
+            }, {
+                "url": "详情页地址2",
+                "title": "产品名称2",
+                "picUrl": "产品图2",
+                "price": "现价2",
+                "mprice": "市场价2",
+                "is_open": "1"
+            }, {
+                "url": "详情页地址n",
+                "title": "产品名称n",
+                "picUrl": "产品图n",
+                "price": "现价n",
+                "mprice": "市场价n",
+                "is_open": "0"
+            }]
+        }
+    }
+}

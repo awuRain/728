@@ -1,0 +1,74 @@
+var bridge =  {
+    /**
+     * 微信环境下页面跳转
+     * @param params
+     */
+    pushWindow: function(params){
+        var self = this;
+        if(location.host == 'map.baidu.com') {
+            location.href = params['map-webapp'];
+        }
+        else if(location.host == 'lvyou.baidu.com')  {
+            location.href = params['nuomi-webapp'];
+        }
+        else {
+            location.href = params['nuomi-webapp'];
+        }
+    },
+    /**
+     * 根据定位拿到当前省份的sid
+     * @param callback
+     */
+    getProvinceSid: function(callback){
+        var self = this;
+        this.getCity(function(data){
+            $.ajax({
+                url: self.host + "/business/ajax/dailysale/getsidbycityid?map_city_id=" + data.cityId,
+                method: "get",
+                dataType:'jsonp',
+                success: function(res){
+                    if(res.errno == 0) {
+                        self.sid = res.data.sid;
+                        callback && callback(self.sid);
+                    }
+                    else {
+
+                    }
+                },
+                fail: function(){
+
+                }
+            });
+        });
+    },
+
+    /**
+     * 根据当前定位拿到地图的city信息
+     */
+    getCity: function(callback){
+        $.ajax({
+            'url': 'http://api.map.baidu.com/location/ip?ak=x78oVekBLBQQ6VIvPoX7eNDj&callback=?',
+            'dataType':'jsonp',
+            success: function(data){
+                if (data.status === 0 && data.content && data.content.address_detail) {
+                    var result = {
+                        province: data.content.address_detail.province,
+                        city: data.content.address_detail.city,
+                        cityId: data.content.address_detail.city_code
+                    }
+                    callback && callback(result);
+                }
+            },
+            fail: function(){
+
+            }
+        });
+    },
+
+    /**
+     * 空函数，没啥卵用
+     */
+    initShare: function(){}
+};
+
+module.exports = bridge;

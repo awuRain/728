@@ -1,0 +1,4 @@
+var $ = require('zepto');
+var Bridge = require('Bridge');
+
+Bridge.initShare();

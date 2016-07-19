@@ -1,0 +1,75 @@
+/**
+ * 微信容器内的相关jsbridge
+ * @author yanbin01@baidu.com zoujing@baidu.com
+ *
+ */
+
+
+var wx = require('/lib/jweixin.js');
+var $ = require('zepto');
+
+var bridge =  {
+
+    /**
+     * 初始化函数
+     */
+    init: function(){
+        var self = this;
+
+    },
+
+    initShare: function(){
+        // 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+        wx.onMenuShareTimeline({
+            title: '上海迪士尼乐园3.28门票开售，来百度地图一键轻松抢票！', // 分享标题
+            link: 'http://map.baidu.com/fwmap/upload/event/lv/2016disney/index.html', // 分享链接
+            imgUrl: 'http://lvyou.baidu.com/event/s/2015disney/img/header.jpg', // 分享图标
+
+            success: function () {
+
+                //shareData.callback && shareData.callback(res);
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    },
+
+    /**
+     * 调用分享组件
+     * @param params: 参数对象，包括分享标题、内容、图片、链接等信息
+     */
+    share: function(params){
+
+    },
+    /**
+     * webapp环境下页面跳转
+     * @param params
+     */
+    pushWindow: function(params){
+        var self = this;
+        if(location.host == 'map.baidu.com') {
+            location.href = params['map-webapp'];
+        }
+        else if(location.host == 'lvyou.baidu.com')  {
+            location.href = params['nuomi-webapp'];
+        }
+        else {
+            location.href = params['nuomi-webapp'];
+        }
+    },
+
+    /**
+     * 拿到当前省份的sid
+     */
+    getProvinceSid: function(){
+
+    }
+
+};
+
+
+
+module.exports = bridge;
+
+

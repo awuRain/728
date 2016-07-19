@@ -1,0 +1,102 @@
+/**
+ * common-bridge是H5组件和NA客户端之间通信的js sdk，支持糯米、地图、微信三个容器的环境，向业务代码提供统一的代码，工程师不必关注底层协议。在webapp环境中提供响应的降级处理
+ * @author yanbin01@baidu.com zoujing@baidu.com
+ * @date 2016-4-10
+ */
+
+var $ = require('zepto');
+var utils = require('./utils/utils.js');
+var map = require('./map/map-bridge.js');
+var nuomi = require('./nuomi/nuomi-bridge.js');
+var wechat = require('./wechat/wechat-bridge.js');
+var webapp = require('./webapp/webapp.js');
+
+function Bridge(){
+    this.init();
+}
+
+$.extend(Bridge.prototype, {
+
+    //所有异步接口可以取该前缀，调试的时候统一修改
+    host: "http://cp01-qa-lvyou-001.cp01.baidu.com:8080/",
+
+    init: function(){
+
+    },
+
+    Loader: {
+        /**
+         * 对get异步请求的封装
+         */
+        get: function(data){
+            data.method = 'get';
+            data.dataType = data.dataType || 'json';
+            $.ajax(data);
+        },
+        /**
+         * 对post异步请求的封装
+         */
+        post: function(data){
+            data.method = 'post';
+            data.dataType = data.dataType || 'json';
+            $.ajax(data);
+        }
+    },
+
+    /**
+     * 根据定位信息返回当前省份的sid
+     */
+    getSid: function() {
+
+        $.ajax({
+            url: 'http://api.map.baidu.com/location/ip?ak=x78oVekBLBQQ6VIvPoX7eNDj&coor=bd09ll&ip=' + userip,
+            type: 'get',
+            dataType: 'jsonp',
+            success: function (res) {
+                if (res && res.content && res.content.address_detail && res.content.address_detail.city_code && res.content.address_detail.city_code != 0) {
+                    var cityId = res.content.address_detail.city_code;
+                    var province = res.content.address_detail.province;
+                    var city = res.content.address_detail.city;
+                    //alert(cityId);
+                    //通过地图的cityid拿到省的citycode
+                    $.ajax({
+                        url: 'http://lvyou.baidu.com/business/ajax/ticket/Getpromotionscene?promotion_scene_type=map_scope&promotion_scene_key=' + cityId,
+                        type: 'get',
+                        dataType: 'jsonp',
+                        success: function (res) {
+                            if (res.errno == 0) {
+                                citycode = res.data.promotion_now.city_code;
+                                $('body').trigger('citycode-ready', {
+                                    "cityCode": citycode,
+                                    "cityName": province,
+                                    "cityId": cityId
+                                });
+                            }
+                            else {
+                                $(self).trigger('citycode-fail');
+                            }
+                        }
+                    });
+                } else {
+                    $(self).trigger('citycode-fail');
+                }
+            }
+        });
+    },
+
+    /**
+     * 设置页面的title
+     * @param title
+     */
+    setTitle: function(title){
+        document.title = title;
+    }
+
+});
+
+$.extend(Bridge.prototype, utils);
+eval('$.extend(Bridge.prototype, ' + Bridge.prototype.client + ');');
+
+
+
+module.exports = new Bridge();

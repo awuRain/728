@@ -1,0 +1,124 @@
+var $ = require('zepto');
+var Bridge = require('Bridge');
+
+Bridge.setTitle('百度旅游common-bridge');
+
+$('.J_Share').on('tap', function(){
+    Bridge.share({
+        title:"分享测试",
+        content: "分享内容测试",
+        imgUrl:"http://newicafe.baidu.com/resources/common/widget/backToTop/img/help-icon.png",
+        url: "http://www.baidu.com"
+    }, function(){
+        alert('成功啦');
+    }, function(){
+        alert('失败啦');
+    });
+});
+
+
+
+$('.J_Pushwindow').on('tap', function(){
+    Bridge.pushWindow({
+        "nuomi":'bainuo://component?url=http://cp01-qa-lvyou-001.cp01.baidu.com:8080/static/common-bridge/page/index.html',
+        "nuomi-webapp":"http://www.baidu.com",
+        //"map-ios":"baidumap://map/place/detail?uid=550fd5f9f56f1979931fc943&show_type=detail_page",
+        "map-ios":'baidumap://map/component?comName=scenery&target=scenery_order_fillout&ldata={"src_from":"xxxxxx”}&param={"partner_id":"qunar","scope_id":"38170","scope_name":"故宫博物院","ticket_id":"3744965222","bid":"06d2dffda107b0ef89f15db6","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"map_scope","is_miaosha":"1"}',
+        "map-android":'baidumap://map/component?comName=scenery&target=scenery_detail&uid=550fd5f9f56f1979931fc943',
+        "map-webapp":"http://www.taobao.com"
+    });
+});
+
+$('.J_Get').on('tap', function(){
+    Bridge.Loader.get({
+        url: Bridge.host + '/business/ajax/ticket/getsidbynuomi',
+        dataType: 'json',
+        data: {
+            city_code: 100010000
+        },
+        success: function(res){
+            alert('返回城市数据：' + res.data.name);
+        },
+        fail: function(){
+            alert('失败啦');
+        }
+    });
+});
+
+$('.J_Jsonp').on('tap', function(){
+    Bridge.Loader.get({
+        url: 'http://lvyou.baidu.com/business/ajax/dailysale/getsidbycityid',
+        dataType: 'jsonp',
+        data: {
+            map_city_id: 131
+        },
+        success: function(res){
+            alert('返回sid：' + res.data.sid);
+        },
+        fail: function(){
+            alert('失败啦');
+        }
+    });
+});
+
+$('.J_Sid').on('tap', function(){
+    Bridge.getProvinceSid(function(sid){
+        alert(sid);
+    });
+});
+
+$('.J_Tologin').on('tap', function(){
+    Bridge.toLogin(function(){
+        alert(1);
+    });
+});
+
+$('.J_Islogin').on('tap', function(){
+    Bridge.isLogin(function(status){
+        alert('用户是否登录：' + status);
+    });
+});
+
+$('.J_Native').on('tap', function(){
+    Bridge.getNativeInfo(function(data){
+        alert(JSON.stringify(data));
+    });
+});
+
+$('.J_Zujian').on('tap', function(){
+    if(Bridge.isIos()) {
+        Bridge.requestBdApi('bdapi://getComponentVersion?component_id=map.iphone.baidu.scenery',function(data){
+            alert('组件版本号:' + data.componentVersion);
+        });
+    }
+    else if(Bridge.isAndroid()) {
+        Bridge.requestBdApi('bdapi://getComponentVersion?component_id=map.android.baidu.scenery', function(data){
+            alert('组件版本号:' + data.componentVersion);
+        });
+    }
+});
+
+$('.J_Title').on('tap', function(){
+    Bridge.setTitle('哈哈哈哈哈');
+});
+
+$('.J_Wechatshare').on('tap', function(){
+    if(Bridge.isWechat()) {
+        Bridge.initShare({
+            title: "分享测试",
+            content: "分享内容测试",
+            imgUrl: "http://newicafe.baidu.com/resources/common/widget/backToTop/img/help-icon.png",
+            url: "http://www.baidu.com",
+            success: function () {
+                alert('分享成功啦！');
+            },
+            cancel: function () {
+                alert('取消分享');
+            }
+        });
+        alert('分享内容修改啦，快去分享看看吧！');
+    }
+    else {
+        alert('需要在微信扫码使用此功能');
+    }
+});

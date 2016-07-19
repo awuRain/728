@@ -1,0 +1,56 @@
+<link rel="import" href="/page/layout/header.html?__inline">
+    <style>
+        html {
+            background: #fff;
+        }
+        ul{
+           padding: 20px;
+        }
+        ul li {
+            height: 40px;
+            line-height: 40px;
+            background: #2f9be0;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        .header  {
+            margin: 20px;
+            margin-bottom: 0px;
+            display: -webkit-box;
+        }
+        .header .right-ctn {
+           width: 40%;
+        }
+        .header .left-ctn {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-box-flex:1;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+        }
+        .header .left-ctn .r1 {
+            font-size: 15px;
+            font-weight: bold;
+            color: rgb(130, 130, 130);
+        }
+        .header .left-ctn .r2 {
+            margin-top: 20px;
+            color: #2f9be0;
+            font-weight: bold;
+            font-size: 23px;
+            font-family: cursive;
+        }
+    </style>
+
+    <ul>
+
+        <li class="J_Native">跳转</li>
+
+    </ul>
+   <script>
+       ready(function(){
+           require.async('./index.js');
+       });
+   </script>

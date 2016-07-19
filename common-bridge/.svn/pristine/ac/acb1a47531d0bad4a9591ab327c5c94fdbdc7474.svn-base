@@ -1,0 +1,113 @@
+/**
+ * common-bridge是H5组件和NA客户端之间通信的js sdk，支持糯米、地图、微信三个容器的环境，向业务代码提供统一的代码，工程师不必关注底层协议。在webapp环境中提供响应的降级处理
+ * @author yanbin01@baidu.com zoujing@baidu.com
+ * @date 2016-4-10
+ */
+
+var $ = require('zepto');
+var utils = require('./utils/utils.js');
+var map = require('./map/map-bridge.js');
+var nuomi = require('./nuomi/nuomi-bridge.js');
+var wechat = require('./wechat/wechat-bridge.js');
+var webapp = require('./webapp/webapp.js');
+
+function Bridge(){
+    this.init();
+}
+
+$.extend(Bridge.prototype, {
+
+    //所有异步接口可以取该前缀，调试的时候统一修改
+    host: "http://cp01-qa-lvyou-001.cp01.baidu.com:8080/",
+
+    init: function(){
+
+    },
+
+    Loader: {
+        /**
+         * 对get异步请求的封装
+         */
+        get: function(data){
+            data.method = 'get';
+            data.dataType = data.dataType || 'json';
+            $.ajax(data);
+        },
+        /**
+         * 对post异步请求的封装
+         */
+        post: function(data){
+            data.method = 'post';
+            data.dataType = data.dataType || 'json';
+            $.ajax(data);
+        }
+    },
+
+    /**
+     * 设置页面的title
+     * @param title
+     */
+    setTitle: function(title){
+        document.title = title;
+    },
+
+    /**
+     * 判断用户是否登录
+     */
+    isLogin: function(callback){
+        var self = this;
+        if(location.host == 'lvyou.baidu.com') {
+            $.ajax({
+                url:"http://lvyou.baidu.com/user/ajax/getuser?t=" + (new Date()).getTime(),
+                type:'get',
+                dataType:'json',
+                success:function(res){
+                    debugger;
+                    if(res.errno == 0){
+                        self.login = res.data.user.is_login;
+                    }
+                }
+            });
+        }else {
+            $.ajax({
+                url:"http://map.baidu.com/opn/service/checkuser?t=" + (new Date()).getTime(),
+                type:'get',
+                dataType:'jsonp',
+                success:function(res){
+                    if(res.errno == 0){
+                        self.login = res.result.uid ? 1 : 0;
+                        callback && callback(self.login);
+                    }
+                    else {
+                        callback && callback(0);
+                    }
+                }
+            });
+        }
+    },
+
+    /**
+     * 跳转到登录页面进行登录
+     */
+    toLogin: function(){
+        var self = this;
+        var loginUrl, param, data;
+
+        loginUrl = "http://wappass.baidu.com/passport/?", data = {};
+        param = {};
+        data.tpl = param.tpl || "ma";
+        data.authsite = 1;
+        data.u = location.href;
+
+        loginUrl = self.appendParam(loginUrl, data);
+        location.href = loginUrl;
+
+    }
+});
+
+$.extend(Bridge.prototype, utils);
+eval('$.extend(Bridge.prototype, ' + Bridge.prototype.client + ');');
+
+
+
+module.exports = new Bridge();

@@ -1,0 +1,1 @@
+require('ui/flexible/index');
