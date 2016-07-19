@@ -234,7 +234,7 @@ var App = {
             }
         }
 
-        for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场所有模块 layout
+        for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
             _item = $.extend(me.baseOrder[i]);
             _arr_innerHtml = [];
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
@@ -252,11 +252,14 @@ var App = {
                     continue;
                 }
             }
+
             if (_item.id == 'mainMeeting') { //组织分会场
                 _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
                 me.mainMeetingOrder.forEach(function(jtem, jndex) {
-                    me.baseOrder_Key[jtem.id] = jtem;
+                    pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
                     jtem.className = 'section-item-inner';
+                    jtem.activeDate = pageConfigItem.activeDate;
+                    me.baseOrder_Key[jtem.id] = jtem;
                     _arr_innerHtml.push(me.createSection(jtem));
                 });
                 _item.innerHtml = _arr_innerHtml.join('');
@@ -1017,7 +1020,7 @@ var App = {
             $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
-        
+
         me.tpl_mainMeeting = tpl;
 
         // me.reSizeImg({
