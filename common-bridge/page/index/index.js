@@ -1162,7 +1162,7 @@ var App = {
         var me = this;
         me.renderCalendar()
             .renderHeader()
-            .renderFooter()
+            // .renderFooter()
             .renderBanner()
             .renderSubSessionTab();
 
