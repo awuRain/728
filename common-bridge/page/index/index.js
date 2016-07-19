@@ -1673,14 +1673,20 @@ var App = {
                         // return false;
                     }
                 });
+
+                var height = $('.J-page-tab').offset().height;
+                $('.tab-holder').css('height', height);
+
                 if (scrollTop >= targetTop) {
                     $('.J-page-tab').addClass('active');
                     $('.J-btn-toTop').addClass('active');
+                    $('.tab-holder').addClass('active', height);
                     return me;
                 }
                 $('.J-page-tab').removeClass('active');
                 $('.J-btn-toTop').removeClass('active');
-            }, 200);
+                $('.tab-holder').removeClass('active', height);
+            }, 100);
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
