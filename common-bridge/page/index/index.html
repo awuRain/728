@@ -4,7 +4,7 @@
 
 <section class="page-container J-page-container">
     <section class="J-page page">
-        <div class="J-placeholder J-placeholder-banner"></div>
+        
         <div class="J-placeholder J-placeholder-footer"></div>    
     </section>
 </section>
@@ -19,7 +19,6 @@
     %>
     <div class="J-placeholder J-placeholder-calendar"></div>
     <div class="J-placeholder J-placeholder-header"></div>
-    <div class="J-placeholder J-placeholder-page-tab"></div>
     <div class="J-placeholder J-placeholder-coupon"></div>
     $${data.layout}
 </script>
@@ -32,13 +31,17 @@
             arr_attrs.push(attr + '=' + settings.attrs[attr])
         }
     %>
-    <section class="section-item section-item-${settings.id}" id="${settings.id}" ${arr_attrs.join(' ')}>
+    <section class="section-item section-item-${settings.id} ${settings.className}" id="${settings.id}" ${arr_attrs.join(' ')}>
         <div class="section-item-hd">
             <h1 class="section-item-title">${settings.id}</h1>
             <p class="section-item-subTitle"><span>${settings.id}</span></p>
         </div>
         <div class="section-item-bd J-placeholder-${settings.id}">
-            <div class="section-placeholder"></div>
+            {@if settings.innerHtml}
+                $${settings.innerHtml}
+            {@else}
+                <div class="section-placeholder"></div>
+            {@/if}
         </div>
     </section>
 </script>
@@ -237,16 +240,16 @@
                 </div>
             {@else if type == 'domainList'}
                 <div class="flayer-bd">
-                    <div class="province-list">
-                        <h3>城市</h3>
+                    <div class="domain-list">
+                        <h3 class="domain-title">热门城市</h3>
                         <ul>
                             {@each cityList as item, sid}
                                 <li class="province-li ${item.city == cacheData.sname ? 'active' : ''}" data-sname="${item.city}" data-sid="${sid}">${item.city}</li>
                             {@/each}
                         </ul>
                     </div>
-                    <div class="province-list">
-                        <h3>省份</h3>
+                    <div class="domain-list">
+                        <h3 class="domain-title">所在省份</h3>
                         <ul>
                             {@each provinceList as sname, sid}
                                 <li class="province-li ${sname == cacheData.sname ? 'active' : ''}" data-sname="${sname}" data-sid="${sid}">${sname}</li>
@@ -379,33 +382,27 @@
     </footer>
 </script>
 
-<script type="text/template" id="tpl-banner">
+<script type="text/template" id="tpl-playflower">
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
             bannerList = bannerList;
     %>
-    <div class="section-item section-item-banner J-section-item-banner">
-
-        <div class="section-item-hd">
-            <h1 class="section-item-title">嗨玩精选不剁手</h1>
-        </div>
-        <ul>
-            {@each bannerList as item}
-                <li>
-                    <a class="list-cont">
-                        <div class="pic">
-                            <i></i>
-                        </div>
-                        <div class="title">
-                            <h1>${item.mainTitle}<h1>
-                            <h2>${item.subTitle}</h2>
-                        </div>
-                    </a>
-                </li>
-            {@/each}
-        </ul>
-    </div>
+    <ul>
+        {@each bannerList as item}
+            <li>
+                <a class="list-cont">
+                    <div class="pic">
+                        <i></i>
+                    </div>
+                    <div class="title">
+                        <h1>${item.mainTitle}<h1>
+                        <h2>${item.subTitle}</h2>
+                    </div>
+                </a>
+            </li>
+        {@/each}
+    </ul>
 </script>
 
 <script type="text/template" id="tpl-coupon">

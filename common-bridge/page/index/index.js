@@ -121,7 +121,6 @@ var App = {
     baseOrder: [{
         id: 'promotionList',
         title: '爆款抢购',
-        meeting: '爆款抢购',
         attrs: {
             'section-type': 'promotionList'
         },
@@ -129,12 +128,21 @@ var App = {
     }, {
         id: 'fixPrice',
         title: '爆款折扣',
-        meeting: '爆款折扣',
         activeDate: '2016-07-17',
+        endDate: '2016-07-20',
         attrs: {
             'section-type': 'fixPrice'
         },
         'type': 'sku'
+    }, {
+        id: 'mainMeeting',
+        title: '嗨翻出游主题趴'
+    }, {
+        id: 'playflower',
+        title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        }
     }],
     mainMeetingOrder: [{
         id: 'scene_hotel',
@@ -147,8 +155,8 @@ var App = {
         'type': 'link'
     }, {
         id: 'baby',
-        title: '亲子专题',
-        meeting: '亲自',
+        title: '亲子分会场',
+        meeting: '亲子分会场',
         activeDate: '2016-07-16',
         attrs: {
             'section-type': 'mainMeeting'
@@ -198,15 +206,16 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate;
+            activeDate, endDate;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
 
         activeDate = new Date(me.baseOrder[1].activeDate);
+        endDate = new Date(me.baseOrder[1].endDate);
 
-        if ([nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()].join('') - 0 != [activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate()].join('') - 0) { //未到模块展现时间,该模块不会被渲染
-            me.baseOrder.length = 1;
+        if (me.cacheData.now < activeDate || me.cacheData.now > endDate) { //未到模块展现时间,折扣模块不会被渲染
+            me.baseOrder.splice(1, 1);
         }
 
         if (me.cacheData.channel.name == 'map_scope') {
@@ -221,11 +230,20 @@ var App = {
             }
         }
 
-        me.baseOrder = me.baseOrder.concat(me.mainMeetingOrder); //拼接主会场所有模块顺序
-
         me.baseOrder.forEach(function(item, index) { //组织主会场所有模块 layout
+            var _item = $.extend(item),
+                _arr_innerHtml = [];
             me.baseOrder_Key[item.id] = item;
-            arr_innerHtml.push(me.createSection(item));
+            if (item.id == 'mainMeeting') { //组织分会场
+                _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+                me.mainMeetingOrder.forEach(function(jtem, jndex) {
+                    me.baseOrder_Key[jtem.id] = jtem;
+                    jtem.className = 'section-item-inner';
+                    _arr_innerHtml.push(me.createSection(jtem));
+                });
+                _item.innerHtml = _arr_innerHtml.join('');
+            }
+            arr_innerHtml.push(me.createSection(_item));
         });
 
         html = Juicer($('#tpl-layout').html(), {
@@ -237,6 +255,8 @@ var App = {
         });
 
         $(html).prependTo('.J-page');
+        arr_innerHtml.length = 0;
+
         return me;
     },
     createSection: function(opts) { //创建 section
@@ -544,7 +564,6 @@ var App = {
             _sname = '',
             _fun = function(opts) {
                 var _settings = opts || {};
-                console.log(_settings);
                 if (_times > 0) { //防止重复初始化
                     return me;
                 }
@@ -707,6 +726,7 @@ var App = {
                 }
                 return '<em class="' + className + '">' + text + '</em>'
             };
+        console.log('_settings:', _settings);
 
         if ($.isEmptyObject(mainMeeting_sid)) {
             $('.J-placeholder-' + _settings.id).parents('.section-item').hide();
@@ -892,10 +912,7 @@ var App = {
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('mainMeetingBySidDataReady');
-                // me.renderMainMeeting(me.baseOrder[0]);
-                // me.baseOrder.forEach(function(item, index) {
-                //     me.renderMainMeeting(item);
-                // });
+
                 deferred.resolve();
             };
 
@@ -960,8 +977,8 @@ var App = {
             };
 
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').hide();
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
+            $('#' + _settings.id).hide()
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
 
@@ -1082,7 +1099,6 @@ var App = {
                 "5": { "is_can_get": 1 }
             };
             me.renderCoupon();
-            console.log(1);
             return me;
         }
         Bridge.Loader.get({
@@ -1163,7 +1179,7 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderBanner()
+            .renderPlayFlower()
             .renderSubSessionTab();
 
 
@@ -1408,7 +1424,7 @@ var App = {
         return me;
     },
 
-    renderBanner: function() {
+    renderPlayFlower: function() {
         var me = this,
             html;
         // banner = me.cacheData.pageConfig.banner || {},
@@ -1426,13 +1442,13 @@ var App = {
         //     return me;
         // }
         // 
-        html = Juicer($('#tpl-banner').html(), {
+        html = Juicer($('#tpl-playflower').html(), {
                 cacheData: me.cacheData,
                 activeInfo: ACTIVEINFO,
                 bannerList: bannerList
             })
             // $('.J-placeholder-jumpBnr').html(html);
-        $('.J-placeholder-banner').html(html);
+        $('.J-placeholder-playflower').html(html);
         return me;
     },
 
@@ -1568,6 +1584,7 @@ var App = {
                 onScrollStop: function(element) {
                     var id = $(element).attr('id'),
                         sectionType = $(element).attr('section-type');
+                        
                     if (sectionType == 'mainMeeting') { //渲染分会场
                         me.renderMainMeeting(me.baseOrder_Key[id]);
                     } else if (sectionType == 'promotionList') {
@@ -1837,7 +1854,6 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').hide();
             $('[tab-id="' + tabId + '"]').show()
         }).on('tap', '.subSessionTab-btn', function() {
-            console.log(2);
             $('.subSessionTab').addClass('active');
         }).on('tap', '.subSessionTab .close-btn', function() {
             $('.subSessionTab').removeClass('active');

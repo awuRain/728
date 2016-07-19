@@ -3,7 +3,7 @@
 @baseSize: 360/16;
 @defaultColor: #333;
 @backgroundColor: #7c296d;
-@backgroundColor-2: #fbe201;
+@color-section-yellow: #ffd200;
 @backgroundColor-3: #fd6300;
 @backgroundColorBtn: #f68300;
 @backgroundColorCoupon-1: #fe8c06;
@@ -581,23 +581,23 @@ body {
     }
     .section-item-bd {}
     .section-item-title {
-        width: 560/750*100%;
+        width: 600/750*100%;
         margin: 0 auto;
         font-size: 0;
         color: transparent;
         &:after {
             display: block;
             content: '\20';
-            padding-bottom: 120/560*100%;
-            background: url(./img/bg-title.png) no-repeat;
+            padding-bottom: 100/600*100%;
+            background: red url(./img/section-title.png) no-repeat;
             background-size: 100% auto;
         }
     }
     .section-item-subTitle {
-        margin: -6.5% auto 30/750*100%;
+        margin: 0 auto 30/750*100%;
         span {
             display: inline-block;
-            margin-left: -1em;
+            // margin-left: -1em;
             font-size: 13/16rem;
             color: #c75f00;
         }
@@ -634,13 +634,127 @@ body {
     }
 }
 
+.section-item-inner {
+    .section-item-title {
+        width: 560/750*100%;
+        margin: 0 auto;
+        font-size: 0;
+        color: transparent;
+        &:after {
+            display: block;
+            content: '\20';
+            padding-bottom: 60/560*100%;
+            background: blue url(./img/section-inner-title.png) no-repeat;
+            background-size: 100% auto;
+        }
+    }
+    .section-item-subTitle {
+        margin: 0 auto 30/750*100%;
+        span {
+            display: inline-block;
+            font-size: 13/16rem;
+            color: #c75f00;
+        }
+    }
+}
+
 .page {
     .section-item {
         &:nth-child(2n) {
-            background: @backgroundColor-2;
+            background: @color-section-yellow;
             &:before {
-                background: @backgroundColor-2;
+                background: @color-section-yellow;
             }
+        }
+    }
+}
+
+.section-item-promotionList {
+    .section-item-title {
+        &:after {
+            background-position: 0 0;
+        }
+    }
+}
+
+.section-item-fixPrice {
+    .section-item-title {
+        &:after {
+            background-position: 0 100/200*100%;
+        }
+    }
+}
+
+.section-item-playflower {
+    .section-item-title {
+        &:after {
+            background-position: 0 100*2/200*100%;
+        }
+    }
+}
+
+.section-item-promotionList,
+.section-item-fixPrice,
+.section-item-playflower {
+    .section-placeholder {
+        .flex-v;
+        &:before,
+        &:after {
+            padding-bottom: 210/720*100%;
+            margin: 0 0 20/720*100%;
+            content: '\20';
+            background: rgba(0, 0, 0, .3);
+        }
+        &:after {
+            margin: 0;
+        }
+    }
+}
+
+.section-item-scene_hotel {
+    .section-item-title {
+        &:after {
+            background-position: 0 0;
+        }
+    }
+}
+
+.section-item-baby {
+    .section-item-title {
+        &:after {
+            background-position: 0 60/420*100%;
+        }
+    }
+}
+
+.section-item-qixi {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*2/420*100%;
+        }
+    }
+}
+
+.section-item-slow_life {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*3/420*100%;
+        }
+    }
+}
+
+.section-item-olympic {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*4/420*100%;
+        }
+    }
+}
+
+.section-item-scenic {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*5/420*100%;
         }
     }
 }
@@ -733,19 +847,6 @@ body {
     .BN-list {
         ul {
             display: none;
-        }
-    }
-    .section-placeholder {
-        .flex-v;
-        &:before,
-        &:after {
-            padding-bottom: 210/720*100%;
-            margin: 0 0 20/720*100%;
-            content: '\20';
-            background: rgba(0, 0, 0, .3);
-        }
-        &:after {
-            margin: 0;
         }
     }
 }
@@ -1011,7 +1112,7 @@ header {
 footer {
     width: 100%;
     background: #ffd200;
-    padding: 30/16rem 0 0 0; 
+    padding: 30/16rem 0 0 0;
     .arc {
         width: 100%;
         padding-bottom: 6%;
@@ -1035,7 +1136,6 @@ footer {
         background-color: #fff;
         border-top: 2px solid #231815;
     }
-
     .footer-cont {
         background-color: #fff;
         width: 80%;
@@ -1050,7 +1150,8 @@ footer {
         height: 21/16rem;
         display: inline-block;
     }
-    .subSessionTab-btn, .mainSessionTab-btn {
+    .subSessionTab-btn,
+    .mainSessionTab-btn {
         margin-top: -1%;
         width: 23%;
         &:after {
@@ -1106,29 +1207,24 @@ footer {
                 padding-bottom: 90%;
             }
         }
-
         //  yang 要改nuomi.less !!
-        
         .date-list-wrap {
             .border-top-orange;
             .border-bottom-orange;
         }
-
         //  yang 要改nuomi.less !!
-        
         .date-list {
             position: relative;
             background: linear-gradient(left, #ffff00 1%, #ffff00 50%, #e50018 51%, #e50018 100%);
             width: 100%;
             overflow-x: scroll;
             overflow-y: hidden;
-            
             -webkit-overflow-scrolling: touch;
             ul {
                 overflow: hidden;
                 width: 3000/16rem;
                 .flex;
-            }        
+            }
             li {
                 background-size: cover;
                 position: relative;
@@ -1262,8 +1358,8 @@ footer {
     }
 }
 
-// yang 分会场 banner
-.section-item-banner {
+// yang 分会场 playflower
+.section-item-playflower {
     // background-color: #ffd200;
     ul {
         width: 95%;
@@ -1363,7 +1459,7 @@ footer {
         .flex-pack-center;
         .coupon1 {
             display: inline-block;
-            width: 37%;  
+            width: 37%;
             &:after {
                 content: '';
                 width: 100%;
@@ -1372,7 +1468,7 @@ footer {
                 background-image: url('./img/coupon.jpg');
                 background-position: 0 0;
                 background-size: cover;
-            }          
+            }
         }
         .coupon2 {
             display: inline-block;
