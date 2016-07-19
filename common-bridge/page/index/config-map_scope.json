@@ -1,71 +1,107 @@
-window['configReady']({
-    "headerPic": "http://k.hiphotos.baidu.com/baidu/pic/item/6c224f4a20a446234a0b60689022720e0df3d7f3.jpg",
+{
+    "headerPic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
     "coupon": {
-        "subTitle": "抵用券部分旅游门票可用，可在“我的>资产>抵用券”查看",
+        "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
         "is_open": "1",
         "list": [{
             "title": "满150元使用",
             "price": "7",
             "is_hot": "1",
             "id": "1",
-            "pb-id": "lv5240111",
+            "pb-id": "pb-1",
             "can_get": "1"
         }, {
             "title": "满200元可用",
             "price": "10",
-            "is_hot": "1",
+            "is_hot": "0",
             "id": "2",
-            "pb-id": "lv5240112",
+            "pb-id": "pb-2",
             "can_get": "1"
         }, {
             "title": "满250元可用",
             "price": "13",
             "is_hot": "1",
             "id": "3",
-            "pb-id": "lv5240113",
+            "pb-id": "pb-3",
             "can_get": "1"
         }, {
             "title": "满300元可用",
             "price": "18",
-            "is_hot": "0",
+            "is_hot": "1",
             "id": "4",
-            "pb-id": "lv5240114",
+            "pb-id": "pb-4",
             "can_get": "1"
-        }]
+        }],
+        "newer": {
+            "title": "满50减15",
+            "is_hot": "0",
+            "id": "5",
+            "can_get": "0"
+        }
     },
-    "promotion": {
-        "subTitle": "撒欢不可错过，下单立减省钱",
-        "pb-id": "lv5240115"
-    },
-    "ticket": {
-        "subTitle": "精选秀丽美景，舒心超值相伴",
-        "pb-id": "lv5240116",
-        "moreLink-pb-id": "lv5237279",
-        "show_tag": "0"
-    },
-    "foreign": {
-        "subTitle": "对焦全球美景，实惠bigger同行",
-        "pb-id": "pb",
-        "page-change": "p-pb"
-    },
-    "ctrip": {
-        "subTitle": "躲避人山人海，寻觅国内小众体验",
-        "pb-id": "lv5237278",
-        "page-change": "p-pb"
-    },
-    "share": {
-        "title": "景点聚惠HIGH一夏，全场门票3折起！",
-        "content": "暑期撒欢，就来百度地图！全场海量门票下单立减低至3折，戳我速抢》",
-        "imgUrl": "http://a.hiphotos.baidu.com/baidu/pic/item/0df431adcbef7609c53e729526dda3cc7cd99e87.png"
-    },
-    "title": "景点聚惠HIGH一夏，全场门票3折起！",
-    "back2main": {
+    "promotionList": {
+        "subTitle": "promotionList",
+        "activeDate": "2016-07-17",
+        "endDate": "2016-07-20",
         "pb-id": ""
     },
+    "fixPrice": {
+        "subTitle": "fixPrice",
+        "activeDate": "2016-07-21",
+        "endDate": "2016-07-22",
+        "pb-id": ""
+    },
+    "mainMeetingOrder": {
+        "subTitle": "mainMeetingOrder",
+        "pb-id": ""
+    },
+    "playflower": {
+        "subTitle": "playflower",
+        "pb-id": ""
+    },
+    "pageTab": [{
+        "title": "领取红包",
+        "pb-id": "lv5228368",
+        "name": "coupon"
+    }, {
+        "title": "立减专区",
+        "pb-id": "lv5240117",
+        "name": "promotion"
+    }, {
+        "title": "休闲娱乐",
+        "pb-id": "lv5237283",
+        "name": "autotrophy"
+    }, {
+        "title": "精选门票",
+        "pb-id": "lv5237284",
+        "name": "ticket"
+    }, {
+        "title": "一日玩乐",
+        "pb-id": "lv5240118",
+        "name": "oneDayTour"
+    }, {
+        "title": "景酒套餐",
+        "pb-id": "lv5237285",
+        "name": "sceneryHotel"
+    }, {
+        "title": "海外景点",
+        "pb-id": "lv5237286",
+        "name": "foreign"
+    }, {
+        "title": "小众景点",
+        "pb-id": "lv5237287",
+        "name": "ctrip"
+    }],
+    "share": {
+        "title": "景点聚惠HIGH一夏，全场门票5折起！",
+        "content": "暑期撒欢，就来百度糯米！全场海量门票下单立减低至5折，戳我速抢》",
+        "imgUrl": "http://s.hiphotos.baidu.com/baidu/pic/item/d31b0ef41bd5ad6e222e9ee089cb39dbb7fd3ce1.png"
+    },
+    "title": "景点聚惠HIGH一夏，全场门票5折起！",
     "rules": "活动时间：即日起至7月24日23:59:59；\n立减活动仅针对带有“立减”标签的景点门票；活动期间，同一用户限购2张立减景点门票，超出2张之外的需以原价购买；用户帐号、下单手机号码、终端设备号三者有任何一项相同或其他可以合理显示为同一用户的，均视为同一用户；\n用户下单成功即视为使用立减机会，未支付订单如取消，可在2小时后重新获得立减机会；\n使用立减机会的订单不支持部分退款，退款后不退还立减机会；\n优惠券限部分景点门票和温泉洗浴品类使用，每种面额优惠券每位用户限领1张；\n优惠券使用期间截至7月24日23:59:59；\n使用优惠券的订单不支持部分退款，退款后不退换优惠券；\n以上优惠，任意两项不可在同一订单叠加使用；\n客服电话：400-0998-998；\n对恶意刷单、虚假交易等违规行为，百度有权不予补贴，可以不通知即取消用户参加活动的资格；\n如因不可抗力以及活动中存在大面积作弊行为、恶意竞争等情况导致难以继续开展本活动，百度有权取消、更改或暂停本活动；\n本次活动全部优惠成本由百度承担，与任何第三方无关；在法律法规许可范围内，活动全部解释权归百度所有。",
     "btmBanner": {
         "pb-id": "",
         "link": "",
         "pic": ""
     }
-});
+}

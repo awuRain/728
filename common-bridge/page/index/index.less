@@ -271,7 +271,7 @@ body {
         .flex-pack-justify;
         overflow: hidden;
         position: relative;
-        padding: 35/712*100% 0/712*100% 38/712*100%;
+        padding: 35/712*100% 10/712*100% 38/712*100% 20/712*100%;
     }
     &.ticket-item-v {
         .ticket-main {
@@ -558,7 +558,6 @@ body {
 }
 
 .section-item {
-    padding: 0 0 40/750*100%;
     position: relative;
     z-index: 1;
     &:before {
@@ -569,7 +568,7 @@ body {
         transform: translate3d(-50%, -50%, 0);
         width: 250%;
         padding-bottom: 100%;
-        margin-top: 40%;
+        margin-top: 45%;
         border-radius: 100%;
         content: '\20';
         z-index: -1;
@@ -588,7 +587,9 @@ body {
     .section-item-hd {
         text-align: center;
     }
-    .section-item-bd {}
+    .section-item-bd {
+        padding: 0 0 40/750*100%;
+    }
     .section-item-title {
         width: 600/750*100%;
         margin: 0 auto;
