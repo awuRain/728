@@ -218,6 +218,7 @@ var App = {
         // }
 
         if (me.cacheData.channel.name == 'map_scope') {
+            me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
         }
 
