@@ -2,10 +2,18 @@
 
 <p class="loading J-loading">正在加载中, 请耐心等待哟~</p>
 
+
 <section class="page-container J-page-container">
     <section class="J-page page">
-        
-        <div class="J-placeholder J-placeholder-footer"></div>    
+        <footer>
+            <div class="footer-cont-wrap">
+                <div class="footer-cont">
+                    <a class="subSessionTab-btn">子会场</a>
+                    <a class="game-btn">游戏</a>
+                    <a class="mainSessionTab-btn">主会场</a>
+                </div>
+            </div>
+        </footer>
     </section>
 </section>
 
@@ -294,8 +302,6 @@
     </div>
 </script>
 
-<!-- 这里是我( yang )的代码 -->
-
 <script type="text/template" id="tpl-calendar">
     <%
         var pageConfig = cacheData.pageConfig,
@@ -415,11 +421,20 @@
             class_hot = 0,
             class_out = 0;
     %>
-    <section class="coupon">
-        <div class="coupon-cont">
-            <a class="coupon1"></a><a class="coupon2"></a>
-        </div>
-    </section>
+
+    {@if pageConfig.coupon.is_open == 1}
+        <section class="coupon">
+            {@if channel.name == 'nuomi'}
+                <div class="coupon-cont">
+                    <a class="coupon1"></a><a class="coupon2"></a>
+                </div>
+            {@else}
+                <div class="coupon-cont">
+                    <a class="coupon1"></a><a class="coupon2"></a>
+                </div>
+            {@/if}
+        </section>
+    {@/if}
 </script>
 
 <script type="text/template" id="tpl-pageTab">
@@ -489,8 +504,6 @@
         <p class="btn-help"><span class="J-btn-help">活动规则</span></p>
     </header>
 </script>
-
-<!-- 这里是我( yang )的代码 -->
 
 <script>
 ready(function() {
