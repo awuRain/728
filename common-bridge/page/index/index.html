@@ -63,7 +63,9 @@
 <script type="text/template" id="tpl-ticketList">
     <%
         var arr_attrs = [],
-            id, uid, td_id, ticket_id, src, grounpon_id, qunar_id, ctrip_id, min_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score,
+            pageConfig = cacheData.pageConfig,
+            pageConfig_id = pageConfig[renderFor] || {},
+            id, uid, td_id, ticket_id, src, grounpon_id, qunar_id, ctrip_id, min_price, max_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score,
             className;
 
         for(var attr in attrs){
@@ -76,7 +78,9 @@
             case 'sku': className = 'J-sku'; break;
             default: className = '';
         }
-        {# console.log('cardNum:',cardNum);
+        
+        {# console.log('pageConfig:',pageConfig_id.limitNum);
+        console.log('cardNum:',cardNum);
         console.log('direction:',direction);
         console.log('type:',type);
         console.log('data:',data);
@@ -95,8 +99,9 @@
                 qunar_id = item.qunar_id || '';
                 ctrip_id = item.ctrip_id || '';
                 min_price = item.min_price || 0;
-                current_price = item.current_price || item.price || 0;
-                market_price = item.market_price || item.ori_price || 0;
+                max_price = item.max_price || 0;
+                current_price = item.current_price || item.price || min_price || 0;
+                market_price = item.market_price || item.ori_price || max_price || 0;
                 pic = item.pic_url || item.image || item.pic || '';
                 title = item.poi_name || item.title || '';
                 city = item.city || '';
@@ -139,9 +144,11 @@
                                     <p>${title}</p>
                                 </div>
                                 {@if direction != 'vertical'}
-                                    <div>
-                                        <p class="ticket-saleInfo">限量??份</p>
-                                    </div>
+                                    {@if pageConfig_id.limitNum}
+                                        <div>
+                                            <p class="ticket-saleInfo">限量${pageConfig_id.limitNum}份</p>
+                                        </div>
+                                    {@/if}
                                 {@/if}
                                 <div class="price-wrap">
                                     {@if direction == 'vertical'}

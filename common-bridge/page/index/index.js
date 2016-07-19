@@ -100,7 +100,6 @@ var App = {
             delete res.cityid;
             delete res.sname;
 
-            me.cacheData = me.getCacheDataFromSession();
 
             me.cacheData.channel = me.cacheData.channel || {};
             me.cacheData.channel.name = me.params.na_from || 'nuomi';
@@ -112,6 +111,8 @@ var App = {
             } else {
                 me.cacheData.channel.name = 'nuomi';
             }
+
+            me.cacheData = me.getCacheDataFromSession();
 
             me.getPageConfig();
         });
@@ -151,7 +152,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        cardNum: 4
+        cardNum: 6
     }, {
         id: 'baby',
         title: '亲子分会场',
@@ -160,7 +161,7 @@ var App = {
             'section-type': 'mainMeeting'
         },
         type: 'link',
-        cardNum: 4
+        cardNum: 6
     }, {
         id: 'qixi',
         title: '七夕专题',
@@ -169,7 +170,7 @@ var App = {
             'section-type': 'mainMeeting'
         },
         type: 'link',
-        cardNum: 4
+        cardNum: 6
     }, {
         id: 'slow_life',
         title: '慢生活专题',
@@ -178,7 +179,7 @@ var App = {
             'section-type': 'mainMeeting'
         },
         type: 'link',
-        cardNum: 4
+        cardNum: 6
     }, {
         id: 'olympic',
         title: '奥运专题',
@@ -187,7 +188,7 @@ var App = {
             'section-type': 'mainMeeting'
         },
         type: 'link',
-        cardNum: 4
+        cardNum: 6
     }, {
         id: 'scenic',
         title: '名胜古迹',
@@ -196,7 +197,7 @@ var App = {
             'section-type': 'mainMeeting'
         },
         type: 'poi',
-        cardNum: 4
+        cardNum: 6
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
@@ -218,6 +219,7 @@ var App = {
         // }
 
         if (me.cacheData.channel.name == 'map_scope') {
+            me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
         }
 
@@ -550,7 +552,7 @@ var App = {
     getCacheDataFromSession: function() { //从 session 中获取缓存数据
         var me = this;
 
-        var session_cacheStr = sessionStorage.getItem('me.cacheData') || '';
+        var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '';
         me.cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : me.cacheData;
 
         return me.cacheData;
@@ -559,7 +561,7 @@ var App = {
         var me = this;
 
         setTimeout(function() {
-            sessionStorage.setItem('me.cacheData', JSON.stringify(me.cacheData));
+            sessionStorage.setItem('me.cacheData.' + me.cacheData.channel.name, JSON.stringify(me.cacheData));
         }, 0);
 
         return me.cacheData;
@@ -785,6 +787,7 @@ var App = {
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
+                        renderFor: _settings.id,
                         type: _settings['type'],
                         cardNum: _settings['cardNum'],
                         // direction: 'vertical',
@@ -890,6 +893,7 @@ var App = {
                     id: promotionList_sid_list[0].start_time,
                     rel: promotionList_sid_list[0].start_time,
                     html: me.createTicketList({
+                        renderFor: _settings.id,
                         type: me.baseOrder_Key[_settings.id]['type'],
                         direction: 'horizontal',
                         data: promotionList_sid_list[0].poi_list,
@@ -907,6 +911,7 @@ var App = {
                     id: promotionList_sid_list[1].start_time,
                     rel: promotionList_sid_list[0].start_time,
                     html: me.createTicketList({
+                        renderFor: _settings.id,
                         type: me.baseOrder_Key[_settings.id]['type'],
                         data: promotionList_sid_list[1].poi_list,
                         attrs: {
@@ -942,7 +947,8 @@ var App = {
                 attrs: _settings.attrs || {},
                 flags: _settings.flags || [],
                 type: _settings.type || '',
-                cardNum: _settings.cardNum || 4,
+                cardNum: _settings.cardNum || 6,
+                renderFor: _settings.renderFor || '',
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1036,6 +1042,7 @@ var App = {
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
+                        renderFor: _settings.id,
                         type: _settings['type'],
                         cardNum: _settings['cardNum'],
                         direction: 'vertical',

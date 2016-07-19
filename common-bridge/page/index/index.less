@@ -293,7 +293,7 @@ body {
                 width: 1px;
                 height: .8em;
                 margin-left: 4/16rem;
-                margin-top: .15em;
+                margin-top: .05rem;
                 margin-right: 4/16rem;
                 background: @defaultColor;
             }
@@ -662,7 +662,7 @@ body {
             top: 50%;
             width: 40/16rem;
             height: 40/16rem;
-            transform: translate3d(-155%, -70%, 0);
+            transform: translate3d(-2000%, -70%, 0);
             background: url(./img/icon-top.png) no-repeat;
             background-size: 100% auto;
         }
@@ -772,12 +772,26 @@ body {
             background-position: 0 0;
         }
     }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-350%, -70%, 0);
+            }
+        }
+    }
 }
 
 .section-item-baby {
     .section-item-title {
         &:after {
             background-position: 0 60/420*100%;
+        }
+    }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-310%, -70%, 0);
+            }
         }
     }
 }
@@ -788,6 +802,13 @@ body {
             background-position: 0 60*2/420*100%;
         }
     }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-300%, -70%, 0);
+            }
+        }
+    }
 }
 
 .section-item-slow_life {
@@ -796,12 +817,26 @@ body {
             background-position: 0 60*3/420*100%;
         }
     }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-280%, -70%, 0);
+            }
+        }
+    }
 }
 
 .section-item-olympic {
     .section-item-title {
         &:after {
             background-position: 0 60*4/420*100%;
+        }
+    }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-280%, -70%, 0);
+            }
         }
     }
 }
@@ -814,16 +849,9 @@ body {
     }
 }
 
-.section-item-top {
-    .section-item-title {
-        // &:after {
-        //     background-position: 0 60*5/420*100%;
-        // }
-    }
-}
-
 // 爆款7折限量抢
 .section-item-promotionList {
+    margin-bottom: 65/750*100%;
     .tab-hd {
         .flex;
         width: 100%;
@@ -928,6 +956,9 @@ body {
         margin-bottom: 15/750*100%;
         // padding-right: 15/750*100%;
         overflow: hidden;
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
     &.BN-list-cols2 {
         ul {}
