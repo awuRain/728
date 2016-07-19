@@ -1669,12 +1669,10 @@ var App = {
                 if (scrollTop >= targetTop) {
                     $('.J-page-tab').addClass('active');
                     $('.J-btn-toTop').addClass('active');
-                    $('.tab-holder').addClass('active');
                     return me;
                 }
                 $('.J-page-tab').removeClass('active');
                 $('.J-btn-toTop').removeClass('active');
-                $('.tab-holder').removeClass('active');
             }, 200);
         });
 
