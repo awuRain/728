@@ -261,8 +261,7 @@ var App = {
                 return me.renderLayout();
             }).then(function() {
                 me.renderBase()
-                return me;
-                    me.initReady({
+                    .initReady({
                         pageConfig: res || PAGETEXT,
                         is_init: 1
                     });
