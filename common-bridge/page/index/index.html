@@ -70,8 +70,8 @@
             case 'sku': className = 'J-sku'; break;
             default: className = '';
         }
-
-        {# console.log('direction:',direction);
+        {# console.log('cardNum:',cardNum);
+        console.log('direction:',direction);
         console.log('type:',type);
         console.log('data:',data);
         console.log('attrs:',attrs);
@@ -103,70 +103,72 @@
                     case 'scenehotel': className = 'J-scenehotel'; break;
                 }
             %>
-            <li>
-                <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}">
-                    <div class="ticket-item-container">
-                        {@if flags.length}
-                            <p class="flag-wrap">
-                                $${flags.join('')}
-                            </p>
-                        {@/if}
-                        <div class="img-wrap">
-                            <img src="${pic}" />
-                            {@if direction == 'vertical'}
-                                <div class="img-btm">
-                                    <em>${city}</em>
-                                    {@if score}
-                                        <div class="stars-wrap">
-                                            <div class="stars" data-stars="${score}"><span style="width:{score*2/10*100}%"></span></div>
-                                        </div>
-                                    {@/if}
-                                </div>
+            {@if index < cardNum}
+                <li>
+                    <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}">
+                        <div class="ticket-item-container">
+                            {@if flags.length}
+                                <p class="flag-wrap">
+                                    $${flags.join('')}
+                                </p>
                             {@/if}
-                        </div>
-                        <div class="ticket-main">
-                            <div class="ticket-title">
-                                {@if direction != 'vertical'}
-                                    <em>${city}</em>
-                                {@/if}
-                                <p>${title}</p>
-                            </div>
-                            {@if direction != 'vertical'}
-                                <div>
-                                    <p class="ticket-saleInfo">限量??份</p>
-                                </div>
-                            {@/if}
-                            <div class="price-wrap">
+                            <div class="img-wrap">
+                                <img src="${pic}" />
                                 {@if direction == 'vertical'}
-                                    <span class="price price-now price-floor"><em>${current_price}</em></span>
-                                    {@if type == 'onedaytour' || type == 'scenehotel'}
-                                        <button class="btn-buy">抢购</button>
-                                    {@else}
-                                        <span class="price price-original price-marketPrice price-font10"><em>${market_price}</em></span>
-                                    {@/if}
-                                {@else}
-                                    <span class="price price-now price-discount"><em>${current_price}</em></span>
-                                    <span class="price price-original price-originalPrice"><em>${market_price}</em></span>
-                                    <!-- <span class="price price-now"><em>10</em></span>
-                                        <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
-                                        <span class="price price-now price-nounit price-floor"><em>10</em></span>
-                                        <span class="price price-original"><em>200</em></span>
-                                        <span class="price price-now price-floor"><em>10</em></span>
-                                        <span class="price price-original price-floor"><em>200</em></span>
-                                        <span class="price price-now price-nounit"><em>10</em></span>
-                                        <span class="price price-original price-floor price-nounit"><em>200</em></span>
-                                        <span class="price price-original price-floor"><em>200</em></span>
-                                        <span class="price price-original price-floor price-marketPrice"><em>200</em></span>
-                                        <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
-                                        <span class="price price-original price-nounit"><em>200</em></span>
-                                        <span class="price price-now price-discount"><em>10</em></span>
-                                        <span class="price price-original"><em>200</em></span> -->
+                                    <div class="img-btm">
+                                        <em>${city}</em>
+                                        {@if score}
+                                            <div class="stars-wrap">
+                                                <div class="stars" data-stars="${score}"><span style="width:{score*2/10*100}%"></span></div>
+                                            </div>
+                                        {@/if}
+                                    </div>
                                 {@/if}
+                            </div>
+                            <div class="ticket-main">
+                                <div class="ticket-title">
+                                    {@if direction != 'vertical'}
+                                        <em>${city}</em>
+                                    {@/if}
+                                    <p>${title}</p>
+                                </div>
+                                {@if direction != 'vertical'}
+                                    <div>
+                                        <p class="ticket-saleInfo">限量??份</p>
+                                    </div>
+                                {@/if}
+                                <div class="price-wrap">
+                                    {@if direction == 'vertical'}
+                                        <span class="price price-now price-floor"><em>${current_price}</em></span>
+                                        {@if type == 'onedaytour' || type == 'scenehotel'}
+                                            <button class="btn-buy">抢购</button>
+                                        {@else}
+                                            <span class="price price-original price-marketPrice price-font10"><em>${market_price}</em></span>
+                                        {@/if}
+                                    {@else}
+                                        <span class="price price-now price-discount"><em>${current_price}</em></span>
+                                        <span class="price price-original price-originalPrice"><em>${market_price}</em></span>
+                                        <!-- <span class="price price-now"><em>10</em></span>
+                                            <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
+                                            <span class="price price-now price-nounit price-floor"><em>10</em></span>
+                                            <span class="price price-original"><em>200</em></span>
+                                            <span class="price price-now price-floor"><em>10</em></span>
+                                            <span class="price price-original price-floor"><em>200</em></span>
+                                            <span class="price price-now price-nounit"><em>10</em></span>
+                                            <span class="price price-original price-floor price-nounit"><em>200</em></span>
+                                            <span class="price price-original price-floor"><em>200</em></span>
+                                            <span class="price price-original price-floor price-marketPrice"><em>200</em></span>
+                                            <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
+                                            <span class="price price-original price-nounit"><em>200</em></span>
+                                            <span class="price price-now price-discount"><em>10</em></span>
+                                            <span class="price price-original"><em>200</em></span> -->
+                                    {@/if}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            {@/if}
         {@/each}
     </ul>
 </script>

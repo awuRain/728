@@ -150,7 +150,8 @@ var App = {
         meeting: '景酒',
         attrs: {
             'section-type': 'mainMeeting'
-        }
+        },
+        cardNum: 4
     }, {
         id: 'baby',
         title: '亲子分会场',
@@ -158,7 +159,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 4
     }, {
         id: 'qixi',
         title: '七夕专题',
@@ -166,7 +168,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 4
     }, {
         id: 'slow_life',
         title: '慢生活专题',
@@ -174,7 +177,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 4
     }, {
         id: 'olympic',
         title: '奥运专题',
@@ -182,7 +186,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 4
     }, {
         id: 'scenic',
         title: '名胜古迹',
@@ -190,7 +195,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi'
+        type: 'poi',
+        cardNum: 4
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
@@ -199,7 +205,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate, endDate;
+            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _activeTime, _endTime;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
@@ -216,20 +222,25 @@ var App = {
         }
 
         for (var i = 0, len = me.mainMeetingOrder.length; i < len; i++) { //调整分会场顺序
-            if (me.cacheData.now >= new Date(me.mainMeetingOrder[i].activeDate) - 0) {
-                me.mainMeetingOrder.unshift(me.mainMeetingOrder[i]);
+            _item = $.extend(me.mainMeetingOrder[i]);
+            pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
+            _activeDate = pageConfigItem.activeDate;
+            if (me.cacheData.now >= new Date(_activeDate) - 0) {
+                me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
+                    cardNum: 10
+                }));
                 me.mainMeetingOrder.splice(i + 1, 1);
                 break;
             }
         }
 
-        for (var j = 0, len = me.baseOrder.length; j < len; j++) { //组织主会场所有模块 layout
-            var _item = $.extend(me.baseOrder[j]),
-                _arr_innerHtml = [],
-                pageConfigItem = me.cacheData.pageConfig[_item.id] || {},
-                _activeDate = pageConfigItem.activeDate,
-                _endDate = pageConfigItem.endDate,
-                _activeTime, _endTime;
+        for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场所有模块 layout
+            _item = $.extend(me.baseOrder[i]);
+            _arr_innerHtml = [];
+            pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
+            _activeDate = pageConfigItem.activeDate;
+            _endDate = pageConfigItem.endDate;
+            _activeTime, _endTime;
 
             me.baseOrder_Key[_item.id] = _item;
 
@@ -709,7 +720,6 @@ var App = {
                 t: T
             }, me.params),
             success: function(res) {
-                console.log(res);
                 if (res.errno != 0) {
                     Bridge.toast('爆款折扣:' + res.msg);
                     deferred.reject();
@@ -771,7 +781,8 @@ var App = {
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
-                        type: me.baseOrder_Key[_settings.id]['type'],
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
                         // direction: 'vertical',
                         data: mainMeeting_sid.list || [],
                         flags: [
@@ -926,7 +937,8 @@ var App = {
                 data: _settings.data || [],
                 attrs: _settings.attrs || {},
                 flags: _settings.flags || [],
-                type: _settings.type || ''
+                type: _settings.type || '',
+                cardNum: _settings.cardNum || 4,
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1000,13 +1012,12 @@ var App = {
                 return '<em class="' + className + '">' + text + '</em>'
             };
 
-        console.log(_settings.id, 'mainMeeting_sid_id:', mainMeeting_sid_id);
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
             $('#' + _settings.id).removeClass('show').addClass('hide')
             $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
-        console.log('_settings:', _settings);
+        
         me.tpl_mainMeeting = tpl;
 
         // me.reSizeImg({
@@ -1021,7 +1032,8 @@ var App = {
                 list: {
                     id: _settings.id,
                     html: me.createTicketList({
-                        type: me.baseOrder_Key[_settings.id]['type'],
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
                         direction: 'vertical',
                         data: mainMeeting_sid_id.list || [],
                         flags: [
