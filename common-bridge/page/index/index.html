@@ -2,6 +2,13 @@
 
 <p class="loading J-loading">正在加载中, 请耐心等待哟~</p>
 
+<section class="page-container J-page-container">
+    <section class="J-page page">
+        <div class="J-placeholder J-placeholder-banner"></div>
+        <div class="J-placeholder J-placeholder-footer"></div>    
+    </section>
+</section>
+
 <div class="J-placeholder J-placeholder-jumpBnr-rb"></div>
 <span class="btn btn-toTop J-btn-toTop"></span>
 
@@ -10,34 +17,11 @@
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel;
     %>
-    <section class="page-container J-page-container">
-        <section class="J-page page">
-            {#
-                yang
-            }
-            <div class="J-placeholder J-placeholder-calendar"></div>
-            {#
-                yang
-            }
-            <div class="J-placeholder J-placeholder-header"></div>
-            {#
-                yang
-            }
-            <div class="J-placeholder J-placeholder-coupon"></div>
-
-            $${data.layout}
-
-            {#
-                yang
-            }
-
-            <div class="J-placeholder J-placeholder-banner"></div>
-            {#
-                yang
-            }
-            <div class="J-placeholder J-placeholder-footer"></div>
-        </section>
-    </section>
+    <div class="J-placeholder J-placeholder-calendar"></div>
+    <div class="J-placeholder J-placeholder-header"></div>
+    <div class="J-placeholder J-placeholder-page-tab"></div>
+    <div class="J-placeholder J-placeholder-coupon"></div>
+    $${data.layout}
 </script>
 
 <script type="text/template" id="tpl-section">
@@ -54,7 +38,7 @@
             <p class="section-item-subTitle"><span>${settings.id}</span></p>
         </div>
         <div class="section-item-bd J-placeholder-${settings.id}">
-            ${settings.meeting}加载中...
+            <div class="section-placeholder"></div>
         </div>
     </section>
 </script>
@@ -293,8 +277,9 @@
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel;
+        var test_headerPic = "http://hiphotos.baidu.com/baidu/pic/item/ae51f3deb48f8c54a16ca65d32292df5e0fe7f00.jpg";
     %>
-    <header class="flex flex-align-center" style="background-image:url(${pageConfig.headerPic})">
+    <header class="flex flex-align-center" style="background-image:url(${test_headerPic})">
         <h1 class="slogen">五一逍遥游 任性5.1GO</h1>
         <p class="btn-help"><span class="J-btn-help">活动规则</span></p>
     </header>
@@ -373,10 +358,8 @@
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel;
     %>
-    <section class="section-item section-item-subSessionTab J-section-item-subSessionTab">
-        <div class="section-item-bd">
-            <span class="close-btn">x</span>
-        </div>
+    <section class="subSessionTab">
+        <span class="close-btn">x</span>
     </section>
 </script>
 

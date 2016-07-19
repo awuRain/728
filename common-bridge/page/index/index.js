@@ -236,7 +236,7 @@ var App = {
             }
         });
 
-        $(html).prependTo('body');
+        $(html).prependTo('.J-page');
         return me;
     },
     createSection: function(opts) { //创建 section
@@ -261,7 +261,8 @@ var App = {
                 return me.renderLayout();
             }).then(function() {
                 me.renderBase()
-                    .initReady({
+                return me;
+                    me.initReady({
                         pageConfig: res || PAGETEXT,
                         is_init: 1
                     });
@@ -1082,6 +1083,7 @@ var App = {
                 "5": { "is_can_get": 1 }
             };
             me.renderCoupon();
+            console.log(1);
             return me;
         }
         Bridge.Loader.get({
@@ -1162,7 +1164,16 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderBanner();
+            .renderBanner()
+            .renderSubSessionTab();
+
+
+        // final-test
+
+        me.renderCoupon();
+
+        // final-test
+
         $('.J-loading').text('').hide();
         return me;
     },
@@ -1462,7 +1473,7 @@ var App = {
             cacheData: me.cacheData,
             activeInfo: ACTIVEINFO
         });
-        $(html).appendTo('body');
+        $('.J-placeholder-page-tab').html(html);
         return me;
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
@@ -1827,25 +1838,12 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').hide();
             $('[tab-id="' + tabId + '"]').show()
         }).on('tap', '.subSessionTab-btn', function() {
-            $('.J-section-item-subSessionTab').addClass('active');
-        }).on('tap', '.J-section-item-subSessionTab .close-btn', function() {
-            $('.J-section-item-subSessionTab').removeClass('active');
+            console.log(2);
+            $('.subSessionTab').addClass('active');
+        }).on('tap', '.subSessionTab .close-btn', function() {
+            $('.subSessionTab').removeClass('active');
         });
 
-        /*
-        yang
-         */
-
-        if ($('.J-section-item-subSessionTab').hasClass('active')) {
-            $('body').on('tap', ':not(.J-section-item-subSessionTab)', function(e) {
-                console.log(1);
-                $('.J-section-item-subSessionTab').removeClass('active');
-            })
-        }
-
-        /*
-        yang
-         */
         return this;
     }
 };
