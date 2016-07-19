@@ -1176,10 +1176,6 @@ var App = {
         $('.J-loading').text('').hide();
         return me;
     },
-    /*
-    yang
-     */
-
     renderCalendar: function() { //渲染每日专场
 
         var me = this,
@@ -1435,10 +1431,6 @@ var App = {
         $('.J-placeholder-banner').html(html);
         return me;
     },
-
-    /*
-    yang
-     */
     renderProvinceSelect: function() { //渲染省份选择器 - 依赖地理位置
         var me = this,
             html = '';

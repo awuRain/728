@@ -976,7 +976,7 @@ html.nuomi {
     height: calc(100% - 62px);
 }
 
-// yang
+// 顶部头图
 header {
     position: relative;
     padding-top: 822/750*100%;
@@ -1007,7 +1007,7 @@ header {
     }
 }
 
-// yang
+// 页脚
 footer {
     width: 100%;
     padding: 30/16rem 0 0 0; 
@@ -1084,7 +1084,7 @@ footer {
     }
 }
 
-// yang 顶部导航
+// 顶部导航
 .calendar {
     background-color: #fc2c3b;
     transform: none;
@@ -1104,17 +1104,11 @@ footer {
                 width: 100%;
                 padding-bottom: 90%;
             }
-        }
-
-        //  yang 要改nuomi.less !!
-        
+        }        
         .date-list-wrap {
             .border-top-orange;
             .border-bottom-orange;
-        }
-
-        //  yang 要改nuomi.less !!
-        
+        }        
         .date-list {
             position: relative;
             background: linear-gradient(left, #ffff00 1%, #ffff00 50%, #e50018 51%, #e50018 100%);
@@ -1174,17 +1168,16 @@ footer {
     }
 }
 
-// yang 页内导航
-.page-tab {
+.J-page-tab {
     position: relative;
+    left: 0;
+    top: 0;
     width: 100%;
     background-color: #ff9600;
     text-align: center;
-    border: #ea7e00 2/16rem solid;
-    border-right: 0 transparent solid;
-    border-left: 0 transparent solid;
+    border-top: #ea7e00 2/16rem solid;
+    border-bottom: #ea7e00 2/16rem solid;
     &.active {
-        opacity: 1;
         left: 0;
         top: 0;
         position: fixed;
@@ -1221,7 +1214,7 @@ footer {
         -webkit-overflow-scrolling: touch;
         ul {
             background-size: 100% auto;
-            width: 1000/16rem;
+            width: 800/16rem;
             padding: 7/16rem 0;
             .flex;
             li {
@@ -1236,6 +1229,68 @@ footer {
         }
     }
 }
+// 页内导航
+// .page-tab {
+//     position: relative;
+//     width: 100%;
+//     background-color: #ff9600;
+//     text-align: center;
+//     border: #ea7e00 2/16rem solid;
+//     border-right: 0 transparent solid;
+//     border-left: 0 transparent solid;
+//     &.active {
+//         opacity: 1;
+//         left: 0;
+//         top: 0;
+//         position: fixed;
+//     }
+//     .tab-btn {
+//         position: absolute;
+//         top: 0;
+//         right: 0;
+//         height: 100%;
+//         background: #ff2a00;
+//         z-index: 30;
+//         &:after {
+//             content: '';
+//             display: inline-block;
+//             width: 22/16rem;
+//             height: 100%;
+//             background-color: #ff2a00;
+//         }
+//         &:before {
+//             content: '';
+//             left: 50%;
+//             top: 50%;
+//             transform: translate(-50%, -50%);
+//             width: 35%;
+//             height: 60%;
+//             position: absolute;
+//             background-image: url('./img/nav-btn-icon.jpg');
+//             background-size: cover;
+//         }
+//     }
+//     .tab-list {
+//         overflow-x: scroll;
+//         overflow-y: hidden;
+//         -webkit-overflow-scrolling: touch;
+//         ul {
+//             background-size: 100% auto;
+//             width: 1000/16rem;
+//             padding: 7/16rem 0;
+//             .flex;
+//             li {
+//                 font-size: 12/16rem;
+//                 color: #fff;
+//                 padding: 0 20/16rem;
+//                 border-left: 1/16rem #fff solid;
+//                 &:nth-child(1) {
+//                     border-left: 0 transparent solid;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 // 底部导航 二级菜单
 .subSessionTab {
@@ -1261,7 +1316,7 @@ footer {
     }
 }
 
-// yang 分会场 banner
+// 分会场 banner
 .section-item-banner {
     // background-color: #ffd200;
     ul {
@@ -1322,7 +1377,7 @@ footer {
     }
 }
 
-// yang 券样式
+// 券样式
 .coupon {
     background-color: #fc2c3b;
     .coupon-cont {
