@@ -61,7 +61,6 @@ body,
 }
 
 body {
-    overflow-x: hidden;
     background: @color-section-purple;
     color: @defaultColor;
 }
@@ -72,6 +71,8 @@ body {
 }
 
 .page {
+    width: 100%;
+    overflow-x: hidden;
     height: auto;
 }
 
@@ -270,7 +271,7 @@ body {
         .flex-pack-justify;
         overflow: hidden;
         position: relative;
-        padding: 35/712*100% 30/712*100% 38/712*100%;
+        padding: 35/712*100% 0/712*100% 38/712*100%;
     }
     &.ticket-item-v {
         .ticket-main {
@@ -522,6 +523,9 @@ body {
     }
     &.ticket-item-v {
         .price-wrap {
+            .price-now {
+                margin-right: 0;
+            }
             .price-marketPrice {
                 float: right;
             }
@@ -557,7 +561,6 @@ body {
     padding: 0 0 40/750*100%;
     position: relative;
     z-index: 1;
-    margin-top: 40/750*100%;
     &:before {
         display: block;
         position: absolute;
@@ -640,6 +643,7 @@ body {
 }
 
 .section-item-inner {
+    margin-top: 40/750*100%;
     &:before {
         display: none;
     }
@@ -1014,7 +1018,6 @@ html.nuomi {
         height: 65%;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
-        transform: translateZ(0);
         padding: 0 30/16rem;
         p {
             font-size: 18/16rem;
@@ -1074,6 +1077,7 @@ html.nuomi {
         }
         ul {
             overflow: hidden;
+            transform: translate3d(0, 0, 0);
         }
         li {
             display: inline-block;
@@ -1354,9 +1358,7 @@ footer {
     text-align: center;
     border-top: #ea7e00 2/16rem solid;
     border-bottom: #ea7e00 2/16rem solid;
-    &:before {
-        
-    }
+    &:before {}
     &.active {
         left: 0;
         top: 0;
