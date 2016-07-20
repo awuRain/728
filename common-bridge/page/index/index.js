@@ -1257,15 +1257,11 @@ var App = {
         var me = this,
             html = '';
         var currentOrder = me.mainMeetingOrder_cp;
-        console.log("currentOrder:");
-        console.log(currentOrder);
 
         me.getNowTime({
             callback: function() {
                 var now = moment(me.cacheData.now),
                     list = [];
-
-                console.log(now);
 
                 for (var i in currentOrder) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
@@ -1275,11 +1271,12 @@ var App = {
                     }
                 }
 
-                function sliceObj(obj, index) {
-                    var list = [];
-                    for (var i = index; i < obj.length; i++) {
-                        list.push(obj[i]);
-                    }
+                if (list.length < 3) {
+                    list = currentOrder.slice(-3);
+                }
+
+                for (var i in list) {
+                    list[i] = me.cacheData.pageConfig[list[i].id];
                 }
 
                 html = Juicer($('#tpl-calendar').html(), {
@@ -1288,18 +1285,15 @@ var App = {
                 });
                 $('.J-placeholder-calendar').html(html);
 
-
                 function setUlWidth() {
                     setTimeout(function() {
                         var ulWidth = 0;
                         $('.calendar .date-list li').each(function(i, it) {
-                            ulWidth += parseInt($(it).css('width').replace('px', ''));
+                            ulWidth += $(it).offset().width;
                         });
-                        // ulWidth += parseInt($('.section-item-calendar .date-list li').css('width').replace('px'));
-                        ulWidth += parseInt($('.calendar .date-list li').css('width').replace('px')) / 2;
+                        ulWidth += $('.calendar .date-list li').offset().width / 2;
                         $('.calendar .date-list ul').css('width', ulWidth);
                     }, 100);
-
                 }
 
                 setUlWidth();
@@ -1310,56 +1304,6 @@ var App = {
             }
         });
         return me;
-        // function getDateScope (now, from, to, size) {
-
-        //     var list = [],
-        //         from = moment2Str(moment(from).subtract(1, 'day')),
-        //         to = moment2Str(moment(to).add(1, 'day')),
-        //         date = now;
-
-        //     if (!now.isBetween(from, to, 'day')) {
-        //         for (var i = size; i > 0; i--) {
-        //             list.push((moment2Str(moment(to).subtract(i, 'day'), '.', true)));
-        //         }   
-        //         return list;
-        //     }
-
-        //     while (!date.isSame(to, 'day')) {
-        //         list.push((moment2Str(date, '.', true)));
-        //         date = date.add(1, 'd');
-        //     }
-
-        //     if (size) {
-        //         if (list.length < size) {
-        //             list = [];
-        //             for (var i = size; i > 0; i--) {
-        //                 list.push(moment2Str(moment(to).subtract(i, 'day'), '.', true));
-        //             }                    
-        //         }
-        //     }
-
-        //     return list;
-        // }
-
-        // function moment2Str (momentObj, separator, short) {
-        //     var separator = separator || '-';
-        //     var str = momentObj.year() + separator + ((momentObj.month()+1) >= 10 ? (momentObj.month()+1) : '0' + (momentObj.month()+1)) + separator + ((momentObj.date()) >= 10 ? (momentObj.date()) : '0' + (momentObj.date()))
-        //     if (short == true) {
-        //         // 没有对十月后的进行适应，先这样吧
-        //         str = str.slice(6);
-        //     }
-        //     return str;
-        // }
-
-        // function countDays (from, now) {
-        //     var i = 0;
-        //     while (!from.isSame(now, 'day')) {
-        //         i++;
-        //         from = from.add(1, 'd');
-        //     }
-        //     console.log(i);
-        //     return i;
-        // }
     },
 
     renderHeader: function() { //渲染header
@@ -1510,7 +1454,21 @@ var App = {
             activeInfo: ACTIVEINFO
         });
         $('.J-placeholder-page-tab').html(html);
+
+        setUlWidth();
+
         return me;
+
+        function setUlWidth() {
+            setTimeout(function() {
+                var ulWidth = 0;
+                $('.page-tab .tab-list li').each(function(i, it) {
+                    ulWidth += $(it).offset().width;
+                });
+                ulWidth += $('.page-tab .tab-list li').offset().width / 3;
+                $('.page-tab .tab-list ul').css('width', ulWidth);
+            }, 100);
+        }
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
         var me = this,
