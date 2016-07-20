@@ -151,8 +151,7 @@ var App = {
         meeting: '景酒',
         attrs: {
             'section-type': 'mainMeeting'
-        },
-        cardNum: 6
+        }
     }, {
         id: 'baby',
         title: '亲子分会场',
@@ -160,8 +159,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 6
+        type: 'link'
     }, {
         id: 'qixi',
         title: '七夕专题',
@@ -169,8 +167,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 6
+        type: 'link'
     }, {
         id: 'slow_life',
         title: '慢生活专题',
@@ -178,8 +175,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 6
+        type: 'link'
     }, {
         id: 'olympic',
         title: '奥运专题',
@@ -187,8 +183,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link',
-        cardNum: 6
+        type: 'link'
     }, {
         id: 'scenic',
         title: '名胜古迹',
@@ -196,8 +191,7 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi',
-        cardNum: 6
+        type: 'poi'
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
@@ -206,7 +200,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _activeTime, _endTime;
+            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _activeTime, _endTime;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
@@ -218,7 +212,7 @@ var App = {
         //     me.baseOrder.splice(1, 1);
         // }
 
-        me.mainMeetingOrder_cp = $.extend({}, me.mainMeetingOrder);
+        me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
 
         if (me.cacheData.channel.name == 'map_scope') {
             me.baseOrder.splice(2, 1);
@@ -246,6 +240,7 @@ var App = {
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
+            _introEndDate = pageConfigItem.introEndDate;
             _activeTime, _endTime;
 
             if (_activeDate && _endDate) {
@@ -256,6 +251,14 @@ var App = {
                     continue;
                 }
             }
+
+            if (me.cacheData.now >= _introEndDate) {
+                _item.cardNum = 10;
+            } else {
+                _item.cardNum = 2;
+            }
+
+            console.log('_item:', _item);
 
             // if (_item.id == 'mainMeeting') { //组织分会场
             //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
@@ -708,8 +711,10 @@ var App = {
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('fixpriceDataReady');
+                var _start_time = me.cacheData.fixPrice[me.cacheData.sid].start_time ? me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 : 0,
+                    _end_time = me.cacheData.fixPrice[me.cacheData.sid].end_time ? me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000 : 0;
                 // 未到8.6抢购时间
-                if (me.cacheData.now < me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 && me.cacheData.now >= me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000) {
+                if ((me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
                     $('#fixPrice').removeClass('show').addClass('hide');
                     $('<div class="J-placeholder-fixPrice-empty" />').insertAfter('#fixPrice');
                 }
@@ -761,21 +766,7 @@ var App = {
             _settings = opts || {},
             html = '',
             mainMeeting = me.cacheData.fixPrice || {},
-            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {},
-            createFlag = function(status) {
-                var text, className;
-                if (status == 0) {
-                    text = '即将开始';
-                    className = 'flag-comming';
-                } else if (status == 1) {
-                    text = '抢购中';
-                    className = 'flag-discount';
-                } else if (status == 2) {
-                    text = '抢购结束';
-                    className = 'flag-past';
-                }
-                return '<em class="' + className + '">' + text + '</em>'
-            };
+            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {};
 
         if ($.isEmptyObject(mainMeeting_sid)) {
             $('#' + _settings.id).removeClass('show').addClass('hide');
@@ -802,9 +793,20 @@ var App = {
                         cardNum: _settings['cardNum'],
                         // direction: 'vertical',
                         data: mainMeeting_sid.list || [],
-                        flags: [
-                            // createFlag(me.cacheData.promotionList[me.cacheData.sid].list[0].status)
-                        ],
+                        createFlag: function(status) {
+                            var text, className;
+                            if (status == 0) {
+                                text = '即将开始';
+                                className = 'flag-comming';
+                            } else if (status == 1) {
+                                text = '抢购中';
+                                className = 'flag-discount';
+                            } else if (status == 2) {
+                                text = '抢购结束';
+                                className = 'flag-past';
+                            }
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
                     })
                 }
             })
@@ -958,6 +960,7 @@ var App = {
                 type: _settings.type || '',
                 cardNum: _settings.cardNum || 6,
                 renderFor: _settings.renderFor || '',
+                createFlag: _settings.createFlag
             });
         me.tpl_ticketList = tpl;
         return html;
