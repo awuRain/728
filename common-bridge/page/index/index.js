@@ -227,6 +227,7 @@ var App = {
             _item = $.extend(me.mainMeetingOrder[i]);
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
+            console.log('_activeDate:',_activeDate);
             if (me.cacheData.now >= new Date(_activeDate) - 0) {
                 me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
                     cardNum: 10,
@@ -307,7 +308,6 @@ var App = {
         $.getJSON('./config-' + me.cacheData.channel.name + '.json', {
             t: T
         }, function(res) {
-            console.log(res);
             me.cacheData.pageConfig = res || {};
             me.getNowTime().then(function() {
                 return me.renderLayout();
@@ -729,6 +729,7 @@ var App = {
                 t: T
             }, me.params),
             success: function(res) {
+                console.log('res',res);
                 if (res.errno != 0) {
                     Bridge.toast('爆款折扣:' + res.msg);
                     deferred.reject();
