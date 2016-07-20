@@ -8,7 +8,7 @@ var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
 
-console.log(2223);
+console.log(9922);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -1474,6 +1474,12 @@ var App = {
         // banner = me.cacheData.pageConfig.banner || {},
         // banner_show = banner.pic && banner.pic.length ? 1 : 0;
 
+        var bannerList = [
+            { "mainTitle": "北京分会场", "subTitle": "我就是副标题", "url": "http://baidu.com" },
+            { "mainTitle": "杭州分会场", "subTitle": "他就是副标题", "url": "http://baidu.com" },
+            { "mainTitle": "美丽分会场", "subTitle": "谁就是副标题", "url": "http://baidu.com" }
+        ];
+
         $('.J-placeholder-jumpBnr').remove();
         // if (me.cacheData.channel.name == 'map_scope' || !banner_show) {
         //     $('.J-placeholder-jumpBnr-rb').remove();
@@ -1482,7 +1488,8 @@ var App = {
         // 
         html = Juicer($('#tpl-playflower').html(), {
                 cacheData: me.cacheData,
-                activeInfo: ACTIVEINFO
+                activeInfo: ACTIVEINFO,
+                bannerList: bannerList
             })
             // $('.J-placeholder-jumpBnr').html(html);
         $('.J-placeholder-playflower').html(html);
@@ -1620,8 +1627,8 @@ var App = {
             });
             me.cacheData.currentOrder = list;
 
-            me.renderPageTab()
-              .renderSubSessionTab();
+            me.renderPageTab();
+            me.renderSubSessionTab();
 
             $('.section-item').lazyelement({
                 threshold: 200,
