@@ -256,19 +256,23 @@ var App = {
                 }
             }
 
-            if (_item.id == 'mainMeeting') { //组织分会场
-                _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-                me.mainMeetingOrder.forEach(function(jtem, jndex) {
-                    pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-                    jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
-                    jtem.activeDate = pageConfigItem.activeDate;
-                    me.baseOrder_Key[jtem.id] = jtem;
-                    _arr_innerHtml.push(me.createSection(jtem));
-                });
-                _item.innerHtml = _arr_innerHtml.join('');
-            }
+            // if (_item.id == 'mainMeeting') { //组织分会场
+            //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+            //     me.mainMeetingOrder.forEach(function(jtem, jndex) {
+            //         pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
+            //         jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
+            //         jtem.activeDate = pageConfigItem.activeDate;
+            //         me.baseOrder_Key[jtem.id] = jtem;
+            //         _arr_innerHtml.push(me.createSection(jtem));
+            //     });
+            //     _item.innerHtml = _arr_innerHtml.join('');
+            // }
             arr_innerHtml.push(me.createSection(_item));
         }
+
+        me.mainMeetingOrder.forEach(function(item, index) {
+            me.baseOrder_Key[item.id] = item;
+        });
 
         html = Juicer($('#tpl-layout').html(), {
             cacheData: me.cacheData,
@@ -333,7 +337,7 @@ var App = {
         // $.getJSON('http://lvyou.baidu.com/event/s/dw_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
         //     t: T
         // });
-    
+
         return deferred;
     },
     initReady: function(opts) {
@@ -1229,7 +1233,8 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderPlayFlower();
+            .renderPlayFlower()
+            .renderSubSessionTab();
 
         // final-test
 
@@ -1609,19 +1614,30 @@ var App = {
             me.pageTabItemShow(_data);
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
             var list = [],
-                current = [];
-            for(var i in me.cacheData.mainMeeting) {
-               current = me.cacheData.mainMeeting[i];
-            }
-            me.mainMeetingOrder.forEach(function (item, index) {
-                if(current[item.id]) {
-                    list.push($.extend({}, me.cacheData.pageConfig[item.id], {"id": item.id}));
+                current = me.cacheData.mainMeeting[me.cacheData.sid],
+                _arr_innerHtml = [],
+                pageConfigItem;
+
+            me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
+                if (current[item.id]) {
+                    list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
                 }
             });
+
             me.cacheData.currentOrder = list;
 
-            me.renderPageTab()
-              .renderSubSessionTab();
+            _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+
+            me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
+                pageConfigItem = me.cacheData.pageConfig[item.id] || {};
+                item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
+                item.activeDate = pageConfigItem.activeDate;
+                _arr_innerHtml.push(me.createSection($.extend(item, me.baseOrder_Key[item.id])));
+            });
+
+            $('.J-placeholder-mainMeeting').html(_arr_innerHtml.join(''));
+
+            me.renderPageTab();
 
             $('.section-item').lazyelement({
                 threshold: 200,
@@ -1629,7 +1645,7 @@ var App = {
                 onScrollStop: function(element) {
                     var id = $(element).attr('id'),
                         sectionType = $(element).attr('section-type');
-
+                    console.log('sectionType:', sectionType);
                     if (sectionType == 'mainMeeting') { //渲染分会场
                         me.renderMainMeeting(me.baseOrder_Key[id]);
                     } else if (sectionType == 'promotionList') {
@@ -1700,6 +1716,10 @@ var App = {
             });
         }).on('tap', '.province-li', function(e) { //省份切换
             var sid = $(this).data('sid');
+            if (sid == me.cacheData.sid) {
+                $('.J-flayer-close').trigger('tap');
+                return me;
+            }
             $('.province-li').removeClass('active');
             $(this).addClass('active');
             $('#J_cur-pro').html(me.cacheData.sname = $(this).data('sname'));
@@ -1711,7 +1731,6 @@ var App = {
 
             }
             $('.section-item').unlazyelement();
-            $('.section-item-inner').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
