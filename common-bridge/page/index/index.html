@@ -114,11 +114,7 @@
                     case 'onedaytour': className = 'J-onedaytour'; break;
                     case 'scenehotel': className = 'J-scenehotel'; break;
                 }
-                console.log('renderFor:',renderFor);
-                if(renderFor == 'fixPrice'){
-
-                    flags = '';
-                }
+                item.status && (flags = createFlag(item.status));
             %>
             {@if index < cardNum}
                 <li>
