@@ -115,6 +115,8 @@
                 }
                 if(renderFor == 'fixPrice'){
                     flags = item.status ? [createFlag(item.status)] : [];
+                } else {
+                    flags = [createFlag(renderFor)] || [];
                 }
             %>
             {@if index < cardNum}
@@ -127,7 +129,7 @@
                                 </p>
                             {@/if}
                             <div class="img-wrap">
-                                <img src="${pic}" />
+                                <img data-src="${pic}" />
                                 {@if direction == 'vertical'}
                                     <div class="img-btm">
                                         <em>${city}</em>

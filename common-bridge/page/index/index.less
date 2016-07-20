@@ -213,7 +213,7 @@ body {
         }
     }
     .img-wrap {
-        width: 206/712*100%;
+        width: 210/712*100%;
         display: block;
         overflow: hidden;
         // transform: translate3d(0, 0, 0);
@@ -573,6 +573,9 @@ body {
         content: '\20';
         z-index: -1;
     }
+    &.section-item-top {
+        padding-top: 40/750*100%;
+    }
     ul {
         overflow: hidden;
     }
@@ -732,10 +735,10 @@ body {
     }
 }
 
-.section-item-fixPrice {
+.section-item-mainMeeting {
     .section-item-title {
         &:after {
-            background-position: 0 100/200*100%;
+            background-position: 0 100/300*100%;
         }
     }
 }
@@ -743,7 +746,16 @@ body {
 .section-item-playflower {
     .section-item-title {
         &:after {
-            background-position: 0 100*2/200*100%;
+            background-position: 0 100*2/300*100%;
+        }
+    }
+}
+
+.section-item-fixPrice {
+    margin-bottom: 40/750*100%;
+    .section-item-title {
+        &:after {
+            background-position: 0 100*3/300*100%;
         }
     }
 }
@@ -845,6 +857,13 @@ body {
     .section-item-title {
         &:after {
             background-position: 0 60*5/420*100%;
+        }
+    }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-280%, -70%, 0);
+            }
         }
     }
 }
