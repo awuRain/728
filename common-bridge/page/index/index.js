@@ -267,6 +267,7 @@ var App = {
             //     });
             //     _item.innerHtml = _arr_innerHtml.join('');
             // }
+
             arr_innerHtml.push(me.createSection(_item));
         }
 
@@ -581,8 +582,7 @@ var App = {
         }
 
         Bridge.Loader.get({
-            // url: Bridge.host + '/business/ajax/ticket/getpromotionList/',
-            url: 'http://cp01-lvyou-pengkuan.epc.baidu.com:8080/business/ajax/promotion/getprovincecity',
+            url: Bridge.host + '/business/ajax/promotion/getprovincecity/',
             dataType: 'jsonp',
             data: {
                 activity_name: 'summer',
@@ -719,8 +719,7 @@ var App = {
         }
 
         Bridge.Loader.get({
-            // url: Bridge.host + '/business/ajax/promotion/getfixprice',
-            url: 'http://cp01-lvyou-pengkuan.epc.baidu.com:8080/business/ajax/promotion/getfixprice',
+            url: Bridge.host + '/business/ajax/promotion/getfixprice/',
             dataType: 'jsonp',
             data: $.extend({}, {
                 sid: me.cacheData.sid,
@@ -827,8 +826,7 @@ var App = {
         }
 
         Bridge.Loader.get({
-            // url: Bridge.host + '/business/ajax/promotion/getdiscountbuying',
-            url: 'http://cp01-lvyou-pengkuan.epc.baidu.com:8080/business/ajax/promotion/getdiscountbuying',
+            url: Bridge.host + '/business/ajax/promotion/getdiscountbuying',
             dataType: 'jsonp',
             data: $.extend({}, {
                 sid: me.cacheData.sid,
@@ -975,8 +973,7 @@ var App = {
         }
 
         Bridge.Loader.get({
-            // url: Bridge.host + '/business/ajax/promotion/getmainmeetingdata',
-            url: 'http://cp01-lvyou-pengkuan.epc.baidu.com:8080/business/ajax/promotion/getmainmeetingdata',
+            url: Bridge.host + '/business/ajax/promotion/getmainmeetingdata/',
             dataType: 'jsonp',
             data: {
                 sid: me.cacheData.sid,
@@ -1629,10 +1626,11 @@ var App = {
             _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
 
             me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
+                item = $.extend(me.baseOrder_Key[item.id], item);
                 pageConfigItem = me.cacheData.pageConfig[item.id] || {};
                 item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
                 item.activeDate = pageConfigItem.activeDate;
-                _arr_innerHtml.push(me.createSection($.extend(item, me.baseOrder_Key[item.id])));
+                _arr_innerHtml.push(me.createSection(item));
             });
 
             $('.J-placeholder-mainMeeting').html(_arr_innerHtml.join(''));
