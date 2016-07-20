@@ -315,9 +315,8 @@
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel;
-        var test_headerPic = "http://hiphotos.baidu.com/baidu/pic/item/b8389b504fc2d56227f4399aef1190ef77c66ccd.jpg";
     %>
-    <header class="flex flex-align-center" style="background-image:url(${test_headerPic})">
+    <header class="flex flex-align-center" style="background-image:url(${pageConfig.headerPic})">
         <p class="btn-help"><span class="J-btn-help">活动规则</span></p>
     </header>
 </script>
@@ -391,18 +390,15 @@
 <script type="text/template" id="tpl-subSessionTab">
     <%
         var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel;
+            channel = cacheData.channel,
+            currentOrder = cacheData.currentOrder;
     %>
     <section class="subSessionTab">
         <span class="close-btn"></span>
         <ul>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
-            <li><a>分会场会场会场</a></li>
+            {@each currentOrder as item}
+            <li><a>${item.title}</a></li>
+            {@/each}
         </ul>
     </section>
 </script>
@@ -427,17 +423,17 @@
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
-            bannerList = bannerList;
+            playflower = pageConfig.playflower.list;
     %>
     <ul>
-        {@each bannerList as item}
+        {@each playflower as item}
             <li>
-                <a class="list-cont">
-                    <div class="pic">
+                <a class="list-cont" href="${item.link}">
+                    <div class="pic" style="background-image: url('${item.pic}')">
                         <i></i>
                     </div>
                     <div class="title">
-                        <h1>${item.mainTitle}<h1>
+                        <h1>${item.title}<h1>
                         <h2>${item.subTitle}</h2>
                     </div>
                 </a>
@@ -461,7 +457,9 @@
         <section class="coupon">
             {@if channel.name == 'nuomi'}
                 <div class="coupon-cont">
-                    <a class="coupon1"></a><a class="coupon2"></a>
+                    {@each pageConfig.coupon.list as item,index}
+                    <div data-id="${item.id}" class="coupon${item.id} coupon-item"></div>
+                    {@/each}
                 </div>
             {@else}
                 <ul class="coupon-list coupon-list-4 flex">
@@ -498,40 +496,8 @@
 <script type="text/template" id="tpl-pageTab">
     <%
         var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel;
-
-        var baseOrder = [{
-            id: 'scene_hotel',
-            title: '景酒一日游专题',
-            meeting: '景酒',
-            activeDate: '2016-07-16'
-        }, {
-            id: 'baby',
-            title: '亲子专题',
-            meeting: '亲自',
-            activeDate: '2016-07-17'
-        }, {
-            id: 'qixi',
-            title: '七夕专题',
-            meeting: '七夕',
-            activeDate: '2016-07-18'
-        }, {
-            id: 'slow_life',
-            title: '慢生活专题',
-            meeting: '慢生活',
-            activeDate: '2016-07-19'
-        }, {
-            id: 'olympic',
-            title: '奥运专题',
-            meeting: '奥运',
-            activeDate: '2016-07-20'
-        }, {
-            id: 'scenic',
-            title: '名胜古迹',
-            meeting: '名胜',
-            activeDate: '2016-07-21'
-        }];
-
+            channel = cacheData.channel,
+            currentOrder = cacheData.currentOrder;
     %>
     {@if channel.name == 'nuomi'}
         <nav class="page-tab J-page-tab">
@@ -540,7 +506,7 @@
             </div>
             <div class="tab-list">
                 <ul>
-                    {@each baseOrder as item}
+                    {@each currentOrder as item}
                         <li data-name="${item.id}" pb-id="${item['pb-id']}">
                             <h1>${item.title}</h1>
                         </li>
