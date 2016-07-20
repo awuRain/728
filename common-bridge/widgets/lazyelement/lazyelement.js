@@ -84,7 +84,7 @@ $.fn.lazyelement = function(t) {
                 t.originalEvent && t.originalEvent.persisted && n()
             })
     },
-    $(window).on("scroll", _throttle(80, function() {
+    $(window).on("scroll", _throttle(50, function() {
         $(window).trigger("scrollStop")
     }));
 

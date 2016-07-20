@@ -54,7 +54,7 @@
     },
     "mainMeeting": {
         "subTitle": "mainMeeting",
-        "introEndDate": "2016-07-15",
+        "introEndDate": "2016-07-25",
         "pb-id": ""
     },
     "playflower": {
@@ -187,5 +187,5 @@
         "link": "",
         "pic": ""
     },
-    "showFlagDiscount": 0
+    "showFlagDiscount": 1
 }
