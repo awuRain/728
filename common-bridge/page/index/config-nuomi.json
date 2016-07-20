@@ -42,14 +42,14 @@
     "promotionList": {
         "subTitle": "promotionList",
         "activeDate": "2016-07-17",
-        "endDate": "2016-07-20",
+        "endDate": "2016-07-25",
         "pb-id": "",
         "limitNum": 998
     },
     "fixPrice": {
         "subTitle": "fixPrice",
-        "activeDate": "2016-07-21",
-        "endDate": "2016-07-22",
+        "activeDate": "2016-07-15",
+        "endDate": "2016-07-25",
         "pb-id": ""
     },
     "mainMeetingOrder": {
