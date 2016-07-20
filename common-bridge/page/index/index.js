@@ -256,17 +256,17 @@ var App = {
                 }
             }
 
-            if (_item.id == 'mainMeeting') { //组织分会场
-                _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-                me.mainMeetingOrder.forEach(function(jtem, jndex) {
-                    pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-                    jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
-                    jtem.activeDate = pageConfigItem.activeDate;
-                    me.baseOrder_Key[jtem.id] = jtem;
-                    _arr_innerHtml.push(me.createSection(jtem));
-                });
-                _item.innerHtml = _arr_innerHtml.join('');
-            }
+            // if (_item.id == 'mainMeeting') { //组织分会场
+            //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+            //     me.mainMeetingOrder.forEach(function(jtem, jndex) {
+            //         pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
+            //         jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
+            //         jtem.activeDate = pageConfigItem.activeDate;
+            //         me.baseOrder_Key[jtem.id] = jtem;
+            //         _arr_innerHtml.push(me.createSection(jtem));
+            //     });
+            //     _item.innerHtml = _arr_innerHtml.join('');
+            // }
             arr_innerHtml.push(me.createSection(_item));
         }
 
@@ -1618,6 +1618,39 @@ var App = {
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
             // console.log('mainMeetingBySidDataReady');
             // me.cacheData.mainMeeting
+            return me;
+            for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
+                _item = $.extend(me.baseOrder[i]);
+                _arr_innerHtml = [];
+                pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
+                _activeDate = pageConfigItem.activeDate;
+                _endDate = pageConfigItem.endDate;
+                _activeTime, _endTime;
+
+                me.baseOrder_Key[_item.id] = _item;
+
+                if (_activeDate && _endDate) {
+                    _activeTime = new Date(_activeDate) - 0;
+                    _endTime = new Date(_endDate) - 0;
+
+                    if (!(me.cacheData.now >= _activeTime && _endTime > me.cacheData.now)) {
+                        continue;
+                    }
+                }
+
+                if (_item.id == 'mainMeeting') { //组织分会场
+                    _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+                    me.mainMeetingOrder.forEach(function(jtem, jndex) {
+                        pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
+                        jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
+                        jtem.activeDate = pageConfigItem.activeDate;
+                        me.baseOrder_Key[jtem.id] = jtem;
+                        _arr_innerHtml.push(me.createSection(jtem));
+                    });
+                    _item.innerHtml = _arr_innerHtml.join('');
+                }
+                arr_innerHtml.push(me.createSection(_item));
+            }
             me.renderPageTab();
             $('.section-item').lazyelement({
                 threshold: 200,
