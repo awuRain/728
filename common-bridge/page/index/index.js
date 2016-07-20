@@ -218,6 +218,8 @@ var App = {
         //     me.baseOrder.splice(1, 1);
         // }
 
+        me.mainMeetingOrder_cp = $.extend({}, me.mainMeetingOrder);
+
         if (me.cacheData.channel.name == 'map_scope') {
             me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
@@ -227,7 +229,6 @@ var App = {
             _item = $.extend(me.mainMeetingOrder[i]);
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
-            console.log('_activeDate:',_activeDate);
             if (me.cacheData.now >= new Date(_activeDate) - 0) {
                 me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
                     cardNum: 10,
@@ -240,13 +241,12 @@ var App = {
 
         for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
             _item = $.extend(me.baseOrder[i]);
+            me.baseOrder_Key[_item.id] = _item;
             _arr_innerHtml = [];
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
             _activeTime, _endTime;
-
-            me.baseOrder_Key[_item.id] = _item;
 
             if (_activeDate && _endDate) {
                 _activeTime = new Date(_activeDate) - 0;
@@ -557,8 +557,8 @@ var App = {
     getCacheDataFromSession: function() { //从 session 中获取缓存数据
         var me = this;
 
-        var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '';
-        me.cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : me.cacheData;
+        // var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '';
+        // me.cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : me.cacheData;
 
         return me.cacheData;
     },
@@ -566,7 +566,7 @@ var App = {
         var me = this;
 
         setTimeout(function() {
-            sessionStorage.setItem('me.cacheData.' + me.cacheData.channel.name, JSON.stringify(me.cacheData));
+            // sessionStorage.setItem('me.cacheData.' + me.cacheData.channel.name, JSON.stringify(me.cacheData));
         }, 0);
 
         return me.cacheData;
@@ -707,6 +707,12 @@ var App = {
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
+                $(me).trigger('fixpriceDataReady');
+                // 未到8.6抢购时间
+                if (me.cacheData.now < me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 && me.cacheData.now >= me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000) {
+                    $('#fixPrice').removeClass('show').addClass('hide');
+                    $('<div class="J-placeholder-fixPrice-empty" />').insertAfter('#fixPrice');
+                }
                 deferred.resolve();
             };
 
@@ -729,7 +735,7 @@ var App = {
                 t: T
             }, me.params),
             success: function(res) {
-                console.log('res',res);
+                console.log('res', res);
                 if (res.errno != 0) {
                     Bridge.toast('爆款折扣:' + res.msg);
                     deferred.reject();
@@ -772,8 +778,8 @@ var App = {
             };
 
         if ($.isEmptyObject(mainMeeting_sid)) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').removeClass('show').addClass('hide');
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#fixPrice');
             return me;
         }
 
@@ -1645,7 +1651,6 @@ var App = {
                 onScrollStop: function(element) {
                     var id = $(element).attr('id'),
                         sectionType = $(element).attr('section-type');
-                    console.log('sectionType:', sectionType);
                     if (sectionType == 'mainMeeting') { //渲染分会场
                         me.renderMainMeeting(me.baseOrder_Key[id]);
                     } else if (sectionType == 'promotionList') {
@@ -1672,6 +1677,9 @@ var App = {
                     }
                 }
             });
+        }).on('fixPriceDataReady', function() {
+            console.log('fixPriceDataReady');
+
         });
 
         // $(".img-box img").lazyload({

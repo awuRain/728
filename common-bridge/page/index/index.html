@@ -85,7 +85,8 @@
         console.log('type:',type);
         console.log('data:',data);
         console.log('attrs:',attrs);
-        console.log('flags:',flags);}
+        console.log('renderFor:',renderFor);}
+        console.log('flags:',flags);
     %>
     <ul ${arr_attrs.join(' ')}>
         {@each data as item, index}
@@ -112,6 +113,11 @@
                 switch(type){
                     case 'onedaytour': className = 'J-onedaytour'; break;
                     case 'scenehotel': className = 'J-scenehotel'; break;
+                }
+                console.log('renderFor:',renderFor);
+                if(renderFor == 'fixPrice'){
+
+                    flags = '';
                 }
             %>
             {@if index < cardNum}
