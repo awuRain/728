@@ -1112,7 +1112,7 @@ var App = {
                 url: Bridge.host + url,
                 data: $.extend({
                     type: _settings.id,
-                    activity_name: 'duanwu'
+                    activity_name: 'summer'
                 }, me.params),
                 success: function(res) {
                     _dataReady(res);
@@ -1127,7 +1127,7 @@ var App = {
                 dataType: 'jsonp',
                 data: $.extend({
                     type: _settings.id,
-                    activity_name: 'duanwu'
+                    activity_name: 'summer'
                 }, me.params),
                 success: function(res) {
                     _dataReady(res);
@@ -1158,7 +1158,7 @@ var App = {
             dataType: 'jsonp',
             data: $.extend({
                 t: T,
-                activity_name: 'duanwu'
+                activity_name: 'summer'
             }, me.params),
             success: function(res) {
                 if (res.errno != 0) {
@@ -1599,9 +1599,10 @@ var App = {
                 is_show: me.gps_success == 0 ? 1 : 0 //定位失败时需要打开省份列表的浮层
             });
             $('.J-loading').text('正在检测登录状态');
-            // Bridge.isLogin(function(status) { //检测登录状态
-            me.is_login = 0;
-            // me.is_login = status || 0;
+            Bridge.isLogin(function(status) { //检测登录状态
+                // me.is_login = 0;
+                me.is_login = status || 0;
+            });
 
             me.renderProvinceSelect()
                 .loadDataRelyonLoc({

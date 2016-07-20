@@ -62,21 +62,22 @@
                 "title": "北京分会场",
                 "subTitle": "我就是副标题",
                 "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
-                "link": "http://www.baidu.com"
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
             }, {
                 "title": "天津分会场",
                 "subTitle": "我就是副标题",
                 "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
-                "link": "http://www.baidu.com"
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
             }, {
                 "title": "上海分会场",
                 "subTitle": "我就是副标题",
                 "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
-                "link": "http://www.baidu.com"
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
             }
-        ],
-        "subTitle": "playflower",
-        "pb-id": ""
+        ]
     },
     "scene_hotel": {
         "title": "景酒分会场",
@@ -132,8 +133,8 @@
         "banner_link": "",
         "pb-id": "bbb"
     },
-    "pageTab": [{
-        "title": "领取红包",
+    "subSession": [{
+        "title": "我就是",
         "pb-id": "lv5228368",
         "name": "coupon"
     }, {
