@@ -1198,12 +1198,11 @@ html.nuomi {
 
 // 顶部头图
 header {
-    margin-top: -23%;
+    // margin-top: -23%;
     position: relative;
-    padding-top: 1253/750*108%;
+    padding-top: 1253/750*100%;
     // background-color: #fc2c3c;
     background-repeat: no-repeat;
-    background-position: 0 12%;
     background-size: 100% auto;
     .slogen {
         position: absolute;
@@ -1323,7 +1322,9 @@ footer {
 
 // 顶部导航
 .calendar {
-    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0;
     z-index: 30;
     transform: none;
     .calendar-bd {
@@ -1595,11 +1596,10 @@ footer {
 
 // 券样式
 .coupon {
-    width: 95%;
-    margin: 0 auto;
+    width: 100%;
+    margin: -(326/750*100%+40/750*100%) auto 40/750*100%;
     position: relative;
     z-index: 15;
-    margin-top: -59%;
     .coupon-cont {
         .flex;
         .flex-align-center;
