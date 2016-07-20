@@ -1045,6 +1045,8 @@ var App = {
         //     type: 'baby'
         // });
 
+        console.log('_settings.cardNum:', _settings.cardNum, _settings);
+
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
@@ -1627,6 +1629,8 @@ var App = {
                 pageConfigItem;
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
+                item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
+                console.log('-----------item:', item);
                 if (current[item.id]) {
                     list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
                 }
@@ -1637,7 +1641,7 @@ var App = {
             _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
 
             me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
-                item = $.extend(me.baseOrder_Key[item.id], item);
+                item = $.extend({}, me.baseOrder_Key[item.id], item);
                 pageConfigItem = me.cacheData.pageConfig[item.id] || {};
                 item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
                 item.activeDate = pageConfigItem.activeDate;
