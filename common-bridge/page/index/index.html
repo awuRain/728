@@ -393,13 +393,13 @@
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
-            currentOrder = cacheData.currentOrder;
+            subSession = pageConfig.subSession;
     %>
     <section class="subSessionTab">
         <span class="close-btn"></span>
         <ul>
-            {@each currentOrder as item}
-            <li><a>${item.title}</a></li>
+            {@each subSession as item}
+            <li><a href="${item.link}">${item.title}</a></li>
             {@/each}
         </ul>
     </section>

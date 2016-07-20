@@ -137,34 +137,42 @@
     "subSession": [{
         "title": "我就是",
         "pb-id": "lv5228368",
+        "link": "http://www.baidu.com",
         "name": "coupon"
     }, {
         "title": "立减专区",
         "pb-id": "lv5240117",
+        "link": "http://www.baidu.com",
         "name": "promotion"
     }, {
         "title": "休闲娱乐",
         "pb-id": "lv5237283",
+        "link": "http://www.baidu.com",
         "name": "autotrophy"
     }, {
         "title": "精选门票",
         "pb-id": "lv5237284",
+        "link": "http://www.baidu.com",
         "name": "ticket"
     }, {
         "title": "一日玩乐",
         "pb-id": "lv5240118",
+        "link": "http://www.baidu.com",
         "name": "oneDayTour"
     }, {
         "title": "景酒套餐",
         "pb-id": "lv5237285",
+        "link": "http://www.baidu.com",
         "name": "sceneryHotel"
     }, {
         "title": "海外景点",
         "pb-id": "lv5237286",
+        "link": "http://www.baidu.com",
         "name": "foreign"
     }, {
         "title": "小众景点",
         "pb-id": "lv5237287",
+        "link": "http://www.baidu.com",
         "name": "ctrip"
     }],
     "share": {
