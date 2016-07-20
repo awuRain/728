@@ -200,6 +200,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
+            isMainMeetingOrderChanged = 0,
             activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
 
         me.tpl_layout = tpl;
@@ -219,6 +220,18 @@ var App = {
             me.mainMeetingOrder.length = 0;
         }
 
+        // 预热期结束后 修改分会场卡片数量为10
+        if (me.cacheData.now >= new Date(me.cacheData.pageConfig.mainMeeting.introEndDate) - 0) {
+            _cardNum = 10;
+        } else {
+            _cardNum = 2;
+        }
+
+        me.mainMeetingOrder.forEach(function(item, index) {
+            item.cardNum = _cardNum;
+            me.baseOrder_Key[item.id] = item;
+        });
+
         for (var i = 0, len = me.mainMeetingOrder.length; i < len; i++) { //调整分会场顺序
             _item = $.extend(me.mainMeetingOrder[i]);
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
@@ -229,6 +242,7 @@ var App = {
                     className: 'section-item-top'
                 }));
                 me.mainMeetingOrder.splice(i + 1, 1);
+                isMainMeetingOrderChanged = 1; //标记分会场顺序已经改变过
                 break;
             }
         }
@@ -262,17 +276,6 @@ var App = {
 
             arr_innerHtml.push(me.createSection(_item));
         }
-
-console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0);
-        if (me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0) {
-            _cardNum = 10;
-        } else {
-            _cardNum = 2;
-        }
-        me.mainMeetingOrder.forEach(function(item, index) {
-            item.cardNum = _cardNum;
-            me.baseOrder_Key[item.id] = item;
-        });
 
         html = Juicer($('#tpl-layout').html(), {
             cacheData: me.cacheData,
@@ -706,14 +709,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('fixpriceDataReady');
-                var _start_time = me.cacheData.fixPrice[me.cacheData.sid].start_time ? me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 : 0,
-                    _end_time = me.cacheData.fixPrice[me.cacheData.sid].end_time ? me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000 : 0;
 
-                // 未到8.6抢购时间
-                if ((me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
-                    $('#fixPrice').removeClass('show').addClass('hide');
-                    $('<div class="J-placeholder-fixPrice-empty" />').insertAfter('#fixPrice');
-                }
                 deferred.resolve();
             };
 
@@ -761,12 +757,14 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
             html = '',
-            mainMeeting = me.cacheData.fixPrice || {},
-            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {};
+            fixPrice = me.cacheData.fixPrice || {},
+            fixPrice_sid = fixPrice[me.cacheData.sid] || {},
+            _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
+            _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
 
-        if ($.isEmptyObject(mainMeeting_sid)) {
+        if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
             $('#' + _settings.id).removeClass('show').addClass('hide');
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#fixPrice');
+            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
             return me;
         }
 
@@ -788,7 +786,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                         type: _settings['type'],
                         cardNum: _settings['cardNum'],
                         // direction: 'vertical',
-                        data: mainMeeting_sid.list || [],
+                        data: fixPrice_sid.list || [],
                         createFlag: function(status) {
                             var text, className;
                             if (status == 0) {
@@ -807,8 +805,10 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
             })
         });
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
@@ -885,9 +885,11 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             promotionList_sid_list = promotionList_sid.list || [],
             show_tab1, show_tab2, html;
 
+        me.tpl_promotionList = tpl;
+
         if (promotionList_sid_list.length == 0) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').removeClass('show').addClass('hide');
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
 
@@ -933,9 +935,9 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
             })
         });
-        me.tpl_promotionList = tpl;
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         $('.J-loading').removeClass('show').addClass('hide');
         $(me).trigger('promotionListReady')
             .trigger('dataLoaded', [{
@@ -1030,8 +1032,8 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             };
 
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
-            $('#' + _settings.id).removeClass('show').addClass('hide')
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            // !$('.J-placeholder-' + _settings.id + '-empty').length && $('.J-placeholder-' + _settings.id + '-empty').insertAfter($('#' + _settings.id));
             return me;
         }
 
@@ -1063,9 +1065,9 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
             })
         });
-        $('#' + _settings.id).removeClass('hide').addClass('show');
         $('.J-placeholder-' + _settings.id).html(html);
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
@@ -1629,6 +1631,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 onScrollStop: function(element) {
                     var id = $(element).attr('id'),
                         sectionType = $(element).attr('section-type');
+                    console.log('sectionType:', sectionType);
                     if (sectionType == 'mainMeeting') { //渲染分会场
                         me.renderMainMeeting(me.baseOrder_Key[id]);
                     } else if (sectionType == 'promotionList') {
@@ -1719,6 +1722,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
 
             }
             $('.section-item').unlazyelement();
+            $('.section-item').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
