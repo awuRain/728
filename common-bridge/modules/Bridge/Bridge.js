@@ -19,8 +19,8 @@ function Bridge(){
 $.extend(Bridge.prototype, {
 
     //所有异步接口可以取该前缀，调试的时候统一修改
-    // host: "http://cp01-qa-lvyou-001.cp01.baidu.com:8080/",
-    host: "http://lvyou.baidu.com/",
+    host: "http://cp01-qa-lvyou-001.cp01.baidu.com:8080/",
+    // host: "http://lvyou.baidu.com/",
 
     /**
      * 页面路由，页面名称的配置参数
