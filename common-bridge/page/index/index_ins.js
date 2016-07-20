@@ -8,7 +8,7 @@ var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
 
-console.log(2223);
+console.log(9922);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -256,17 +256,17 @@ var App = {
                 }
             }
 
-            // if (_item.id == 'mainMeeting') { //组织分会场
-            //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-            //     me.mainMeetingOrder.forEach(function(jtem, jndex) {
-            //         pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-            //         jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
-            //         jtem.activeDate = pageConfigItem.activeDate;
-            //         me.baseOrder_Key[jtem.id] = jtem;
-            //         _arr_innerHtml.push(me.createSection(jtem));
-            //     });
-            //     _item.innerHtml = _arr_innerHtml.join('');
-            // }
+            if (_item.id == 'mainMeeting') { //组织分会场
+                _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+                me.mainMeetingOrder.forEach(function(jtem, jndex) {
+                    pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
+                    jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
+                    jtem.activeDate = pageConfigItem.activeDate;
+                    me.baseOrder_Key[jtem.id] = jtem;
+                    _arr_innerHtml.push(me.createSection(jtem));
+                });
+                _item.innerHtml = _arr_innerHtml.join('');
+            }
             arr_innerHtml.push(me.createSection(_item));
         }
 
@@ -333,7 +333,7 @@ var App = {
         // $.getJSON('http://lvyou.baidu.com/event/s/dw_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
         //     t: T
         // });
-
+    
         return deferred;
     },
     initReady: function(opts) {
@@ -1229,8 +1229,7 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderPlayFlower()
-            .renderSubSessionTab();
+            .renderPlayFlower();
 
         // final-test
 
@@ -1475,6 +1474,12 @@ var App = {
         // banner = me.cacheData.pageConfig.banner || {},
         // banner_show = banner.pic && banner.pic.length ? 1 : 0;
 
+        var bannerList = [
+            { "mainTitle": "北京分会场", "subTitle": "我就是副标题", "url": "http://baidu.com" },
+            { "mainTitle": "杭州分会场", "subTitle": "他就是副标题", "url": "http://baidu.com" },
+            { "mainTitle": "美丽分会场", "subTitle": "谁就是副标题", "url": "http://baidu.com" }
+        ];
+
         $('.J-placeholder-jumpBnr').remove();
         // if (me.cacheData.channel.name == 'map_scope' || !banner_show) {
         //     $('.J-placeholder-jumpBnr-rb').remove();
@@ -1483,7 +1488,8 @@ var App = {
         // 
         html = Juicer($('#tpl-playflower').html(), {
                 cacheData: me.cacheData,
-                activeInfo: ACTIVEINFO
+                activeInfo: ACTIVEINFO,
+                bannerList: bannerList
             })
             // $('.J-placeholder-jumpBnr').html(html);
         $('.J-placeholder-playflower').html(html);
@@ -1610,18 +1616,20 @@ var App = {
             me.pageTabItemShow(_data);
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
             var list = [],
-                current = me.cacheData.mainMeeting[me.cacheData.sid];
-            me.mainMeetingOrder.forEach(function(item, index) {
-                if (current[item.id]) {
-                    list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
+                current = [];
+            for(var i in me.cacheData.mainMeeting) {
+               current = me.cacheData.mainMeeting[i];
+            }
+            me.mainMeetingOrder.forEach(function (item, index) {
+                if(current[item.id]) {
+                    list.push($.extend({}, me.cacheData.pageConfig[item.id], {"id": item.id}));
                 }
             });
             me.cacheData.currentOrder = list;
 
-            console.log('me.cacheData.currentOrder:', me.cacheData.currentOrder);
-
             me.renderPageTab();
-            
+            me.renderSubSessionTab();
+
             $('.section-item').lazyelement({
                 threshold: 200,
                 supportAsync: !0,

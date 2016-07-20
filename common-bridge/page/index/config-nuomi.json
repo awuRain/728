@@ -1,5 +1,5 @@
 {
-    "headerPic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+    "headerPic": "http://hiphotos.baidu.com/baidu/pic/item/b8389b504fc2d56227f4399aef1190ef77c66ccd.jpg",
     "coupon": {
         "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
         "is_open": "1",
@@ -57,10 +57,29 @@
         "pb-id": ""
     },
     "playflower": {
+        "list": [
+            {
+                "title": "北京分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com"
+            }, {
+                "title": "天津分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com"
+            }, {
+                "title": "上海分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com"
+            }
+        ],
         "subTitle": "playflower",
         "pb-id": ""
     },
     "scene_hotel": {
+        "title": "景酒分会场",
         "subTitle": "scene_hotel111",
         "activeDate": "2016-07-15",
         "showBtmBanner": 0,
@@ -69,6 +88,7 @@
         "pb-id": "bbb"
     },
     "baby": {
+        "title": "亲子分会场",
         "subTitle": "baby111",
         "activeDate": "2016-07-16",
         "showBtmBanner": 0,
@@ -77,6 +97,7 @@
         "pb-id": "bbb"
     },
     "qixi": {
+        "title": "七夕分会场",
         "subTitle": "qixi111",
         "activeDate": "2016-07-17",
         "showBtmBanner": 0,
@@ -85,6 +106,7 @@
         "pb-id": "bbb"
     },
     "slow_life": {
+        "title": "慢生活分会场",
         "subTitle": "slow_life111",
         "activeDate": "2016-07-18",
         "showBtmBanner": 0,
@@ -93,6 +115,7 @@
         "pb-id": "bbb"
     },
     "olympic": {
+        "title": "奥林匹克分会场",
         "subTitle": "olympic111",
         "activeDate": "2016-07-19",
         "showBtmBanner": 0,
@@ -101,6 +124,7 @@
         "pb-id": "bbb"
     },
     "scenic": {
+        "title": "景区分会场",
         "subTitle": "scenic111",
         "activeDate": "2016-07-20",
         "showBtmBanner": 0,
