@@ -43,20 +43,17 @@ fis.config.merge({
         'pkg/modules-combine.js': [
             '/modules/**.js'
         ],
-        'pkg/page-combine.js': [
-            '/page/**.js'
+        'pkg/widgets-combine.js': [
+            '/widgets/**.js'
+        ],
+        'pkg/index-combine.js': [
+            '/page/index/**.js'
         ]
     },
     deploy: {
         remote: [{
             receiver: deploy + '/static/receiver.php',
-            from: '/static',
-            subOnly: true,
-            to: '/home/lv/webroot/event/s/728_promotion_m/static',
-            exclude: /.*\.(?:svn|cvs|tar|rar|psd).*/
-        }, {
-            receiver: deploy + '/static/receiver.php',
-            from: '/page',
+            from: '/',
             subOnly: true,
             to: '/home/lv/webroot/event/s/728_promotion_m/',
             exclude: /.*\.(?:svn|cvs|tar|rar|psd).*/
@@ -70,24 +67,10 @@ fis.config.set('roadmap.path', [{
     release: '/static/pkg/$1',
     url: '/event/s/728_promotion_m/static/pkg/$1'
 }, {
-    //图片
-    reg: /^\/page\/(.*\.(?:png|gif|webp|jpg))$/i,
-    isMod: false,
-    release: '/page/$1',
-    url: '/event/s/728_promotion_m/$1'
-}, {
-    reg: /^\/page\/(.*)\.(?:css|less)$/i,
-    release: '/page/$1' + '.css',
-    url: '/event/s/728_promotion_m/$1' + '.css',
-}, {
-    //page目录下的其他文件
-    reg: /^\/page\/(.*)\.(js)$/i,
-    //是组件化的，会被jswrapper包装
+    reg: /^\/page\/(.*\.*)$/i,
     isMod: true,
-    //id是去掉modules和.js后缀中间的部分
-    id: '$1',
-    release: '/page/$1' + '.js',
-    url: '/event/s/728_promotion_m/$1' + '.js'
+    release: '/$1',
+    url: '/event/s/728_promotion_m/$1'
 }, {
     reg: /^\/lib\/(.*\.js)$/i,
     //非组件化
