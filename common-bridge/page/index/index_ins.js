@@ -151,7 +151,8 @@ var App = {
         meeting: '景酒',
         attrs: {
             'section-type': 'mainMeeting'
-        }
+        },
+        cardNum: 6
     }, {
         id: 'baby',
         title: '亲子分会场',
@@ -159,7 +160,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 6
     }, {
         id: 'qixi',
         title: '七夕专题',
@@ -167,7 +169,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 6
     }, {
         id: 'slow_life',
         title: '慢生活专题',
@@ -175,7 +178,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 6
     }, {
         id: 'olympic',
         title: '奥运专题',
@@ -183,7 +187,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
+        type: 'link',
+        cardNum: 6
     }, {
         id: 'scenic',
         title: '名胜古迹',
@@ -191,7 +196,8 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi'
+        type: 'poi',
+        cardNum: 6
     }],
     renderLayout: function(opts) { //组织分会场顺序
         var me = this,
@@ -200,7 +206,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
+            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _activeTime, _endTime;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
@@ -212,7 +218,7 @@ var App = {
         //     me.baseOrder.splice(1, 1);
         // }
 
-        me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
+        me.mainMeetingOrder_cp = $.extend({}, me.mainMeetingOrder);
 
         if (me.cacheData.channel.name == 'map_scope') {
             me.baseOrder.splice(2, 1);
@@ -240,10 +246,13 @@ var App = {
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
+            _activeTime, _endTime;
 
             if (_activeDate && _endDate) {
+                _activeTime = new Date(_activeDate) - 0;
+                _endTime = new Date(_endDate) - 0;
 
-                if (!(me.cacheData.now >= new Date(_activeDate) - 0 && new Date(_endDate) - 0 > me.cacheData.now)) {
+                if (!(me.cacheData.now >= _activeTime && _endTime > me.cacheData.now)) {
                     continue;
                 }
             }
@@ -263,14 +272,7 @@ var App = {
             arr_innerHtml.push(me.createSection(_item));
         }
 
-console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0);
-        if (me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0) {
-            _cardNum = 10;
-        } else {
-            _cardNum = 2;
-        }
         me.mainMeetingOrder.forEach(function(item, index) {
-            item.cardNum = _cardNum;
             me.baseOrder_Key[item.id] = item;
         });
 
@@ -706,11 +708,8 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('fixpriceDataReady');
-                var _start_time = me.cacheData.fixPrice[me.cacheData.sid].start_time ? me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 : 0,
-                    _end_time = me.cacheData.fixPrice[me.cacheData.sid].end_time ? me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000 : 0;
-
                 // 未到8.6抢购时间
-                if ((me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
+                if (me.cacheData.now < me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 && me.cacheData.now >= me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000) {
                     $('#fixPrice').removeClass('show').addClass('hide');
                     $('<div class="J-placeholder-fixPrice-empty" />').insertAfter('#fixPrice');
                 }
@@ -762,7 +761,21 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             _settings = opts || {},
             html = '',
             mainMeeting = me.cacheData.fixPrice || {},
-            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {};
+            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {},
+            createFlag = function(status) {
+                var text, className;
+                if (status == 0) {
+                    text = '即将开始';
+                    className = 'flag-comming';
+                } else if (status == 1) {
+                    text = '抢购中';
+                    className = 'flag-discount';
+                } else if (status == 2) {
+                    text = '抢购结束';
+                    className = 'flag-past';
+                }
+                return '<em class="' + className + '">' + text + '</em>'
+            };
 
         if ($.isEmptyObject(mainMeeting_sid)) {
             $('#' + _settings.id).removeClass('show').addClass('hide');
@@ -789,20 +802,9 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                         cardNum: _settings['cardNum'],
                         // direction: 'vertical',
                         data: mainMeeting_sid.list || [],
-                        createFlag: function(status) {
-                            var text, className;
-                            if (status == 0) {
-                                text = '即将开始';
-                                className = 'flag-comming';
-                            } else if (status == 1) {
-                                text = '抢购中';
-                                className = 'flag-discount';
-                            } else if (status == 2) {
-                                text = '抢购结束';
-                                className = 'flag-past';
-                            }
-                            return '<em class="' + className + '">' + text + '</em>'
-                        }
+                        flags: [
+                            // createFlag(me.cacheData.promotionList[me.cacheData.sid].list[0].status)
+                        ],
                     })
                 }
             })
@@ -956,7 +958,6 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 type: _settings.type || '',
                 cardNum: _settings.cardNum || 6,
                 renderFor: _settings.renderFor || '',
-                createFlag: _settings.createFlag
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1040,8 +1041,6 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
         // me.reSizeImg({
         //     type: 'baby'
         // });
-
-        console.log('_settings.cardNum:', _settings.cardNum, _settings);
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
@@ -1254,12 +1253,17 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
 
         var me = this,
             html = '';
+
         var currentOrder = me.mainMeetingOrder_cp;
+        console.log("currentOrder:");
+        console.log(currentOrder);
 
         me.getNowTime({
             callback: function() {
                 var now = moment(me.cacheData.now),
                     list = [];
+
+                console.log(now);
 
                 for (var i in currentOrder) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
@@ -1269,12 +1273,11 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                     }
                 }
 
-                if (list.length < 3) {
-                    list = currentOrder.slice(-3);
-                }
-
-                for (var i in list) {
-                    list[i] = me.cacheData.pageConfig[list[i].id];
+                function sliceObj (obj, index) {
+                    var list = [];
+                    for(var i = index; i < obj.length; i++) {
+                        list.push(obj[i]);
+                    }
                 }
 
                 html = Juicer($('#tpl-calendar').html(), {
@@ -1282,6 +1285,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                     list: list
                 });
                 $('.J-placeholder-calendar').html(html);
+
 
                 function setUlWidth() {
                     setTimeout(function() {
@@ -1293,6 +1297,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                         ulWidth += parseInt($('.calendar .date-list li').css('width').replace('px')) / 2;
                         $('.calendar .date-list ul').css('width', ulWidth);
                     }, 100);
+
                 }
 
                 setUlWidth();
@@ -1303,6 +1308,56 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             }
         });
         return me;
+        // function getDateScope (now, from, to, size) {
+
+        //     var list = [],
+        //         from = moment2Str(moment(from).subtract(1, 'day')),
+        //         to = moment2Str(moment(to).add(1, 'day')),
+        //         date = now;
+
+        //     if (!now.isBetween(from, to, 'day')) {
+        //         for (var i = size; i > 0; i--) {
+        //             list.push((moment2Str(moment(to).subtract(i, 'day'), '.', true)));
+        //         }   
+        //         return list;
+        //     }
+
+        //     while (!date.isSame(to, 'day')) {
+        //         list.push((moment2Str(date, '.', true)));
+        //         date = date.add(1, 'd');
+        //     }
+
+        //     if (size) {
+        //         if (list.length < size) {
+        //             list = [];
+        //             for (var i = size; i > 0; i--) {
+        //                 list.push(moment2Str(moment(to).subtract(i, 'day'), '.', true));
+        //             }                    
+        //         }
+        //     }
+
+        //     return list;
+        // }
+
+        // function moment2Str (momentObj, separator, short) {
+        //     var separator = separator || '-';
+        //     var str = momentObj.year() + separator + ((momentObj.month()+1) >= 10 ? (momentObj.month()+1) : '0' + (momentObj.month()+1)) + separator + ((momentObj.date()) >= 10 ? (momentObj.date()) : '0' + (momentObj.date()))
+        //     if (short == true) {
+        //         // 没有对十月后的进行适应，先这样吧
+        //         str = str.slice(6);
+        //     }
+        //     return str;
+        // }
+
+        // function countDays (from, now) {
+        //     var i = 0;
+        //     while (!from.isSame(now, 'day')) {
+        //         i++;
+        //         from = from.add(1, 'd');
+        //     }
+        //     console.log(i);
+        //     return i;
+        // }
     },
 
     renderHeader: function() { //渲染header
@@ -1453,22 +1508,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             activeInfo: ACTIVEINFO
         });
         $('.J-placeholder-page-tab').html(html);
-
-        setUlWidth();
-
         return me;
-
-        function setUlWidth() {
-            setTimeout(function() {
-                var ulWidth = 0;
-                $('.page-tab .tab-list li').each(function(i, it) {
-                    ulWidth += parseInt($(it).css('width').replace('px', ''));
-                });
-                // ulWidth += parseInt($('.section-item-calendar .date-list li').css('width').replace('px'));
-                ulWidth += parseInt($('.page-tab .tab-list li').css('width').replace('px')) / 3;
-                $('.page-tab .tab-list ul').css('width', ulWidth);
-            }, 100);
-        }
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
         var me = this,
@@ -1561,7 +1601,6 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 pageConfigItem;
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
-                item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
                 if (current[item.id]) {
                     list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
                 }
@@ -1572,7 +1611,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
 
             me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
-                item = $.extend({}, me.baseOrder_Key[item.id], item);
+                item = $.extend(me.baseOrder_Key[item.id], item);
                 pageConfigItem = me.cacheData.pageConfig[item.id] || {};
                 item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
                 item.activeDate = pageConfigItem.activeDate;
