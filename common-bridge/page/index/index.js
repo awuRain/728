@@ -1256,53 +1256,29 @@ var App = {
 
         var me = this,
             html = '';
-
-        // var from = Calendar.from,
-        //     to = Calendar.to,
-        //     activitynameList = Calendar.activitynameList;
-
-        var baseOrder = [{
-            id: 'scene_hotel',
-            title: '景酒日游专题',
-            meeting: '景酒',
-            activeDate: '2016-07-16'
-        }, {
-            id: 'baby',
-            title: '亲子专题',
-            meeting: '亲自',
-            activeDate: '2016-07-17'
-        }, {
-            id: 'qixi',
-            title: '七夕专题',
-            meeting: '七夕',
-            activeDate: '2016-07-18'
-        }, {
-            id: 'slow_life',
-            title: '慢生活专题',
-            meeting: '慢生活',
-            activeDate: '2016-07-19'
-        }, {
-            id: 'olympic',
-            title: '奥运专题',
-            meeting: '奥运',
-            activeDate: '2016-07-20'
-        }, {
-            id: 'scenic',
-            title: '名胜古迹',
-            meeting: '名胜',
-            activeDate: '2016-07-21'
-        }];
-
-        var list = baseOrder;
+        var currentOrder = me.mainMeetingOrder_cp;
+        console.log("currentOrder:");
+        console.log(currentOrder);
 
         me.getNowTime({
             callback: function() {
-                var now = moment.unix(me.cacheData.now),
+                var now = moment(me.cacheData.now),
                     list = [];
-                for (var i in list) {
-                    var to = list[i].activeDate;
+
+                console.log(now);
+
+                for (var i in currentOrder) {
+                    var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                     if (now.isSame(to, 'day')) {
-                        var list = list.slice(i);
+                        list = currentOrder.slice(i);
+                        break;
+                    }
+                }
+
+                function sliceObj (obj, index) {
+                    var list = [];
+                    for(var i = index; i < obj.length; i++) {
+                        list.push(obj[i]);
                     }
                 }
 
@@ -1592,7 +1568,7 @@ var App = {
         var me = this,
             _params = $.extend({}, me.params),
             loadTimes = 0,
-            $targetPlaceholder = $('.J-placeholder').eq(3),
+            $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0),
             _scrollTimer = null,
             $win = $(window),
             winHeight = $win.height();
@@ -1705,8 +1681,10 @@ var App = {
                     }
                 });
 
-                var height = $('.J-page-tab').offset().height;
-                $('.tab-holder').css('height', height);
+                if ($('.J-page-tab').offset()) {
+                    var height = $('.J-page-tab').offset().height;
+                    $('.tab-holder').css('height', height);
+                }
 
                 if (scrollTop >= targetTop) {
                     $('.J-page-tab').addClass('active');
