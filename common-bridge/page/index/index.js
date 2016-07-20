@@ -1287,10 +1287,9 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                     setTimeout(function() {
                         var ulWidth = 0;
                         $('.calendar .date-list li').each(function(i, it) {
-                            ulWidth += parseInt($(it).css('width').replace('px', ''));
+                            ulWidth += $(it).offset().width;
                         });
-                        // ulWidth += parseInt($('.section-item-calendar .date-list li').css('width').replace('px'));
-                        ulWidth += parseInt($('.calendar .date-list li').css('width').replace('px')) / 2;
+                        ulWidth += $('.calendar .date-list li').offset().width / 2;
                         $('.calendar .date-list ul').css('width', ulWidth);
                     }, 100);
                 }
@@ -1462,10 +1461,9 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             setTimeout(function() {
                 var ulWidth = 0;
                 $('.page-tab .tab-list li').each(function(i, it) {
-                    ulWidth += parseInt($(it).css('width').replace('px', ''));
+                    ulWidth += $(it).offset().width;
                 });
-                // ulWidth += parseInt($('.section-item-calendar .date-list li').css('width').replace('px'));
-                ulWidth += parseInt($('.page-tab .tab-list li').css('width').replace('px')) / 3;
+                ulWidth += $('.page-tab .tab-list li').offset().width / 3;
                 $('.page-tab .tab-list ul').css('width', ulWidth);
             }, 100);
         }
