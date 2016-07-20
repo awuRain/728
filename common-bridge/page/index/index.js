@@ -200,7 +200,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _activeTime, _endTime;
+            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
 
         me.tpl_layout = tpl;
         me.baseOrder_Key = {};
@@ -240,25 +240,13 @@ var App = {
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
-            _introEndDate = pageConfigItem.introEndDate;
-            _activeTime, _endTime;
 
             if (_activeDate && _endDate) {
-                _activeTime = new Date(_activeDate) - 0;
-                _endTime = new Date(_endDate) - 0;
 
-                if (!(me.cacheData.now >= _activeTime && _endTime > me.cacheData.now)) {
+                if (!(me.cacheData.now >= new Date(_activeDate) - 0 && new Date(_endDate) - 0 > me.cacheData.now)) {
                     continue;
                 }
             }
-
-            if (me.cacheData.now >= _introEndDate) {
-                _item.cardNum = 10;
-            } else {
-                _item.cardNum = 2;
-            }
-
-            console.log('_item:', _item);
 
             // if (_item.id == 'mainMeeting') { //组织分会场
             //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
@@ -275,7 +263,14 @@ var App = {
             arr_innerHtml.push(me.createSection(_item));
         }
 
+console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0);
+        if (me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0) {
+            _cardNum = 10;
+        } else {
+            _cardNum = 2;
+        }
         me.mainMeetingOrder.forEach(function(item, index) {
+            item.cardNum = _cardNum;
             me.baseOrder_Key[item.id] = item;
         });
 
@@ -713,6 +708,7 @@ var App = {
                 $(me).trigger('fixpriceDataReady');
                 var _start_time = me.cacheData.fixPrice[me.cacheData.sid].start_time ? me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 : 0,
                     _end_time = me.cacheData.fixPrice[me.cacheData.sid].end_time ? me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000 : 0;
+
                 // 未到8.6抢购时间
                 if ((me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
                     $('#fixPrice').removeClass('show').addClass('hide');
@@ -1277,9 +1273,9 @@ var App = {
                     }
                 }
 
-                function sliceObj (obj, index) {
+                function sliceObj(obj, index) {
                     var list = [];
-                    for(var i = index; i < obj.length; i++) {
+                    for (var i = index; i < obj.length; i++) {
                         list.push(obj[i]);
                     }
                 }
@@ -1606,7 +1602,6 @@ var App = {
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
-                console.log('-----------item:', item);
                 if (current[item.id]) {
                     list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
                 }

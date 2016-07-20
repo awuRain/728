@@ -42,8 +42,6 @@
         for(var attr in settings.attrs){
             arr_attrs.push(attr + '=' + settings.attrs[attr])
         }
-
-        console.log(pageConfig_id);
     %>
     <section class="section-item section-item-${settings.id} ${settings.className}" id="${settings.id}" ${arr_attrs.join(' ')}>
         <div class="section-item-hd">
@@ -79,10 +77,9 @@
             default: className = '';
         }
         
-        console.log('cardNum:',cardNum);
-        
+        {# console.log('cardNum:',cardNum);
         console.log('renderFor:',renderFor);
-        {# console.log('pageConfig:',pageConfig_id.limitNum);
+        console.log('pageConfig:',pageConfig_id.limitNum);
         console.log('direction:',direction);
         console.log('type:',type);
         console.log('data:',data);
@@ -115,7 +112,9 @@
                     case 'onedaytour': className = 'J-onedaytour'; break;
                     case 'scenehotel': className = 'J-scenehotel'; break;
                 }
-                item.status && (flags = createFlag(item.status));
+                if(renderFor == 'fixPrice'){
+                    flags = item.status ? [createFlag(item.status)] : [];
+                }
             %>
             {@if index < cardNum}
                 <li>
