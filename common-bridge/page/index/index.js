@@ -8,7 +8,7 @@ var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
 
-console.log(9921);
+console.log(2223);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
