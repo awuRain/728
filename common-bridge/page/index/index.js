@@ -193,25 +193,11 @@ var App = {
         },
         type: 'poi'
     }],
-    renderLayout: function(opts) { //组织分会场顺序
+    setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
-            tpl = me.tpl_layout || $('#tpl-layout').html(),
-            _settings = opts || {},
-            arr_innerHtml = [],
-            html = '',
-            nowDate = new Date(me.cacheData.now),
-            isMainMeetingOrderChanged = 0,
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
+            _item, pageConfigItem, _activeDate, _cardNum;
 
-        me.tpl_layout = tpl;
         me.baseOrder_Key = {};
-
-        // activeDate = new Date(me.baseOrder[1].activeDate);
-        // endDate = new Date(me.baseOrder[1].endDate);
-
-        // if (me.cacheData.now < activeDate || me.cacheData.now > endDate) { //未到模块展现时间,折扣模块不会被渲染
-        //     me.baseOrder.splice(1, 1);
-        // }
 
         me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
 
@@ -243,37 +229,57 @@ var App = {
                     className: 'section-item-top'
                 }));
                 me.mainMeetingOrder.splice(i + 1, 1);
-                isMainMeetingOrderChanged = 1; //标记分会场顺序已经改变过
                 break;
             }
         }
 
+        return me;
+    },
+    renderLayout: function(opts) { //组织分会场顺序
+        var me = this,
+            tpl = me.tpl_layout || $('#tpl-layout').html(),
+            _settings = opts || {},
+            arr_innerHtml = [],
+            html = '',
+            _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, cacheData_id, cacheData_id_sid, cacheData_id_sid_list, _start_time, _end_time;
+
+        me.tpl_layout = tpl;
+
+        me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
+
         for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
             _item = $.extend(me.baseOrder[i]);
-            me.baseOrder_Key[_item.id] = _item;
+            !me.baseOrder_Key[_item.id] && (me.baseOrder_Key[_item.id] = _item);
+            _item.className = _item.className ? _item.className + ' J-section-item-loc' : ' J-section-item-loc';
             _arr_innerHtml = [];
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
 
-            if (_activeDate && _endDate) {
+            if (_item.id == 'promotionList' || _item.id == 'fixPrice') {
+                cacheData_id = me.cacheData[_item.id] || {};
+                cacheData_id_sid = cacheData_id[me.cacheData.sid] || {};
+                cacheData_id_sid_list = cacheData_id_sid.list || [];
 
+                //缓存的数据不存在或列表为空
+                if ($.isEmptyObject(cacheData_id_sid) || !cacheData_id_sid_list.length) {
+                    continue;
+                }
+                //8.6折扣未开始或已结束
+                if (_item.id == 'fixPrice') {
+                    _start_time = cacheData_id_sid.start_time ? cacheData_id_sid.start_time * 1000 : 0;
+                    _end_time = cacheData_id_sid.end_time ? cacheData_id_sid.end_time * 1000 : 0;
+                    if (!_start_time || !_end_time || (me.cacheData.now < new Date(_start_time) - 0 && me.cacheData.now >= new Date(_end_time) - 0)) {
+                        continue;
+                    }
+                }
+            }
+
+            if (_activeDate && _endDate) {
                 if (!(me.cacheData.now >= new Date(_activeDate) - 0 && new Date(_endDate) - 0 > me.cacheData.now)) {
                     continue;
                 }
             }
-
-            // if (_item.id == 'mainMeeting') { //组织分会场
-            //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-            //     me.mainMeetingOrder.forEach(function(jtem, jndex) {
-            //         pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-            //         jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
-            //         jtem.activeDate = pageConfigItem.activeDate;
-            //         me.baseOrder_Key[jtem.id] = jtem;
-            //         _arr_innerHtml.push(me.createSection(jtem));
-            //     });
-            //     _item.innerHtml = _arr_innerHtml.join('');
-            // }
 
             arr_innerHtml.push(me.createSection(_item));
         }
@@ -286,7 +292,13 @@ var App = {
             }
         });
 
-        $(html).prependTo('.J-page');
+        if ($('.J-section-item-loc').length) {
+            $('<div class="J-placeholder-layout" />').insertAfter($('.J-section-item-loc').eq(0));
+            $('.J-section-item-loc').remove();
+        }
+
+        $('.J-placeholder-layout').replaceWith(html);
+
         arr_innerHtml.length = 0;
 
         return me;
@@ -313,14 +325,24 @@ var App = {
             me.cacheData.pageConfig = res || {};
             me.getNowTime().then(function() {
                 me.cacheData = me.getCacheDataFromSession();
-                return me.renderLayout();
-            }).then(function() {
-                me.renderBase()
+                me.setLayoutData();
+                me.renderBase();
                 me.initReady({
                     pageConfig: res || PAGETEXT,
                     is_init: 1
                 });
             });
+            // me.getNowTime().then(function() {
+            //     me.cacheData = me.getCacheDataFromSession();
+            //     return me.renderLayout();
+            // }).then(function() {
+            //     me.renderBase()
+            //     return me;
+            //     me.initReady({
+            //         pageConfig: res || PAGETEXT,
+            //         is_init: 1
+            //     });
+            // });
             deferred.resolve();
         });
 
@@ -708,7 +730,9 @@ var App = {
         me.getPromotionList().always(function() {
             return me.getFixprice()
         }).always(function() {
-            return me.getMainMeeting()
+            if (me.cacheData.channel.name == 'nuomi') {
+                return me.getMainMeeting()
+            }
         });
 
         return me;
@@ -773,12 +797,11 @@ var App = {
             fixPrice_sid = fixPrice[me.cacheData.sid] || {},
             _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
             _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
-
-        if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
-            $('#' + _settings.id).removeClass('show').addClass('hide');
-            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
-            return me;
-        }
+        // if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
+        //     $('#' + _settings.id).removeClass('show').addClass('hide');
+        //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+        //     return me;
+        // }
 
         me.tpl_mainMeeting = tpl;
 
@@ -815,9 +838,9 @@ var App = {
         });
 
         $('.J-placeholder-' + _settings.id).html(html);
-        $('#' + _settings.id).removeClass('hide').addClass('show');
+        // $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
-        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
@@ -897,11 +920,11 @@ var App = {
 
         me.tpl_promotionList = tpl;
 
-        if (promotionList_sid_list.length == 0) {
-            $('#' + _settings.id).removeClass('show').addClass('hide');
-            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
-            return me;
-        }
+        // if (promotionList_sid_list.length == 0) {
+        //     $('#' + _settings.id).removeClass('show').addClass('hide');
+        //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
+        //     return me;
+        // }
 
         show_tab1 = me.cacheData.now >= promotionList_sid_list[0].start_time * 1000 ? 1 : 0;
         show_tab2 = !show_tab1 ? 1 : 0;
@@ -946,9 +969,9 @@ var App = {
             })
         });
         $('.J-placeholder-' + _settings.id).html(html);
-        $('#' + _settings.id).removeClass('hide').addClass('show');
+        // $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
-        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $('.J-loading').removeClass('show').addClass('hide');
         $(me).trigger('promotionListReady')
             .trigger('dataLoaded', [{
@@ -1243,6 +1266,16 @@ var App = {
     },
     renderBase: function() { //渲染不需要依赖地理位置的基础模块
         var me = this;
+
+        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+            cacheData: me.cacheData,
+            data: {
+                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
+            }
+        })).insertAfter('.J-placeholder-layout');
+
+        me.baseOrder.length -= 1;
+
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
@@ -1266,7 +1299,7 @@ var App = {
 
         var now = moment(me.cacheData.now),
             list = [];
-            
+
         for (var i in currentOrder) {
             var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
             if (now.isSame(to, 'day')) {
@@ -1560,6 +1593,8 @@ var App = {
                 _arr_innerHtml = [],
                 pageConfigItem;
 
+            me.renderLayout();
+
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
                 if (current[item.id] && current[item.id].list.length) {
@@ -1600,24 +1635,23 @@ var App = {
             });
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
             console.log('promotionListReady');
-            $('.section-item').lazyelement({
-                threshold: 200,
-                supportAsync: !0,
-                onScrollStop: function(element) {
-                    var id = $(element).attr('id'),
-                        sectionType = $(element).attr('section-type');
-                    if (sectionType == 'mainMeeting') { //渲染分会场
-                        me.renderMainMeeting(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'promotionList') {
-                        me.renderPromotionList(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'fixPrice') {
-                        me.renderfixPrice(me.baseOrder_Key[id]);
-                    }
-                }
-            });
+            // $('.section-item').lazyelement({
+            //     threshold: 200,
+            //     supportAsync: !0,
+            //     onScrollStop: function(element) {
+            //         var id = $(element).attr('id'),
+            //             sectionType = $(element).attr('section-type');
+            //         if (sectionType == 'mainMeeting') { //渲染分会场
+            //             me.renderMainMeeting(me.baseOrder_Key[id]);
+            //         } else if (sectionType == 'promotionList') {
+            //             me.renderPromotionList(me.baseOrder_Key[id]);
+            //         } else if (sectionType == 'fixPrice') {
+            //             me.renderfixPrice(me.baseOrder_Key[id]);
+            //         }
+            //     }
+            // });
         }).on('fixPriceDataReady', function() {
             console.log('fixPriceDataReady');
-
         });
 
         // $(".img-box img").lazyload({
@@ -1629,6 +1663,10 @@ var App = {
         $(window).on('scroll', function() { //页面内导航的显示/隐藏
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
+                $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
+                if (!$targetPlaceholder.length) {
+                    return me;
+                }
                 var scrollTop = $('body').scrollTop(),
                     targetTop = $targetPlaceholder.offset().top;
 
@@ -1671,7 +1709,6 @@ var App = {
 
             }
             $('.section-item').unlazyelement();
-            $('.section-item').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
