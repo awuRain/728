@@ -112,8 +112,6 @@ var App = {
                 me.cacheData.channel.name = 'nuomi';
             }
 
-            // me.cacheData = me.getCacheDataFromSession();
-
             me.getPageConfig();
         });
 
@@ -580,17 +578,17 @@ var App = {
     getCacheDataFromSession: function() { //从 session 中获取缓存数据
         var me = this;
 
-        // var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '',
-        //     cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : {},
-        //     cacheNow_time = new Date(cacheData.now),
-        //     rightNow_time = new Date(me.cacheData.now);
+        var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '',
+            cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : {},
+            cacheNow_time = new Date(cacheData.now),
+            rightNow_time = new Date(me.cacheData.now);
 
-        // if (cacheData.now) {
-        //     //同一天多次打开页面时,使用缓存过的数据
-        //     if (rightNow_time.getFullYear() + rightNow_time.getDate() + rightNow_time.getMonth() == cacheNow_time.getFullYear() + cacheNow_time.getDate() + cacheNow_time.getMonth()) {
-        //         me.cacheData = cacheData;
-        //     }
-        // }
+        if (cacheData.now) {
+            //1小时内多次打开页面时,使用缓存过的数据
+            if ((rightNow_time - cacheNow_time) / 1000 / 60 / 60 <= 1) {
+                me.cacheData = cacheData;
+            }
+        }
 
         return me.cacheData;
     },
@@ -737,7 +735,7 @@ var App = {
 
         return me;
     },
-    getFixprice: function() { //获取爆款折扣
+    getFixprice: function() { //获取8.6爆款折扣
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
@@ -788,7 +786,7 @@ var App = {
         });
         return deferred;
     },
-    renderFixprice: function(opts) { //获取爆款折扣
+    renderFixprice: function(opts) { //渲染8.6爆款折扣
         var me = this,
             tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
@@ -829,6 +827,11 @@ var App = {
                             } else if (status == 2) {
                                 text = '抢购结束';
                                 className = 'flag-past';
+                            } else if (status == 3) {
+                                text = '抢购结束';
+                                className = 'flag-past';
+                            } else {
+                                return
                             }
                             return '<em class="' + className + '">' + text + '</em>'
                         }
@@ -847,7 +850,7 @@ var App = {
 
         return me;
     },
-    getPromotionList: function() { //获取折扣列表
+    getPromotionList: function() { //获取7折爆款列表
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
@@ -895,7 +898,7 @@ var App = {
         });
         return deferred;
     },
-    renderPromotionList: function(opts) { //渲染爆款抢购区域
+    renderPromotionList: function(opts) { //渲染7折爆款列表
         var me = this,
             tpl = me.tpl_promotionList || $('#tpl-promotionList').html(),
             _settings = opts || {},
@@ -1583,7 +1586,7 @@ var App = {
             me.renderProvinceSelect()
                 .loadDataRelyonLoc({
                     is_init: 1
-                })
+                });
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
             // me.pageTabItemShow(_data);
@@ -1684,7 +1687,7 @@ var App = {
                 $('.J-page-tab').removeClass('active');
                 $('.J-btn-toTop').removeClass('active');
                 $('.tab-holder').removeClass('active', height);
-            }, 100);
+            }, 0);
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
@@ -1917,7 +1920,7 @@ var App = {
     App.init();
 
     var baseSize = 16,
-        baseWidth = 320,
+        baseWidth = 375,
         width = $('body').width(),
         size = baseSize;
     size = baseSize * width / baseWidth;

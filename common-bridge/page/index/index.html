@@ -120,6 +120,9 @@
                 } else {
                     flags = [createFlag(renderFor)] || [];
                 }
+                if(renderFor == 'promotionList'){
+                    max_price = max_price || 0;
+                }
             %>
             {@if index < cardNum}
                 <li>
@@ -159,15 +162,15 @@
                                 {@/if}
                                 <div class="price-wrap">
                                     {@if direction == 'vertical'}
-                                        <span class="price price-now price-floor"><em>${current_price}</em></span>
+                                        <span class="price price-now price-floor price-font16"><em><strong>${current_price}</strong></em></span>
                                         {@if type == 'onedaytour' || type == 'scenehotel'}
                                             <button class="btn-buy">抢购</button>
                                         {@else}
-                                            <span class="price price-original price-marketPrice price-font10"><em>${market_price}</em></span>
+                                            <span class="price price-original price-marketPrice price-font10"><em><strong>${market_price}</strong></em></span>
                                         {@/if}
                                     {@else}
-                                        <span class="price price-now price-discount"><em>${current_price}</em></span>
-                                        <span class="price price-original price-originalPrice"><em>${market_price}</em></span>
+                                        <span class="price price-now price-discount price-font20"><em><strong>${current_price}</strong></em></span>
+                                        <span class="price price-original price-originalPrice"><strong>${market_price}</strong></span>
                                         <!-- <span class="price price-now"><em>10</em></span>
                                             <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
                                             <span class="price price-now price-nounit price-floor"><em>10</em></span>
