@@ -264,6 +264,11 @@ var App = {
                         continue;
                     }
                 }
+                //限量抢
+                if (_item.id == 'promotionList') {
+                    _item.discount = cacheData_id_sid.discount || '';
+                    _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
+                }
             }
 
             if (_activeDate && _endDate) {
@@ -579,7 +584,7 @@ var App = {
         if (cacheData.now) {
             //1小时内多次打开页面时,使用缓存过的数据
             if ((rightNow_time - cacheNow_time) / 1000 / 60 / 60 <= 1) {
-                me.cacheData = cacheData;
+                // me.cacheData = cacheData;
             }
         }
 
@@ -1344,7 +1349,7 @@ var App = {
         for (var i in headerPics) {
             if (now.isSame(headerPics[i].activeDate, 'day')) {
                 var pic = headerPics[i].pic;
-            }            
+            }
         }
 
         html = Juicer($('#tpl-header').html(), {
@@ -1411,9 +1416,9 @@ var App = {
 
         $('.J-placeholder-jumpBnr').remove();
         html = Juicer($('#tpl-playflower2').html(), {
-                cacheData: me.cacheData,
-                activeInfo: ACTIVEINFO
-            })
+            cacheData: me.cacheData,
+            activeInfo: ACTIVEINFO
+        })
         $('.J-placeholder-playflower2').html(html);
         return me;
     },
@@ -1606,21 +1611,21 @@ var App = {
             _scrollTimer = setTimeout(function() {
                 $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
                 var scrollTop = $('body').scrollTop(),
-                    lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),           
+                    lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),
                     left = 0;
                 $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
                     var $item = $(item);
                     if ((!$item.next('.section-item-inner').offset()) || (scrollTop >= $item.offset().top && scrollTop < $item.next('.section-item-inner').offset().top)) {
                         lastId = $item.attr('id');
                         $('.page-tab .tab-list .tab-' + lastId).addClass('active').siblings('li').removeClass('active');
-                        $('.page-tab .tab-list').scrollLeft(left-10);
+                        $('.page-tab .tab-list').scrollLeft(left - 10);
                         return false;
                     } else {
                         $('.page-tab .tab-list li').eq(0).addClass('active').siblings('li').removeClass('active');
                     }
                     left += $('.page-tab .tab-list .tab-' + lastId).offset().width;
                 });
-                
+
                 if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
                     var targetTop = $targetPlaceholder.offset().top;
                     var height = $('.J-page-tab').offset().height;
