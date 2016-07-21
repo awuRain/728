@@ -112,7 +112,7 @@ var App = {
                 me.cacheData.channel.name = 'nuomi';
             }
 
-            me.cacheData = me.getCacheDataFromSession();
+            // me.cacheData = me.getCacheDataFromSession();
 
             me.getPageConfig();
         });
@@ -200,6 +200,7 @@ var App = {
             arr_innerHtml = [],
             html = '',
             nowDate = new Date(me.cacheData.now),
+            isMainMeetingOrderChanged = 0,
             activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
 
         me.tpl_layout = tpl;
@@ -219,6 +220,18 @@ var App = {
             me.mainMeetingOrder.length = 0;
         }
 
+        // 预热期结束后 修改分会场卡片数量为10
+        if (me.cacheData.now >= new Date(me.cacheData.pageConfig.mainMeeting.introEndDate) - 0) {
+            _cardNum = 10;
+        } else {
+            _cardNum = 6;
+        }
+
+        me.mainMeetingOrder.forEach(function(item, index) {
+            item.cardNum = _cardNum;
+            me.baseOrder_Key[item.id] = item;
+        });
+
         for (var i = 0, len = me.mainMeetingOrder.length; i < len; i++) { //调整分会场顺序
             _item = $.extend(me.mainMeetingOrder[i]);
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
@@ -229,6 +242,7 @@ var App = {
                     className: 'section-item-top'
                 }));
                 me.mainMeetingOrder.splice(i + 1, 1);
+                isMainMeetingOrderChanged = 1; //标记分会场顺序已经改变过
                 break;
             }
         }
@@ -262,17 +276,6 @@ var App = {
 
             arr_innerHtml.push(me.createSection(_item));
         }
-
-console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0);
-        if (me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].introEndDate) - 0) {
-            _cardNum = 10;
-        } else {
-            _cardNum = 2;
-        }
-        me.mainMeetingOrder.forEach(function(item, index) {
-            item.cardNum = _cardNum;
-            me.baseOrder_Key[item.id] = item;
-        });
 
         html = Juicer($('#tpl-layout').html(), {
             cacheData: me.cacheData,
@@ -308,6 +311,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
         }, function(res) {
             me.cacheData.pageConfig = res || {};
             me.getNowTime().then(function() {
+                me.cacheData = me.getCacheDataFromSession();
                 return me.renderLayout();
             }).then(function() {
                 me.renderBase()
@@ -468,63 +472,61 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
         });
         return me;
     },
-    lazyLoadImg: function(wrap, callback) {
+    createSoftImg: function(wrap, callback) { //根据容器尺寸创建自适应居中的图片
         var me = this;
+
         $(wrap).find('.img-wrap').each(function(index, item) {
-            var src = $(this).find('img').attr('src') || '';
-            if (src.length) {
+            var $img = $(item).find('img'),
+                url = $img.attr("data-src"),
+                tempPic = new Image();
+
+            if ($img.attr('src').length) {
                 return me;
             }
-            var url = $(item).attr("data-purl");
-            var tempPic = new Image();
+
             tempPic.onload = function() {
                 var tempObj = {
                     width: tempPic.width,
                     height: tempPic.height
                 };
-                item.innerHTML = lite.createImage(false, url, tempObj.width, tempObj.height, $(item).width() + 1, $(item).height(), false, true);
+
+                $img.replaceWith(lite.createImage(false, url, tempObj.width, tempObj.height, $(item).width() + 1, $(item).height(), false, true));
             };
+
             tempPic.src = url;
         });
+
         callback && callback();
+
         return me;
     },
     reSizeImg: function(opts) {
         var me = this,
             _settings = opts || {},
-            type = _settings.type || 'promotionList',
-            data, ctripList, promotionList;
-        // return me;
+            type = _settings.type || 'promotionList';
+
         if (type == 'promotionList') {
-            data = me.cacheData.promotionList[me.cacheData.sid] || {};
-            ctripList = data.ctripList || {};
-            promotionList = data.promotionList || {};
-            $.each(promotionList.list || [], function(indx, item) {
-                item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=710&height=450&quality=100&align=middle,middle&src=' + item['picUrl'];
+            console.log('promotionList:', me.cacheData.promotionList[me.cacheData.sid]);
+            // data = me.cacheData.promotionList[me.cacheData.sid] || {};
+            // ctripList = data.ctripList || {};
+            // promotionList = data.promotionList || {};
+            // $.each(promotionList.list || [], function(indx, item) {
+            //     item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=710&height=450&quality=100&align=middle,middle&src=' + item['picUrl'];
+            // });
+        } else if (type == 'fixPrice') {
+            console.log('fixPrice:', me.cacheData.fixPrice[me.cacheData.sid]);
+            data = me.cacheData.fixPrice[me.cacheData.sid] || {};
+            $.each(data.list || [], function(indx, item) {
+                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic'];
             });
-        } else if (type == 'ticket') {
-            $.each(me.cacheData.ticket, function(indx, item) {
-                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['pic'];
-            });
-        } else if (type == 'sceneryHotel') {
-            $.each(me.cacheData.sceneryHotel, function(indx, item) {
-                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['pic'];
-            });
-        } else if (type == 'oneDayTour') {
-            $.each(me.cacheData.oneDayTour, function(indx, item) {
-                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['pic'];
-            });
-        } else if (type == 'ctrip') {
-            $.each(me.cacheData.ctrip[me.cacheData.ctrip_pn], function(indx, item) {
-                item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['picUrl'];
-            });
-        } else if (type == 'foreign') {
-            $.each(me.cacheData.foreign[me.cacheData.foreign_pn], function(indx, item) {
-                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['pic'];
-            });
-        } else if (type == 'autotrophy') {
-            $.each(me.cacheData.autotrophy[me.cacheData.sid].autotrophy_pn, function(indx, item) {
-                item['image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=240&height=150&quality=100&align=middle,middle&src=' + item['image'];
+        } else if (type == 'mainMeeting') {
+            console.log('mainMeeting:', me.cacheData.mainMeeting[me.cacheData.sid]);
+            data = me.cacheData.mainMeeting[me.cacheData.sid] || {};
+            $.each(data, function(id, item) {
+                $.each(item.list || [], function(index, card) {
+                    card['pic'] && (card['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic']);
+                    card['image'] && (card['image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['image']);
+                });
             });
         }
 
@@ -555,8 +557,17 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
     getCacheDataFromSession: function() { //从 session 中获取缓存数据
         var me = this;
 
-        // var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '';
-        // me.cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : me.cacheData;
+        // var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '',
+        //     cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : {},
+        //     cacheNow_time = new Date(cacheData.now),
+        //     rightNow_time = new Date(me.cacheData.now);
+
+        // if (cacheData.now) {
+        //     //同一天多次打开页面时,使用缓存过的数据
+        //     if (rightNow_time.getFullYear() + rightNow_time.getDate() + rightNow_time.getMonth() == cacheNow_time.getFullYear() + cacheNow_time.getDate() + cacheNow_time.getMonth()) {
+        //         me.cacheData = cacheData;
+        //     }
+        // }
 
         return me.cacheData;
     },
@@ -564,7 +575,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
         var me = this;
 
         setTimeout(function() {
-            // sessionStorage.setItem('me.cacheData.' + me.cacheData.channel.name, JSON.stringify(me.cacheData));
+            sessionStorage.setItem('me.cacheData.' + me.cacheData.channel.name, JSON.stringify(me.cacheData));
         }, 0);
 
         return me.cacheData;
@@ -706,14 +717,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('fixpriceDataReady');
-                var _start_time = me.cacheData.fixPrice[me.cacheData.sid].start_time ? me.cacheData.fixPrice[me.cacheData.sid].start_time * 1000 : 0,
-                    _end_time = me.cacheData.fixPrice[me.cacheData.sid].end_time ? me.cacheData.fixPrice[me.cacheData.sid].end_time * 1000 : 0;
 
-                // 未到8.6抢购时间
-                if ((me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
-                    $('#fixPrice').removeClass('show').addClass('hide');
-                    $('<div class="J-placeholder-fixPrice-empty" />').insertAfter('#fixPrice');
-                }
                 deferred.resolve();
             };
 
@@ -736,17 +740,20 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 t: T
             }, me.params),
             success: function(res) {
-                console.log('res', res);
                 if (res.errno != 0) {
                     Bridge.toast('爆款折扣:' + res.msg);
                     deferred.reject();
                     return deferred;
                 }
+
                 me.cacheData.fixPrice[me.cacheData.sid] = res.data || null;
+
+                me.reSizeImg({
+                    type: 'fixPrice'
+                });
+
                 me.setCacheDataToSession();
-                // me.reSizeImg({
-                //     type: 'promotionList'
-                // });
+
                 _dataReady();
             },
             fail: function() {
@@ -761,20 +768,18 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
             html = '',
-            mainMeeting = me.cacheData.fixPrice || {},
-            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {};
+            fixPrice = me.cacheData.fixPrice || {},
+            fixPrice_sid = fixPrice[me.cacheData.sid] || {},
+            _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
+            _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
 
-        if ($.isEmptyObject(mainMeeting_sid)) {
+        if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
             $('#' + _settings.id).removeClass('show').addClass('hide');
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#fixPrice');
+            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
             return me;
         }
 
         me.tpl_mainMeeting = tpl;
-
-        // me.reSizeImg({
-        //     type: 'baby'
-        // });
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
@@ -788,7 +793,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                         type: _settings['type'],
                         cardNum: _settings['cardNum'],
                         // direction: 'vertical',
-                        data: mainMeeting_sid.list || [],
+                        data: fixPrice_sid.list || [],
                         createFlag: function(status) {
                             var text, className;
                             if (status == 0) {
@@ -807,8 +812,11 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
             })
         });
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
@@ -848,11 +856,12 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
                 me.cacheData.promotionList[me.cacheData.sid] = res.data || null;
 
+                me.reSizeImg({
+                    type: 'promotionList'
+                });
+
                 me.setCacheDataToSession();
 
-                // me.reSizeImg({
-                //     type: 'promotionList'
-                // });
                 _dataReady();
             },
             fail: function() {
@@ -885,9 +894,11 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             promotionList_sid_list = promotionList_sid.list || [],
             show_tab1, show_tab2, html;
 
+        me.tpl_promotionList = tpl;
+
         if (promotionList_sid_list.length == 0) {
-            $('.J-placeholder-' + _settings.id).parents('.section-item').removeClass('show').addClass('hide');
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('.J-placeholder-' + _settings.id).parents('.section-item'));
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
             return me;
         }
 
@@ -933,9 +944,10 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                 }
             })
         });
-        me.tpl_promotionList = tpl;
-        $('.J-placeholder-' + _settings.id).html(html).parents('.section-item').removeClass('hide').addClass('show');
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         $('.J-loading').removeClass('show').addClass('hide');
         $(me).trigger('promotionListReady')
             .trigger('dataLoaded', [{
@@ -995,6 +1007,10 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
 
                 me.cacheData.mainMeeting[me.cacheData.sid] = res.data || null;
 
+                me.reSizeImg({
+                    type: 'mainMeeting'
+                });
+
                 me.setCacheDataToSession();
 
                 _dataReady();
@@ -1013,35 +1029,15 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             html = '',
             mainMeeting = me.cacheData.mainMeeting || {},
             mainMeeting_sid = me.cacheData.mainMeeting[me.cacheData.sid] || {},
-            mainMeeting_sid_id = mainMeeting_sid[_settings.id] || {},
-            createFlag = function(status) {
-                var text, className;
-                if (status == 0) {
-                    text = '即将开始';
-                    className = 'flag-comming';
-                } else if (status == 1) {
-                    text = '抢购中';
-                    className = 'flag-discount';
-                } else if (status == 2) {
-                    text = '抢购结束';
-                    className = 'flag-past';
-                }
-                return '<em class="' + className + '">' + text + '</em>'
-            };
+            mainMeeting_sid_id = mainMeeting_sid[_settings.id] || {};
 
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
-            $('#' + _settings.id).removeClass('show').addClass('hide')
-            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            // !$('.J-placeholder-' + _settings.id + '-empty').length && $('.J-placeholder-' + _settings.id + '-empty').insertAfter($('#' + _settings.id));
             return me;
         }
 
         me.tpl_mainMeeting = tpl;
-
-        // me.reSizeImg({
-        //     type: 'baby'
-        // });
-
-        console.log('_settings.cardNum:', _settings.cardNum, _settings);
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
@@ -1056,16 +1052,27 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
                         cardNum: _settings['cardNum'],
                         direction: 'vertical',
                         data: mainMeeting_sid_id.list || [],
-                        flags: [
-                            // createFlag(me.cacheData.promotionList[me.cacheData.sid].list[0].status)
-                        ]
+                        createFlag: function(renderFor) {
+                            var text, className;
+                            if (renderFor == 'scene_hotel') {
+                                text = '热销';
+                            } else {
+                                if (me.cacheData.pageConfig.showFlagDiscount != 1) {
+                                    return;
+                                }
+                                text = '随机立减';
+                            }
+                            className = 'flag-discount';
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
                     })
                 }
             })
         });
-        $('#' + _settings.id).removeClass('hide').addClass('show');
         $('.J-placeholder-' + _settings.id).html(html);
-        $('<div class="J-placeholder-' + _settings.id + '-empty" />').remove();
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
@@ -1256,51 +1263,48 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             html = '';
         var currentOrder = me.mainMeetingOrder_cp;
 
-        me.getNowTime({
-            callback: function() {
-                var now = moment(me.cacheData.now),
-                    list = [];
+        var now = moment(me.cacheData.now),
+            list = [];
 
-                for (var i in currentOrder) {
-                    var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                    if (now.isSame(to, 'day')) {
-                        list = currentOrder.slice(i);
-                        break;
-                    }
-                }
-
-                if (list.length < 3) {
-                    list = currentOrder.slice(-3);
-                }
-
-                for (var i in list) {
-                    list[i] = me.cacheData.pageConfig[list[i].id];
-                }
-
-                html = Juicer($('#tpl-calendar').html(), {
-                    cacheData: me.cacheData,
-                    list: list
-                });
-                $('.J-placeholder-calendar').html(html);
-
-                function setUlWidth() {
-                    setTimeout(function() {
-                        var ulWidth = 0;
-                        $('.calendar .date-list li').each(function(i, it) {
-                            ulWidth += $(it).offset().width;
-                        });
-                        ulWidth += $('.calendar .date-list li').offset().width / 2;
-                        $('.calendar .date-list ul').css('width', ulWidth);
-                    }, 100);
-                }
-
-                setUlWidth();
-
-                $(window).on('resize', function() {
-                    setUlWidth();
-                });
+        for (var i in currentOrder) {
+            var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
+            if (now.isSame(to, 'day')) {
+                list = currentOrder.slice(i);
+                break;
             }
+        }
+
+        if (list.length < 3) {
+            list = currentOrder.slice(-3);
+        }
+
+        for (var i in list) {
+            list[i] = me.cacheData.pageConfig[list[i].id];
+        }
+
+        html = Juicer($('#tpl-calendar').html(), {
+            cacheData: me.cacheData,
+            list: list
         });
+        $('.J-placeholder-calendar').html(html);
+
+        function setUlWidth() {
+            setTimeout(function() {
+                var ulWidth = 0;
+                $('.calendar .date-list li').each(function(i, it) {
+                    ulWidth += $(it).offset().width;
+                });
+                ulWidth += $('.calendar .date-list li').offset().width / 2;
+                $('.calendar .date-list ul').css('width', ulWidth);
+            }, 100);
+        }
+
+        setUlWidth();
+
+        $(window).on('resize', function() {
+            setUlWidth();
+        });
+
         return me;
     },
 
@@ -1349,17 +1353,14 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             ]
         };
 
-        me.getNowTime({
-            callback: function() {
-                var now = moment.unix(me.cacheData.now);
-                for (var i in header.dateScopes) {
-                    if (isInDateScope(now, header.dateScopes[i].from, header.dateScopes[i].to)) {
-                        console.log(header.dateScopes[i].img);
-                        break;
-                    }
-                }
+        var now = moment.unix(me.cacheData.now);
+
+        for (var i in header.dateScopes) {
+            if (isInDateScope(now, header.dateScopes[i].from, header.dateScopes[i].to)) {
+                console.log(header.dateScopes[i].img);
+                break;
             }
-        });
+        }
 
         html = Juicer($('#tpl-header').html(), {
             cacheData: me.cacheData
@@ -1560,7 +1561,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
-                if (current[item.id]) {
+                if (current[item.id] && current[item.id].list.length) {
                     list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
                 }
             });
@@ -1629,14 +1630,6 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
             _scrollTimer = setTimeout(function() {
                 var scrollTop = $('body').scrollTop(),
                     targetTop = $targetPlaceholder.offset().top;
-                $('.J-placeholder').each(function(index, item) {
-                    var _top = $(item).offset().top;
-                    if (_top - winHeight <= scrollTop) {
-                        me.lazyLoadImg($(item)); //图片懒加载
-                        me.lazyLoadImg($(item).next()); //图片懒加载
-                        // return false;
-                    }
-                });
 
                 if ($('.J-page-tab').offset()) {
                     var height = $('.J-page-tab').offset().height;
@@ -1677,6 +1670,7 @@ console.log(me.cacheData.now >= new Date(me.cacheData.pageConfig[_item.id].intro
 
             }
             $('.section-item').unlazyelement();
+            $('.section-item').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
