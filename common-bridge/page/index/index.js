@@ -1629,23 +1629,22 @@ var App = {
         $(window).on('scroll', function() { //页面内导航的显示/隐藏
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
-                var scrollTop = $('body').scrollTop(),
-                    targetTop = $targetPlaceholder.offset().top;
-
-                if ($('.J-page-tab').offset()) {
+                var scrollTop = $('body').scrollTop();
+                if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
+                    var targetTop = $targetPlaceholder.offset().top;
                     var height = $('.J-page-tab').offset().height;
                     $('.tab-holder').css('height', height);
-                }
 
-                if (scrollTop >= targetTop) {
-                    $('.J-page-tab').addClass('active');
-                    $('.J-btn-toTop').addClass('active');
-                    $('.tab-holder').addClass('active', height);
-                    return me;
+                    if (scrollTop >= targetTop) {
+                        $('.J-page-tab').addClass('active');
+                        $('.J-btn-toTop').addClass('active');
+                        $('.tab-holder').addClass('active', height);
+                        return me;
+                    }
+                    $('.J-page-tab').removeClass('active');
+                    $('.J-btn-toTop').removeClass('active');
+                    $('.tab-holder').removeClass('active', height);
                 }
-                $('.J-page-tab').removeClass('active');
-                $('.J-btn-toTop').removeClass('active');
-                $('.tab-holder').removeClass('active', height);
             }, 100);
         });
 
@@ -1689,9 +1688,9 @@ var App = {
                 });
                 return false;
             }
-            if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
-                return false;
-            }
+            // if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
+            //     return false;
+            // }
             me.getDiscount({
                 id: id
             });
