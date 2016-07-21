@@ -324,9 +324,10 @@
 <script type="text/template" id="tpl-header">
     <%
         var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel;
+            channel = cacheData.channel,
+            pic = pic || "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png";
     %>
-    <header class="flex flex-align-center" style="background-image:url(${pageConfig.headerPic})">
+    <header class="flex flex-align-center" style="background-image:url(${pic})">
         <p class="btn-help"><span class="J-btn-help">活动规则</span></p>
     </header>
 </script>
