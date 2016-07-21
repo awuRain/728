@@ -1,5 +1,5 @@
 {
-    "headerPic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+    "headerPic": "http://hiphotos.baidu.com/baidu/pic/item/b8389b504fc2d56227f4399aef1190ef77c66ccd.jpg",
     "coupon": {
         "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
         "is_open": "1",
@@ -57,8 +57,27 @@
         "pb-id": ""
     },
     "playflower": {
-        "subTitle": "playflower",
-        "pb-id": ""
+        "list": [
+            {
+                "title": "北京分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
+            }, {
+                "title": "天津分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
+            }, {
+                "title": "上海分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
+            }
+        ]
     },
     "pageTab": [{
         "title": "领取红包",

@@ -112,8 +112,6 @@ var App = {
                 me.cacheData.channel.name = 'nuomi';
             }
 
-            // me.cacheData = me.getCacheDataFromSession();
-
             me.getPageConfig();
         });
 
@@ -146,32 +144,25 @@ var App = {
         }
     }],
     mainMeetingOrder: [{
-        id: 'scene_hotel',
-        title: '景酒一日游专题',
-        meeting: '景酒',
-        attrs: {
-            'section-type': 'mainMeeting'
-        }
-    }, {
-        id: 'baby',
-        title: '亲子分会场',
-        meeting: '亲子分会场',
+        id: 'scenic',
+        title: '名胜专场',
+        meeting: '名胜',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
-    }, {
-        id: 'qixi',
-        title: '七夕专题',
-        meeting: '七夕',
-        attrs: {
-            'section-type': 'mainMeeting'
-        },
-        type: 'link'
+        type: 'poi'
     }, {
         id: 'slow_life',
         title: '慢生活专题',
         meeting: '慢生活',
+        attrs: {
+            'section-type': 'mainMeeting'
+        },
+        type: 'link'
+    }, {
+        id: 'baby',
+        title: '亲子分会场',
+        meeting: '亲子分会场',
         attrs: {
             'section-type': 'mainMeeting'
         },
@@ -185,33 +176,26 @@ var App = {
         },
         type: 'link'
     }, {
-        id: 'scenic',
-        title: '名胜古迹',
-        meeting: '名胜',
+        id: 'qixi',
+        title: '七夕专题',
+        meeting: '七夕',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi'
+        type: 'link'
+    }, {
+        id: 'scene_hotel',
+        title: '景酒一日游专题',
+        meeting: '景酒',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
     }],
-    renderLayout: function(opts) { //组织分会场顺序
+    setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
-            tpl = me.tpl_layout || $('#tpl-layout').html(),
-            _settings = opts || {},
-            arr_innerHtml = [],
-            html = '',
-            nowDate = new Date(me.cacheData.now),
-            isMainMeetingOrderChanged = 0,
-            activeDate, endDate, _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, _introEndDate, _cardNum;
+            _item, pageConfigItem, _activeDate, _cardNum;
 
-        me.tpl_layout = tpl;
         me.baseOrder_Key = {};
-
-        // activeDate = new Date(me.baseOrder[1].activeDate);
-        // endDate = new Date(me.baseOrder[1].endDate);
-
-        // if (me.cacheData.now < activeDate || me.cacheData.now > endDate) { //未到模块展现时间,折扣模块不会被渲染
-        //     me.baseOrder.splice(1, 1);
-        // }
 
         me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
 
@@ -243,37 +227,57 @@ var App = {
                     className: 'section-item-top'
                 }));
                 me.mainMeetingOrder.splice(i + 1, 1);
-                isMainMeetingOrderChanged = 1; //标记分会场顺序已经改变过
                 break;
             }
         }
 
+        return me;
+    },
+    renderLayout: function(opts) { //组织分会场顺序
+        var me = this,
+            tpl = me.tpl_layout || $('#tpl-layout').html(),
+            _settings = opts || {},
+            arr_innerHtml = [],
+            html = '',
+            _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, cacheData_id, cacheData_id_sid, cacheData_id_sid_list, _start_time, _end_time;
+
+        me.tpl_layout = tpl;
+
+        me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
+
         for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
             _item = $.extend(me.baseOrder[i]);
-            me.baseOrder_Key[_item.id] = _item;
+            !me.baseOrder_Key[_item.id] && (me.baseOrder_Key[_item.id] = _item);
+            _item.className = _item.className ? _item.className + ' J-section-item-loc' : ' J-section-item-loc';
             _arr_innerHtml = [];
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
             _activeDate = pageConfigItem.activeDate;
             _endDate = pageConfigItem.endDate;
 
-            if (_activeDate && _endDate) {
+            if (_item.id == 'promotionList' || _item.id == 'fixPrice') {
+                cacheData_id = me.cacheData[_item.id] || {};
+                cacheData_id_sid = cacheData_id[me.cacheData.sid] || {};
+                cacheData_id_sid_list = cacheData_id_sid.list || [];
 
+                //缓存的数据不存在或列表为空
+                if ($.isEmptyObject(cacheData_id_sid) || !cacheData_id_sid_list.length) {
+                    continue;
+                }
+                //8.6折扣未开始或已结束
+                if (_item.id == 'fixPrice') {
+                    _start_time = cacheData_id_sid.start_time ? cacheData_id_sid.start_time * 1000 : 0;
+                    _end_time = cacheData_id_sid.end_time ? cacheData_id_sid.end_time * 1000 : 0;
+                    if (!_start_time || !_end_time || (me.cacheData.now < new Date(_start_time) - 0 && me.cacheData.now >= new Date(_end_time) - 0)) {
+                        continue;
+                    }
+                }
+            }
+
+            if (_activeDate && _endDate) {
                 if (!(me.cacheData.now >= new Date(_activeDate) - 0 && new Date(_endDate) - 0 > me.cacheData.now)) {
                     continue;
                 }
             }
-
-            // if (_item.id == 'mainMeeting') { //组织分会场
-            //     _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-            //     me.mainMeetingOrder.forEach(function(jtem, jndex) {
-            //         pageConfigItem = me.cacheData.pageConfig[jtem.id] || {};
-            //         jtem.className = jtem.className ? jtem.className + ' section-item-inner' : ' section-item-inner';
-            //         jtem.activeDate = pageConfigItem.activeDate;
-            //         me.baseOrder_Key[jtem.id] = jtem;
-            //         _arr_innerHtml.push(me.createSection(jtem));
-            //     });
-            //     _item.innerHtml = _arr_innerHtml.join('');
-            // }
 
             arr_innerHtml.push(me.createSection(_item));
         }
@@ -286,7 +290,13 @@ var App = {
             }
         });
 
-        $(html).prependTo('.J-page');
+        if ($('.J-section-item-loc').length) {
+            $('<div class="J-placeholder-layout" />').insertAfter($('.J-section-item-loc').eq(0));
+            $('.J-section-item-loc').remove();
+        }
+
+        $('.J-placeholder-layout').replaceWith(html);
+
         arr_innerHtml.length = 0;
 
         return me;
@@ -313,14 +323,24 @@ var App = {
             me.cacheData.pageConfig = res || {};
             me.getNowTime().then(function() {
                 me.cacheData = me.getCacheDataFromSession();
-                return me.renderLayout();
-            }).then(function() {
-                me.renderBase()
+                me.setLayoutData();
+                me.renderBase();
                 me.initReady({
                     pageConfig: res || PAGETEXT,
                     is_init: 1
                 });
             });
+            // me.getNowTime().then(function() {
+            //     me.cacheData = me.getCacheDataFromSession();
+            //     return me.renderLayout();
+            // }).then(function() {
+            //     me.renderBase()
+            //     return me;
+            //     me.initReady({
+            //         pageConfig: res || PAGETEXT,
+            //         is_init: 1
+            //     });
+            // });
             deferred.resolve();
         });
 
@@ -558,17 +578,17 @@ var App = {
     getCacheDataFromSession: function() { //从 session 中获取缓存数据
         var me = this;
 
-        // var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '',
-        //     cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : {},
-        //     cacheNow_time = new Date(cacheData.now),
-        //     rightNow_time = new Date(me.cacheData.now);
+        var session_cacheStr = sessionStorage.getItem('me.cacheData.' + me.cacheData.channel.name) || '',
+            cacheData = session_cacheStr.length ? $.parseJSON(session_cacheStr) : {},
+            cacheNow_time = new Date(cacheData.now),
+            rightNow_time = new Date(me.cacheData.now);
 
-        // if (cacheData.now) {
-        //     //同一天多次打开页面时,使用缓存过的数据
-        //     if (rightNow_time.getFullYear() + rightNow_time.getDate() + rightNow_time.getMonth() == cacheNow_time.getFullYear() + cacheNow_time.getDate() + cacheNow_time.getMonth()) {
-        //         me.cacheData = cacheData;
-        //     }
-        // }
+        if (cacheData.now) {
+            //1小时内多次打开页面时,使用缓存过的数据
+            if ((rightNow_time - cacheNow_time) / 1000 / 60 / 60 <= 1) {
+                me.cacheData = cacheData;
+            }
+        }
 
         return me.cacheData;
     },
@@ -708,12 +728,14 @@ var App = {
         me.getPromotionList().always(function() {
             return me.getFixprice()
         }).always(function() {
-            return me.getMainMeeting()
+            if (me.cacheData.channel.name == 'nuomi') {
+                return me.getMainMeeting()
+            }
         });
 
         return me;
     },
-    getFixprice: function() { //获取爆款折扣
+    getFixprice: function() { //获取8.6爆款折扣
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
@@ -764,7 +786,7 @@ var App = {
         });
         return deferred;
     },
-    renderFixprice: function(opts) { //获取爆款折扣
+    renderFixprice: function(opts) { //渲染8.6爆款折扣
         var me = this,
             tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
@@ -773,12 +795,11 @@ var App = {
             fixPrice_sid = fixPrice[me.cacheData.sid] || {},
             _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
             _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
-
-        if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
-            $('#' + _settings.id).removeClass('show').addClass('hide');
-            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
-            return me;
-        }
+        // if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
+        //     $('#' + _settings.id).removeClass('show').addClass('hide');
+        //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+        //     return me;
+        // }
 
         me.tpl_mainMeeting = tpl;
 
@@ -806,6 +827,11 @@ var App = {
                             } else if (status == 2) {
                                 text = '抢购结束';
                                 className = 'flag-past';
+                            } else if (status == 3) {
+                                text = '抢购结束';
+                                className = 'flag-past';
+                            } else {
+                                return
                             }
                             return '<em class="' + className + '">' + text + '</em>'
                         }
@@ -815,16 +841,16 @@ var App = {
         });
 
         $('.J-placeholder-' + _settings.id).html(html);
-        $('#' + _settings.id).removeClass('hide').addClass('show');
+        // $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
-        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $(me).trigger('dataLoaded', [{
             name: _settings.id
         }]);
 
         return me;
     },
-    getPromotionList: function() { //获取折扣列表
+    getPromotionList: function() { //获取7折爆款列表
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
@@ -872,7 +898,7 @@ var App = {
         });
         return deferred;
     },
-    renderPromotionList: function(opts) { //渲染爆款抢购区域
+    renderPromotionList: function(opts) { //渲染7折爆款列表
         var me = this,
             tpl = me.tpl_promotionList || $('#tpl-promotionList').html(),
             _settings = opts || {},
@@ -897,11 +923,11 @@ var App = {
 
         me.tpl_promotionList = tpl;
 
-        if (promotionList_sid_list.length == 0) {
-            $('#' + _settings.id).removeClass('show').addClass('hide');
-            !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
-            return me;
-        }
+        // if (promotionList_sid_list.length == 0) {
+        //     $('#' + _settings.id).removeClass('show').addClass('hide');
+        //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
+        //     return me;
+        // }
 
         show_tab1 = me.cacheData.now >= promotionList_sid_list[0].start_time * 1000 ? 1 : 0;
         show_tab2 = !show_tab1 ? 1 : 0;
@@ -946,9 +972,9 @@ var App = {
             })
         });
         $('.J-placeholder-' + _settings.id).html(html);
-        $('#' + _settings.id).removeClass('hide').addClass('show');
+        // $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
-        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        // $('.J-placeholder-' + _settings.id + '-empty').remove();
         $('.J-loading').removeClass('show').addClass('hide');
         $(me).trigger('promotionListReady')
             .trigger('dataLoaded', [{
@@ -1243,6 +1269,16 @@ var App = {
     },
     renderBase: function() { //渲染不需要依赖地理位置的基础模块
         var me = this;
+
+        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+            cacheData: me.cacheData,
+            data: {
+                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
+            }
+        })).insertAfter('.J-placeholder-layout');
+
+        me.baseOrder.length -= 1;
+
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
@@ -1266,7 +1302,7 @@ var App = {
 
         var now = moment(me.cacheData.now),
             list = [];
-            
+
         for (var i in currentOrder) {
             var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
             if (now.isSame(to, 'day')) {
@@ -1313,38 +1349,6 @@ var App = {
         var me = this,
             html = '';
         // coupon_show = me.cacheData.pageConfig.coupon.is_open || 0;
-
-        var baseOrder = [{
-            id: 'scene_hotel',
-            title: '景酒日游专题',
-            meeting: '景酒',
-            activeDate: '2016-07-16'
-        }, {
-            id: 'baby',
-            title: '亲子专题',
-            meeting: '亲自',
-            activeDate: '2016-07-17'
-        }, {
-            id: 'qixi',
-            title: '七夕专题',
-            meeting: '七夕',
-            activeDate: '2016-07-18'
-        }, {
-            id: 'slow_life',
-            title: '慢生活专题',
-            meeting: '慢生活',
-            activeDate: '2016-07-19'
-        }, {
-            id: 'olympic',
-            title: '奥运专题',
-            meeting: '奥运',
-            activeDate: '2016-07-20'
-        }, {
-            id: 'scenic',
-            title: '名胜古迹',
-            meeting: '名胜',
-            activeDate: '2016-07-21'
-        }];
 
         var header = {
             dateScopes: [
@@ -1550,7 +1554,7 @@ var App = {
             me.renderProvinceSelect()
                 .loadDataRelyonLoc({
                     is_init: 1
-                })
+                });
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
             // me.pageTabItemShow(_data);
@@ -1559,6 +1563,8 @@ var App = {
                 current = me.cacheData.mainMeeting[me.cacheData.sid],
                 _arr_innerHtml = [],
                 pageConfigItem;
+
+            me.renderLayout();
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
@@ -1600,24 +1606,23 @@ var App = {
             });
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
             console.log('promotionListReady');
-            $('.section-item').lazyelement({
-                threshold: 200,
-                supportAsync: !0,
-                onScrollStop: function(element) {
-                    var id = $(element).attr('id'),
-                        sectionType = $(element).attr('section-type');
-                    if (sectionType == 'mainMeeting') { //渲染分会场
-                        me.renderMainMeeting(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'promotionList') {
-                        me.renderPromotionList(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'fixPrice') {
-                        me.renderfixPrice(me.baseOrder_Key[id]);
-                    }
-                }
-            });
+            // $('.section-item').lazyelement({
+            //     threshold: 200,
+            //     supportAsync: !0,
+            //     onScrollStop: function(element) {
+            //         var id = $(element).attr('id'),
+            //             sectionType = $(element).attr('section-type');
+            //         if (sectionType == 'mainMeeting') { //渲染分会场
+            //             me.renderMainMeeting(me.baseOrder_Key[id]);
+            //         } else if (sectionType == 'promotionList') {
+            //             me.renderPromotionList(me.baseOrder_Key[id]);
+            //         } else if (sectionType == 'fixPrice') {
+            //             me.renderfixPrice(me.baseOrder_Key[id]);
+            //         }
+            //     }
+            // });
         }).on('fixPriceDataReady', function() {
             console.log('fixPriceDataReady');
-
         });
 
         // $(".img-box img").lazyload({
@@ -1629,6 +1634,8 @@ var App = {
         $(window).on('scroll', function() { //页面内导航的显示/隐藏
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
+                $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
+
                 var scrollTop = $('body').scrollTop();
                 if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
                     var targetTop = $targetPlaceholder.offset().top;
@@ -1645,7 +1652,8 @@ var App = {
                     $('.J-btn-toTop').removeClass('active');
                     $('.tab-holder').removeClass('active', height);
                 }
-            }, 100);
+            }, 0);
+
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
@@ -1670,7 +1678,6 @@ var App = {
 
             }
             $('.section-item').unlazyelement();
-            $('.section-item').removeClass('hide').addClass('show');
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
@@ -1879,7 +1886,7 @@ var App = {
     App.init();
 
     var baseSize = 16,
-        baseWidth = 320,
+        baseWidth = 375,
         width = $('body').width(),
         size = baseSize;
     size = baseSize * width / baseWidth;

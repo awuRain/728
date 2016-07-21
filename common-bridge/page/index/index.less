@@ -129,7 +129,7 @@ body {
     margin: 100/750*100% 20/750*100%;
     font-size: 13/16rem;
     border-radius: 3/16rem;
-    border: 1px #a80010 solid;
+    border: 2px #a80010 solid;
     white-space: nowrap;
     z-index: 20;
     background: #fff000;
@@ -173,7 +173,7 @@ body {
     transition: all .1s;
     border: 2px @color-border-purple solid;
     border-radius: 4/16rem;
-    background: rgba(255, 255, 255, .8);
+    background: rgba(255, 255, 255, .85);
     overflow: hidden;
     .ticket-item-container {
         .flex;
@@ -182,7 +182,7 @@ body {
     }
     &.ticket-item-v {
         background: #fff;
-        padding: 15/355.032*100% 12/355.032*100%;
+        padding: 0 0 16/355.032*100%;
         .ticket-item-container {
             .flex-v;
         }
@@ -309,6 +309,7 @@ body {
         .ticket-title {
             font-size: 13/16rem;
             padding: 24/290*100% 0;
+            line-height: 1.2;
             em {
                 display: none;
             }
@@ -421,10 +422,15 @@ body {
             position: relative;
             float: left;
             margin-right: .3em;
-            em {
+            em,
+            strong {
                 display: inline-block;
                 vertical-align: bottom;
                 font-size: 13/16rem;
+                font-weight: normal;
+                font-style: normal;
+            }
+            em {
                 &:before {
                     display: inline-block;
                     vertical-align: bottom;
@@ -432,11 +438,16 @@ body {
                     line-height: .58;
                     content: '￥';
                     margin-left: -.2em;
-                    transform: translate3d(0, -.3px, 0);
+                    transform: translate3d(0, -30%, 0);
                 }
             }
+            strong {
+                display: inline-block;
+                vertical-align: bottom;
+                font-size: 13/16rem;
+            }
             &.price-discount {
-                margin-right: 53/16rem+.5em;
+                margin-right: 55/16rem+.5em;
                 &:after {
                     display: inline-block;
                     position: absolute;
@@ -444,12 +455,12 @@ body {
                     top: 50%;
                     content: '\20';
                     color: transparent;
-                    width: 53/16rem;
+                    width: 55/16rem;
                     height: 16/16rem;
                     margin-right: -.3em;
                     background: url(./img/price-discount.png) no-repeat;
                     background-size: auto 100%;
-                    transform: translate3d(100%, -60%, 0);
+                    transform: translate3d(100%, -55%, 0);
                 }
             }
             &.price-nounit {
@@ -472,6 +483,7 @@ body {
                         line-height: .8;
                         content: '起';
                         color: #999;
+                        transform: translate3d(0, -8%, 0);
                     }
                 }
             }
@@ -503,7 +515,7 @@ body {
                     margin-right: .4em;
                     content: '市场价';
                     color: #999;
-                    transform: translate3d(0, -.3px, 0);
+                    transform: translate3d(0, -8%, 0);
                 }
             }
             &.price-originalPrice {
@@ -518,6 +530,22 @@ body {
             &.price-font10 {
                 .fontSize(10, 0 100%);
                 margin-right: -.9em;
+            }
+            &.price-font16 {
+                strong {
+                    .fontSize(16, 50% 100%);
+                    // line-height: .7;
+                    margin-left: .3rem;
+                    margin-right: .3rem;
+                }
+            }
+            &.price-font20 {
+                strong {
+                    .fontSize(20, 50% 100%);
+                    line-height: .7;
+                    margin-left: .3rem;
+                    margin-right: .3rem;
+                }
             }
         }
     }
@@ -589,6 +617,7 @@ body {
     }
     .section-item-hd {
         text-align: center;
+        margin-bottom: 30/750*100%;
     }
     .section-item-bd {
         padding: 0 0 40/750*100%;
@@ -607,7 +636,7 @@ body {
         }
     }
     .section-item-subTitle {
-        margin: 0 auto 30/750*100%;
+        margin: 0 auto;
         span {
             display: inline-block;
             font-size: 15/16rem;
@@ -616,20 +645,20 @@ body {
     }
     .section-placeholder {
         width: 720/750*100%;
-        margin: 0 auto;
+        margin: 0 auto 40/750*100%;
         .flex;
         &:before,
         &:after {
             .flex-1;
             display: block;
-            padding-bottom: 220/360*100%;
-            margin-right: 5/360*100%;
+            padding-bottom: 192/360*100%;
+            margin-right: 7.5/2/360*100%;
             content: '\20';
             border-radius: 4/16rem;
             background: rgba(0, 0, 0, .3);
         }
         &:after {
-            margin-left: 5/360*100%;
+            margin-left: 7.5/2/360*100%;
             margin-right: 0;
         }
     }
@@ -676,6 +705,9 @@ body {
             background: url(./img/section-inner-title.png) no-repeat;
             background-size: 100% auto;
         }
+    }
+    .section-item-bd {
+        padding-bottom: 0;
     }
     // .section-item-subTitle {
     //     margin: 0 auto 30/750*100%;
@@ -1359,8 +1391,10 @@ footer {
             }
         }
         .date-list-wrap {
-            .border-top-orange;
-            .border-bottom-orange;
+            border-top: #c1092f 1px solid;
+            border-bottom: #c1092f 1px solid;
+            // .border-top-orange;
+            // .border-bottom-orange;
         }
         .date-list {
             position: relative;
@@ -1371,7 +1405,6 @@ footer {
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
             ul {
-                // overflow: hidden;
                 width: auto;
                 margin-left: 30/16rem;
                 height: 100%;
@@ -1379,16 +1412,13 @@ footer {
                 left: 0;
                 top: 0;
                 white-space: nowrap;
-                // width: 3000/16rem;
-                // .flex;
+                .flex;
             }
             li {
-                display: inline-block;
                 background-size: cover;
                 position: relative;
                 color: #fff;
                 height: 100%;
-                margin-right: -.4rem;
                 padding-right: 18/16rem;
                 .list-cont {
                     padding: 7/16rem 7/16rem;
@@ -1464,7 +1494,7 @@ footer {
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 35%;
+            width: 32%;
             height: 60%;
             position: absolute;
             background-image: url('./img/nav-btn-icon.jpg');
@@ -1478,19 +1508,25 @@ footer {
         overflow-x: scroll;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
-        .flex;
-        .flex-v;
-        .flex-pack-center;
         ul {
             background-size: 100% auto;
             width: auto;
             white-space: nowrap;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding-right: 22/16rem;
+            .flex;
+            .flex-align-center;
+            .flex-pack-center;
             li {
                 display: inline-block;
                 font-size: 14/16rem;
                 color: #fff;
                 padding: 0 20/16rem;
                 border-left: 1/16rem #fff solid;
+                // height: 100%;
                 &:nth-child(1) {
                     border-left: 0 transparent solid;
                 }
@@ -1586,8 +1622,8 @@ footer {
                 .flex-pack-center;
                 padding: 10/16rem 0;
                 background-image: url(./img/btn-lines.png), url(./img/btn-lines.png);
-                background-position: 2% 0, 99% 106%;
-                background-size: 9/16rem auto, 9/16rem auto;
+                background-position: 2% 0, 99% 100%;
+                background-size: auto 200%, auto 200%;
                 background-repeat: no-repeat;
                 left: 1/16rem;
                 .pic {

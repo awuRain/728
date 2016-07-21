@@ -27,20 +27,20 @@
     },
     "promotionList": {
         "subTitle": "promotionList",
-        "activeDate": "2016-07-21",
-        "endDate": "2016-07-22",
+        "activeDate": "2016-07-26",
+        "endDate": "2016-08-04",
         "pb-id": "",
         "limitNum": 998
     },
     "fixPrice": {
         "subTitle": "fixPrice",
-        "activeDate": "2016-07-21",
-        "endDate": "2016-07-22",
+        "activeDate": "2016-08-04",
+        "endDate": "2016-08-07",
         "pb-id": ""
     },
     "mainMeeting": {
         "subTitle": "mainMeeting",
-        "introEndDate": "2016-07-25",
+        "introEndDate": "2016-08-04",
         "pb-id": ""
     },
     "playflower": {
@@ -66,58 +66,58 @@
             }
         ]
     },
-    "scene_hotel": {
-        "title": "景酒分会场",
-        "subTitle": "scene_hotel111",
-        "activeDate": "2016-07-21",
-        "showBtmBanner": 0,
-        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
-        "banner_link": "http://www.baidu.com",
-        "pb-id": "bbb"
-    },
-    "baby": {
-        "title": "亲子分会场",
-        "subTitle": "baby111",
-        "activeDate": "2016-07-22",
-        "showBtmBanner": 0,
-        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
-        "banner_link": "http://www.baidu.com",
-        "pb-id": "bbb"
-    },
-    "qixi": {
-        "title": "七夕分会场",
-        "subTitle": "qixi111",
-        "activeDate": "2016-07-23",
+    "scenic": {
+        "title": "名胜专场",
+        "subTitle": "名胜专场 副标题",
+        "activeDate": "2016-07-7.26",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
         "pb-id": "bbb"
     },
     "slow_life": {
-        "title": "慢生活分会场",
-        "subTitle": "slow_life111",
-        "activeDate": "2016-07-24",
+        "title": "慢生活专场",
+        "subTitle": "慢生活专场 副标题",
+        "activeDate": "2016-07-28",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
+        "pb-id": "bbb"
+    },
+    "baby": {
+        "title": "亲子专场",
+        "subTitle": "亲子专场 副标题",
+        "activeDate": "2016-07-29",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "http://www.baidu.com",
         "pb-id": "bbb"
     },
     "olympic": {
-        "title": "奥林匹克分会场",
-        "subTitle": "olympic111",
-        "activeDate": "2016-07-25",
+        "title": "奥运专场",
+        "subTitle": "奥运专场 副标题",
+        "activeDate": "2016-07-31",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
         "pb-id": "bbb"
     },
-    "scenic": {
-        "title": "景区分会场",
-        "subTitle": "scenic111",
-        "activeDate": "2016-07-26",
+    "qixi": {
+        "title": "浪漫专场",
+        "subTitle": "浪漫专场 副标题",
+        "activeDate": "2016-08-01",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
+        "pb-id": "bbb"
+    },
+    "scene_hotel": {
+        "title": "景酒分会场",
+        "subTitle": "scene_hotel111",
+        "activeDate": "2016-08-02",
+        "showBtmBanner": 0,
+        "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+        "banner_link": "http://www.baidu.com",
         "pb-id": "bbb"
     },
     "subSession": [{
