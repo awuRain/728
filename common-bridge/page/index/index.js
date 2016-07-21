@@ -213,6 +213,7 @@ var App = {
         }
 
         me.mainMeetingOrder.forEach(function(item, index) {
+            item = $.extend(item, me.cacheData.pageConfig[item.id]); //用 pageConfig 覆盖默认配置
             item.cardNum = _cardNum;
             me.baseOrder_Key[item.id] = item;
         });
@@ -1316,31 +1317,17 @@ var App = {
         }
 
         for (var i in list) {
-            list[i] = me.cacheData.pageConfig[list[i].id];
+            list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
+                id: list[i].id
+            });
         }
 
         html = Juicer($('#tpl-calendar').html(), {
             cacheData: me.cacheData,
             list: list
         });
+
         $('.J-placeholder-calendar').html(html);
-
-        function setUlWidth() {
-            setTimeout(function() {
-                var ulWidth = 0;
-                $('.calendar .date-list li').each(function(i, it) {
-                    ulWidth += $(it).offset().width;
-                });
-                ulWidth += $('.calendar .date-list li').offset().width / 2;
-                $('.calendar .date-list ul').css('width', ulWidth);
-            }, 100);
-        }
-
-        // setUlWidth();
-
-        $(window).on('resize', function() {
-            setUlWidth();
-        });
 
         return me;
     },
@@ -1452,11 +1439,16 @@ var App = {
     },
     renderPageTab: function(opts) { //渲染页面导航
         var me = this,
-            html;
-        html = Juicer($('#tpl-pageTab').html(), {
+            html,
+            tpl = me.tpl_pageTab || $('#tpl-pageTab').html();
+
+        me.tpl_pageTab = tpl;
+
+        html = Juicer(tpl, {
             cacheData: me.cacheData,
             activeInfo: ACTIVEINFO
         });
+
         $('.J-placeholder-page-tab').html(html);
 
         // setUlWidth();
