@@ -105,7 +105,7 @@
         ]
     },
     "scenic": {
-        "title": "名胜专场",
+        "title": "名胜专场1",
         "subTitle": "名胜专场 副标题",
         "activeDate": "2016-07-16",
         "showBtmBanner": 0,
@@ -114,7 +114,7 @@
         "pb-id": "bbb"
     },
     "slow_life": {
-        "title": "慢生活专场",
+        "title": "慢生活专场2",
         "subTitle": "慢生活专场 副标题",
         "activeDate": "2016-07-17",
         "showBtmBanner": 0,
@@ -123,7 +123,7 @@
         "pb-id": "bbb"
     },
     "baby": {
-        "title": "亲子专场",
+        "title": "亲子专场3",
         "subTitle": "亲子专场 副标题",
         "activeDate": "2016-07-18",
         "showBtmBanner": 0,
@@ -132,7 +132,7 @@
         "pb-id": "bbb"
     },
     "olympic": {
-        "title": "奥运专场",
+        "title": "奥运专场33",
         "subTitle": "奥运专场 副标题",
         "activeDate": "2016-07-19",
         "showBtmBanner": 0,
@@ -141,7 +141,7 @@
         "pb-id": "bbb"
     },
     "qixi": {
-        "title": "浪漫专场",
+        "title": "浪漫专场222",
         "subTitle": "浪漫专场 副标题",
         "activeDate": "2016-07-20",
         "showBtmBanner": 0,
@@ -150,7 +150,7 @@
         "pb-id": "bbb"
     },
     "scene_hotel": {
-        "title": "景酒分会场",
+        "title": "景酒分会场444",
         "subTitle": "scene_hotel111",
         "activeDate": "2016-07-21",
         "showBtmBanner": 0,
@@ -159,7 +159,7 @@
         "pb-id": "bbb"
     },
     "subSession": [{
-        "title": "究极专区",
+        "title": "究极专区11",
         "pb-id": "lv5228368",
         "link": "http://www.baidu.com",
         "name": "coupon"
