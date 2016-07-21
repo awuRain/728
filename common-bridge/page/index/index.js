@@ -1635,27 +1635,25 @@ var App = {
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
                 $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
-                if (!$targetPlaceholder.length) {
-                    return me;
-                }
-                var scrollTop = $('body').scrollTop(),
-                    targetTop = $targetPlaceholder.offset().top;
 
-                if ($('.J-page-tab').offset()) {
+                var scrollTop = $('body').scrollTop();
+                if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
+                    var targetTop = $targetPlaceholder.offset().top;
                     var height = $('.J-page-tab').offset().height;
                     $('.tab-holder').css('height', height);
-                }
 
-                if (scrollTop >= targetTop) {
-                    $('.J-page-tab').addClass('active');
-                    $('.J-btn-toTop').addClass('active');
-                    $('.tab-holder').addClass('active', height);
-                    return me;
+                    if (scrollTop >= targetTop) {
+                        $('.J-page-tab').addClass('active');
+                        $('.J-btn-toTop').addClass('active');
+                        $('.tab-holder').addClass('active', height);
+                        return me;
+                    }
+                    $('.J-page-tab').removeClass('active');
+                    $('.J-btn-toTop').removeClass('active');
+                    $('.tab-holder').removeClass('active', height);
                 }
-                $('.J-page-tab').removeClass('active');
-                $('.J-btn-toTop').removeClass('active');
-                $('.tab-holder').removeClass('active', height);
             }, 0);
+
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
@@ -1697,9 +1695,9 @@ var App = {
                 });
                 return false;
             }
-            if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
-                return false;
-            }
+            // if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
+            //     return false;
+            // }
             me.getDiscount({
                 id: id
             });

@@ -1057,7 +1057,7 @@ body {
     bottom: 0;
     margin: 0 0 20/16rem 0;
     background-color: #fff000;
-    border: 2/16rem solid #363636;
+    border: 2px solid #363636;
     border-right: 0 solid transparent;
     transform: translate3d(0, 200%, 0);
     transition: all .2s;
@@ -1250,7 +1250,7 @@ header {
         position: absolute;
         right: 0;
         top: 52%;
-        border: 1/16rem #ae0025 solid;
+        border: 2px #ae0025 solid;
         border-right: 0 transparent solid;
         border-radius: 5/16rem 0 0 5/16rem;
         background-color: #fff000;
@@ -1290,14 +1290,27 @@ footer {
             border-radius: 50%;
         }
     }
+    // .trapezium {
+    //     width: 100%;
+    //     position: relative;
+    //     border-bottom: 10/16rem solid #ffdecb;
+    //     border-left: 10/16rem solid transparent;
+    //     border-right: 10/16rem solid transparent;
+    // }
     .trapezium {
-        width: 100%;
+        border: #483f41 2px solid;
+        border-bottom: transparent 0 solid;
+        box-shadow: 0 -2px 20px #5e1200;
+        margin: 0 auto;
+        width: 98%;
         position: relative;
-        border-bottom: 10/16rem solid #ffdecb;
-        border-left: 10/16rem solid transparent;
-        border-right: 10/16rem solid transparent;
+        height: 8/16rem;
+        background-color: #ffdecb;
+        transform: perspective(.5em) rotateX(2deg);
     }
     .footer-cont-wrap {
+        position: relative;
+        z-index: 30;
         background: -webkit-linear-gradient(top, #ffa41d 0%, #fb5e00 100%);
         background: linear-gradient(to bottom, #ffa41d 0%, #fb5e00 100%);
         border-top: 2px solid #231815;
@@ -1343,9 +1356,9 @@ footer {
         &:before {
             content: '';
             position: absolute;
-            top: -42/16rem;
+            top: -40/16rem;
             width: 100%;
-            padding-bottom: 64%;
+            padding-bottom: 63%;
             background-image: url('./img/game.png');
             background-size: cover;
         }
@@ -1598,7 +1611,7 @@ footer {
             width: 49%;
             background-color: #fc2c3b;
             border-radius: 5/16rem;
-            border: 3/16rem #34002a solid;
+            border: 2px #34002a solid;
             float: left;
             &:nth-child(2n) {
                 margin-left: 2%;
@@ -1647,8 +1660,14 @@ footer {
 
 // 券样式
 .coupon {
+    &.coupon-nuomi {
+        width: 94%;
+        margin: -(450/750*100%) auto 52/750*100%;
+    }
+    &.coupon-map {
+        margin: -(385/750*100%) auto 20/750*100%;
+    }
     width: 100%;
-    margin: -(185/750*100%) auto 20/750*100%;
     position: relative;
     z-index: 15;
     .coupon-cont {

@@ -10,7 +10,7 @@
         <div class="J-placeholder J-placeholder-coupon"></div>
         <div class="J-placeholder J-placeholder-layout"></div>
         <footer>
-            <!-- <div class="trapezium"></div> -->
+            <div class="trapezium"></div>
             <div class="subSessionTab-wrap"></div>
             <div class="footer-cont-wrap">
                 <div class="footer-cont">
@@ -343,26 +343,27 @@
             channel = cacheData.channel,
             list = list;
     %>
-    <section class="calendar">
-        <div class="calendar-bd">
-            <div class="list-header"></div>
-            <div class="date-list-wrap">
-                <div class="date-list">
-                    <ul>
-                        {@each list as item}
-                            <li>
-                                <div class="list-cont">
-                                    <h1>${item.title}</h1>
-                                    <h2>${item.activeDate | dateFomat}</h2>
-                                </div>
-                            </li>
-                        {@/each}
-                    </ul>
+    {@if channel.name == "nuomi"}
+        <section class="calendar">
+            <div class="calendar-bd">
+                <div class="list-header"></div>
+                <div class="date-list-wrap">
+                    <div class="date-list">
+                        <ul>
+                            {@each list as item}
+                                <li>
+                                    <div class="list-cont">
+                                        <h1>${item.title}</h1>
+                                        <h2>${item.activeDate | dateFomat}</h2>
+                                    </div>
+                                </li>
+                            {@/each}
+                        </ul>
+                    </div>
                 </div>
             </div>
-            
-        </div>
-    </section>
+        </section>
+    {@/if}
 </script>
 
 <script type="text/template" id="tpl-subSessionTab">
@@ -433,14 +434,16 @@
     %>
 
     {@if pageConfig.coupon.is_open == 1}
-        <section class="coupon">
-            {@if channel.name == 'nuomi'}
+        {@if channel.name == 'nuomi'}
+            <section class="coupon coupon-nuomi">
                 <div class="coupon-cont">
                     {@each pageConfig.coupon.list as item,index}
                         <div data-id="${item.id}" class="coupon coupon-item"></div>
                     {@/each}
                 </div>
-            {@else}
+            </section>
+        {@else}
+            <section class="coupon coupon-map">
                 <ul class="coupon-list coupon-list-4 flex">
                     {@each pageConfig.coupon.list as item,index}
                         <%
@@ -467,8 +470,8 @@
                         </li>
                     {@/each}
                 </ul>
-            {@/if}
-        </section>
+            </section>
+        {@/if}
     {@/if}
 </script>
 
