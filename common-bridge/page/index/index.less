@@ -768,7 +768,7 @@ body {
         .flex-v;
         &:before,
         &:after {
-            padding-bottom: 210/720*100%;
+            padding-bottom: 180/720*100%;
             margin: 0 0 20/720*100%;
             content: '\20';
             background: rgba(0, 0, 0, .3);
@@ -1354,7 +1354,7 @@ footer {
             position: relative;
             background: linear-gradient(left, #ffff00 1%, #ffff00 50%, #e50018 51%, #e50018 100%);
             width: 100%;
-            height: 2.5rem;
+            height: 2.1rem;
             overflow-x: scroll;
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
@@ -1461,23 +1461,21 @@ footer {
     }
     .tab-list {
         width: 100%;
-        height: 31/16rem;
+        height: 25/16rem;
         position: relative;
         overflow-x: scroll;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        .flex;
+        .flex-v;
+        .flex-pack-center;
         ul {
-            position: absolute;
-            left: 0;
-            top: 0;
             background-size: 100% auto;
             width: auto;
-            height: 100%;
-            padding: 7/16rem 0;
             white-space: nowrap;
             li {
                 display: inline-block;
-                font-size: 12/16rem;
+                font-size: 14/16rem;
                 color: #fff;
                 padding: 0 20/16rem;
                 border-left: 1/16rem #fff solid;
@@ -1615,14 +1613,14 @@ footer {
 // 券样式
 .coupon {
     width: 100%;
-    margin: -(326/750*100%+40/750*100%) auto 40/750*100%;
+    margin: -(185/750*100%) auto 20/750*100%;
     position: relative;
     z-index: 15;
     .coupon-cont {
         .flex;
         .flex-align-center;
         .flex-pack-center;
-        .coupon1 {
+        .coupon:nth-child(1) {
             display: inline-block;
             width: 37%;
             &:after {
@@ -1635,7 +1633,7 @@ footer {
                 background-size: cover;
             }
         }
-        .coupon2 {
+        .coupon:nth-child(2) {
             display: inline-block;
             width: 58%;
             &:after {
