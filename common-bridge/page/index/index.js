@@ -145,48 +145,36 @@ var App = {
     }],
     mainMeetingOrder: [{
         id: 'scenic',
-        title: '名胜专场',
-        meeting: '名胜',
         attrs: {
             'section-type': 'mainMeeting'
         },
         type: 'poi'
     }, {
         id: 'slow_life',
-        title: '慢生活专题',
-        meeting: '慢生活',
         attrs: {
             'section-type': 'mainMeeting'
         },
         type: 'link'
     }, {
         id: 'baby',
-        title: '亲子分会场',
-        meeting: '亲子分会场',
         attrs: {
             'section-type': 'mainMeeting'
         },
         type: 'link'
     }, {
         id: 'olympic',
-        title: '奥运专题',
-        meeting: '奥运',
         attrs: {
             'section-type': 'mainMeeting'
         },
         type: 'link'
     }, {
         id: 'qixi',
-        title: '七夕专题',
-        meeting: '七夕',
         attrs: {
             'section-type': 'mainMeeting'
         },
         type: 'link'
     }, {
         id: 'scene_hotel',
-        title: '景酒一日游专题',
-        meeting: '景酒',
         attrs: {
             'section-type': 'mainMeeting'
         }
@@ -1644,7 +1632,7 @@ var App = {
                     $('.J-btn-toTop').removeClass('active');
                     $('.tab-holder').removeClass('active', height);
                 }
-            }, 0);
+            }, 100);
 
         });
 

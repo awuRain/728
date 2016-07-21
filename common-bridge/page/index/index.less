@@ -1299,17 +1299,18 @@ footer {
     // }
     .trapezium {
         border: #483f41 2px solid;
-        border-bottom: transparent 0 solid;
+        border-radius: 20/16rem;
         box-shadow: 0 -2px 20px #5e1200;
         margin: 0 auto;
         width: 98%;
+        padding-bottom: 50%;
         position: relative;
-        height: 8/16rem;
         background-color: #ffdecb;
-        transform: perspective(.5em) rotateX(2deg);
+        transform: translate3d(0, 96%, 0);
     }
     .footer-cont-wrap {
         position: relative;
+        z-index: 2;
         z-index: 30;
         background: -webkit-linear-gradient(top, #ffa41d 0%, #fb5e00 100%);
         background: linear-gradient(to bottom, #ffa41d 0%, #fb5e00 100%);
@@ -1345,7 +1346,6 @@ footer {
     }
     .mainSessionTab-btn {
         &:after {
-            background-image: url('./img/session.png');
             background-position: 100% 0;
         }
     }
@@ -1508,6 +1508,7 @@ footer {
         overflow-x: scroll;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        transform: translate3d(0, 0, 0);
         ul {
             background-size: 100% auto;
             width: auto;
@@ -1660,16 +1661,17 @@ footer {
 
 // 券样式
 .coupon {
+    width: 100%;
+    position: relative;
+    z-index: 15;
     &.coupon-nuomi {
         width: 94%;
         margin: -(450/750*100%) auto 52/750*100%;
     }
     &.coupon-map {
-        margin: -(385/750*100%) auto 20/750*100%;
+        width: 96%;
+        margin: -(385/750*100%) auto 52/750*100%;
     }
-    width: 100%;
-    position: relative;
-    z-index: 15;
     .coupon-cont {
         .flex;
         .flex-align-center;
@@ -1747,6 +1749,8 @@ footer {
             color: #fff;
             text-shadow: 0 1px 1px rgba(0, 0, 0, .4);
             background: @backgroundColorCoupon-1;
+            -webkit-mask-image: url(./img/coupon-cover-v.png);
+            -webkit-mask-size: 100% auto;
             .coupon-info-wrap,
             .coupon-pick-wrap {
                 position: relative;
@@ -1766,7 +1770,7 @@ footer {
                 &:after {
                     position: relative;
                     padding-bottom: 132/166*100%;
-                    background: url(./img/coupon-cover-v.png) no-repeat;
+                    // background: url(./img/coupon-cover-v.png) no-repeat;
                     // background-size: 100% auto;
                     background-size: auto 145.9999%;
                 }
