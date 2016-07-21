@@ -1,4 +1,25 @@
 {
+    "headerPics": [
+        {
+            "activeDate": "2016-07-21",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }, {
+            "activeDate": "2016-07-22",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }, {
+            "activeDate": "2016-07-23",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }, {
+            "activeDate": "2016-07-24",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }, {
+            "activeDate": "2016-07-25",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }, {
+            "activeDate": "2016-07-26",
+            "pic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png"
+        }
+    ],
     "headerPic": "http://hiphotos.baidu.com/baidu/pic/item/6c224f4a20a44623fad8d0199022720e0cf3d7bf.png",
     "coupon": {
         "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
@@ -66,10 +87,27 @@
             }
         ]
     },
+    "playflower2": {
+        "list": [
+            {
+                "title": "北京分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
+            }, {
+                "title": "天津分会场",
+                "subTitle": "我就是副标题",
+                "pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
+                "link": "http://www.baidu.com",
+                "pb-id": "bbb"
+            }
+        ]
+    },
     "scenic": {
         "title": "名胜专场",
         "subTitle": "名胜专场 副标题",
-        "activeDate": "2016-07-7.26",
+        "activeDate": "2016-07-16",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -78,7 +116,7 @@
     "slow_life": {
         "title": "慢生活专场",
         "subTitle": "慢生活专场 副标题",
-        "activeDate": "2016-07-28",
+        "activeDate": "2016-07-17",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -87,7 +125,7 @@
     "baby": {
         "title": "亲子专场",
         "subTitle": "亲子专场 副标题",
-        "activeDate": "2016-07-29",
+        "activeDate": "2016-07-18",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "http://www.baidu.com",
@@ -96,7 +134,7 @@
     "olympic": {
         "title": "奥运专场",
         "subTitle": "奥运专场 副标题",
-        "activeDate": "2016-07-31",
+        "activeDate": "2016-07-19",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -105,7 +143,7 @@
     "qixi": {
         "title": "浪漫专场",
         "subTitle": "浪漫专场 副标题",
-        "activeDate": "2016-08-01",
+        "activeDate": "2016-07-20",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -114,7 +152,7 @@
     "scene_hotel": {
         "title": "景酒分会场",
         "subTitle": "scene_hotel111",
-        "activeDate": "2016-08-02",
+        "activeDate": "2016-07-21",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "http://www.baidu.com",

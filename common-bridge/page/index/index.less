@@ -1071,7 +1071,7 @@ body {
 
 html.nuomi {
     .btn-toTop {
-        margin-bottom: 175/16rem;
+        margin-bottom: 210/16rem;
     }
 }
 
@@ -1298,6 +1298,7 @@ footer {
     //     border-right: 10/16rem solid transparent;
     // }
     .trapezium {
+        z-index: -3;
         border: #483f41 2px solid;
         border-bottom: transparent 0 solid;
         box-shadow: 0 -2px 20px #5e1200;
@@ -1356,7 +1357,7 @@ footer {
         &:before {
             content: '';
             position: absolute;
-            top: -40/16rem;
+            top: -52/16rem;
             width: 100%;
             padding-bottom: 63%;
             background-image: url('./img/game.png');
@@ -1530,6 +1531,13 @@ footer {
                 &:nth-child(1) {
                     border-left: 0 transparent solid;
                 }
+                &.active {
+                    h1 {
+                        padding: 1px 10px;
+                        border-radius: 10px;
+                        background-color: #d55f00;
+                    }
+                }
             }
         }
     }
@@ -1547,7 +1555,7 @@ footer {
 .subSessionTab {
     width: 100%;
     background-color: #fff2df;
-    border-top: 2px solid #48f3f41;
+    border-top: 2px solid #483f41;
     z-index: -2;
     position: absolute;
     left: 0;
@@ -1600,7 +1608,7 @@ footer {
 }
 
 // 分会场 banner
-.section-item-playflower {
+.section-item-playflower, .section-item-playflower2 {
     // background-color: #ffd200;
     ul {
         width: 95%;
