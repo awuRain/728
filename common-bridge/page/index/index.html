@@ -424,6 +424,7 @@
             mapDisCountStatusItem,
             class_hot = 0,
             class_out = 0;
+            console.log(pageConfig);
     %>
 
     {@if pageConfig.coupon.is_open == 1}
@@ -431,7 +432,7 @@
             {@if channel.name == 'nuomi'}
                 <div class="coupon-cont">
                     {@each pageConfig.coupon.list as item,index}
-                    <div data-id="${item.id}" class="coupon${item.id} coupon-item"></div>
+                        <div data-id="${item.id}" class="coupon coupon-item"></div>
                     {@/each}
                 </div>
             {@else}

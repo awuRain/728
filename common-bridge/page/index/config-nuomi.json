@@ -4,32 +4,18 @@
         "subTitle": "抵用券部分旅游门票可用，可在“我的〉资产〉抵用券”查看",
         "is_open": "1",
         "list": [{
-            "title": "满150元使用",
+            "title": "新客券",
             "price": "7",
             "is_hot": "1",
-            "id": "1",
+            "id": "new",
             "pb-id": "pb-1",
             "can_get": "1"
         }, {
-            "title": "满200元可用",
+            "title": "大礼包",
             "price": "10",
             "is_hot": "0",
-            "id": "2",
+            "id": "99",
             "pb-id": "pb-2",
-            "can_get": "1"
-        }, {
-            "title": "满250元可用",
-            "price": "13",
-            "is_hot": "1",
-            "id": "3",
-            "pb-id": "pb-3",
-            "can_get": "1"
-        }, {
-            "title": "满300元可用",
-            "price": "18",
-            "is_hot": "1",
-            "id": "4",
-            "pb-id": "pb-4",
             "can_get": "1"
         }],
         "newer": {

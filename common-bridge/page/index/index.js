@@ -29,7 +29,7 @@ Juicer.register('numFomat', numFomat);
 
 // 日期格式化
 var dateFomat = function(date) {
-    return date.slice(5).replace('-', '.');
+    return date.slice(6).replace('-', '.');
 }
 
 Juicer.register('dateFomat', dateFomat);
