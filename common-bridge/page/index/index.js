@@ -144,32 +144,25 @@ var App = {
         }
     }],
     mainMeetingOrder: [{
-        id: 'scene_hotel',
-        title: '景酒一日游专题',
-        meeting: '景酒',
-        attrs: {
-            'section-type': 'mainMeeting'
-        }
-    }, {
-        id: 'baby',
-        title: '亲子分会场',
-        meeting: '亲子分会场',
+        id: 'scenic',
+        title: '名胜专场',
+        meeting: '名胜',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'link'
-    }, {
-        id: 'qixi',
-        title: '七夕专题',
-        meeting: '七夕',
-        attrs: {
-            'section-type': 'mainMeeting'
-        },
-        type: 'link'
+        type: 'poi'
     }, {
         id: 'slow_life',
         title: '慢生活专题',
         meeting: '慢生活',
+        attrs: {
+            'section-type': 'mainMeeting'
+        },
+        type: 'link'
+    }, {
+        id: 'baby',
+        title: '亲子分会场',
+        meeting: '亲子分会场',
         attrs: {
             'section-type': 'mainMeeting'
         },
@@ -183,13 +176,20 @@ var App = {
         },
         type: 'link'
     }, {
-        id: 'scenic',
-        title: '名胜古迹',
-        meeting: '名胜',
+        id: 'qixi',
+        title: '七夕专题',
+        meeting: '七夕',
         attrs: {
             'section-type': 'mainMeeting'
         },
-        type: 'poi'
+        type: 'link'
+    }, {
+        id: 'scene_hotel',
+        title: '景酒一日游专题',
+        meeting: '景酒',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
     }],
     setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
@@ -1349,38 +1349,6 @@ var App = {
         var me = this,
             html = '';
         // coupon_show = me.cacheData.pageConfig.coupon.is_open || 0;
-
-        var baseOrder = [{
-            id: 'scene_hotel',
-            title: '景酒日游专题',
-            meeting: '景酒',
-            activeDate: '2016-07-16'
-        }, {
-            id: 'baby',
-            title: '亲子专题',
-            meeting: '亲自',
-            activeDate: '2016-07-17'
-        }, {
-            id: 'qixi',
-            title: '七夕专题',
-            meeting: '七夕',
-            activeDate: '2016-07-18'
-        }, {
-            id: 'slow_life',
-            title: '慢生活专题',
-            meeting: '慢生活',
-            activeDate: '2016-07-19'
-        }, {
-            id: 'olympic',
-            title: '奥运专题',
-            meeting: '奥运',
-            activeDate: '2016-07-20'
-        }, {
-            id: 'scenic',
-            title: '名胜古迹',
-            meeting: '名胜',
-            activeDate: '2016-07-21'
-        }];
 
         var header = {
             dateScopes: [
