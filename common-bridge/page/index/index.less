@@ -57,7 +57,13 @@ html,
 body,
 .page-container,
 .page {
-    // height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    height: auto;
+}
+
+.page {
+    transform: translate3d(0, 0, 0);
 }
 
 body {
@@ -65,16 +71,7 @@ body {
     color: @defaultColor;
 }
 
-.page-container {
-    // overflow-y: scroll;
-    // -webkit-overflow-scrolling: touch;
-}
-
-.page {
-    width: 100%;
-    overflow-x: hidden;
-    height: auto;
-}
+.page-container {}
 
 .loading {
     position: absolute;
@@ -593,10 +590,9 @@ body {
         position: absolute;
         left: 50%;
         top: 0;
-        transform: translate3d(-50%, -50%, 0);
-        width: 250%;
-        padding-bottom: 100%;
-        margin-top: 45%;
+        transform: translate3d(-50%, 0%, 0) scale3d(1.5, 1.5, 1);
+        width: 100%;
+        padding-bottom: 25%;
         border-radius: 100%;
         content: '\20';
         z-index: -1;
@@ -1071,7 +1067,7 @@ body {
 
 html.nuomi {
     .btn-toTop {
-        margin-bottom: 175/16rem;
+        margin-bottom: 210/16rem;
     }
 }
 
@@ -1236,6 +1232,7 @@ header {
     // background-color: #fc2c3c;
     background-repeat: no-repeat;
     background-size: 100% auto;
+    transform: translate3d(0, 0, 0);
     .slogen {
         position: absolute;
         top: 60.7%;
@@ -1298,6 +1295,7 @@ footer {
     //     border-right: 10/16rem solid transparent;
     // }
     .trapezium {
+        z-index: -3;
         border: #483f41 2px solid;
         border-radius: 20/16rem;
         box-shadow: 0 -2px 20px #5e1200;
@@ -1356,7 +1354,7 @@ footer {
         &:before {
             content: '';
             position: absolute;
-            top: -40/16rem;
+            top: -52/16rem;
             width: 100%;
             padding-bottom: 63%;
             background-image: url('./img/game.png');
@@ -1531,6 +1529,13 @@ footer {
                 &:nth-child(1) {
                     border-left: 0 transparent solid;
                 }
+                &.active {
+                    h1 {
+                        padding: 1px 10px;
+                        border-radius: 10px;
+                        background-color: #d55f00;
+                    }
+                }
             }
         }
     }
@@ -1548,7 +1553,7 @@ footer {
 .subSessionTab {
     width: 100%;
     background-color: #fff2df;
-    border-top: 2px solid #48f3f41;
+    border-top: 2px solid #483f41;
     z-index: -2;
     position: absolute;
     left: 0;
@@ -1601,7 +1606,8 @@ footer {
 }
 
 // 分会场 banner
-.section-item-playflower {
+.section-item-playflower,
+.section-item-playflower2 {
     // background-color: #ffd200;
     ul {
         width: 95%;

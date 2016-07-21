@@ -1,5 +1,5 @@
 var $ = require('zepto');
-require('../../widgets/lazyload/lazyload.js');
+// require('../../widgets/lazyload/lazyload.js');
 require('../../widgets/lazyelement/lazyelement.js');
 var Bridge = require('Bridge');
 var Juicer = require('juicer');
@@ -7,8 +7,6 @@ var pblog = require('../../widgets/pblog-webapp/pblog-webapp.js');
 var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
-
-console.log(2223);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -139,6 +137,12 @@ var App = {
     }, {
         id: 'playflower',
         title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        }
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
         attrs: {
             'section-type': 'playflower'
         }
@@ -1268,10 +1272,20 @@ var App = {
 
         me.baseOrder.length -= 1;
 
+        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+            cacheData: me.cacheData,
+            data: {
+                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
+            }
+        })).insertAfter('.J-placeholder-layout');
+
+        me.baseOrder.length -= 1;
+
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
             .renderPlayFlower()
+            .renderPlayFlower2()
             .renderSubSessionTab();
 
         // final-test
@@ -1399,6 +1413,18 @@ var App = {
         $('.J-placeholder-playflower').html(html);
         return me;
     },
+    renderPlayFlower2: function() {
+        var me = this,
+            html;
+
+        $('.J-placeholder-jumpBnr').remove();
+        html = Juicer($('#tpl-playflower2').html(), {
+                cacheData: me.cacheData,
+                activeInfo: ACTIVEINFO
+            })
+        $('.J-placeholder-playflower2').html(html);
+        return me;
+    },
     renderProvinceSelect: function() { //渲染省份选择器 - 依赖地理位置
         var me = this,
             html = '';
@@ -1439,20 +1465,7 @@ var App = {
 
         $('.J-placeholder-page-tab').html(html);
 
-        // setUlWidth();
-
         return me;
-
-        // function setUlWidth() {
-        //     setTimeout(function() {
-        //         var ulWidth = 0;
-        //         $('.page-tab .tab-list li').each(function(i, it) {
-        //             ulWidth += $(it).offset().width;
-        //         });
-        //         ulWidth += $('.page-tab .tab-list li').offset().width / 3;
-        //         $('.page-tab .tab-list ul').css('width', ulWidth);
-        //     }, 100);
-        // }
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
         var me = this,
@@ -1586,21 +1599,6 @@ var App = {
             });
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
             console.log('promotionListReady');
-            // $('.section-item').lazyelement({
-            //     threshold: 200,
-            //     supportAsync: !0,
-            //     onScrollStop: function(element) {
-            //         var id = $(element).attr('id'),
-            //             sectionType = $(element).attr('section-type');
-            //         if (sectionType == 'mainMeeting') { //渲染分会场
-            //             me.renderMainMeeting(me.baseOrder_Key[id]);
-            //         } else if (sectionType == 'promotionList') {
-            //             me.renderPromotionList(me.baseOrder_Key[id]);
-            //         } else if (sectionType == 'fixPrice') {
-            //             me.renderfixPrice(me.baseOrder_Key[id]);
-            //         }
-            //     }
-            // });
         }).on('fixPriceDataReady', function() {
             console.log('fixPriceDataReady');
         });
@@ -1615,8 +1613,22 @@ var App = {
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
                 $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
-
-                var scrollTop = $('body').scrollTop();
+                var scrollTop = $('body').scrollTop(),
+                    lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),           
+                    left = 0;
+                $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
+                    var $item = $(item);
+                    if ((!$item.next('.section-item-inner').offset()) || (scrollTop >= $item.offset().top && scrollTop < $item.next('.section-item-inner').offset().top)) {
+                        lastId = $item.attr('id');
+                        $('.page-tab .tab-list .tab-' + lastId).addClass('active').siblings('li').removeClass('active');
+                        $('.page-tab .tab-list').scrollLeft(left-10);
+                        return false;
+                    } else {
+                        $('.page-tab .tab-list li').eq(0).addClass('active').siblings('li').removeClass('active');
+                    }
+                    left += $('.page-tab .tab-list .tab-' + lastId).offset().width;
+                });
+                
                 if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
                     var targetTop = $targetPlaceholder.offset().top;
                     var height = $('.J-page-tab').offset().height;
@@ -1633,7 +1645,6 @@ var App = {
                     $('.tab-holder').removeClass('active', height);
                 }
             }, 100);
-
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
