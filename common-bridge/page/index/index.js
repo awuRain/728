@@ -142,6 +142,12 @@ var App = {
         attrs: {
             'section-type': 'playflower'
         }
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
+        attrs: {
+            'section-type': 'playflower'
+        }
     }],
     mainMeetingOrder: [{
         id: 'scenic',
@@ -1280,10 +1286,20 @@ var App = {
 
         me.baseOrder.length -= 1;
 
+        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+            cacheData: me.cacheData,
+            data: {
+                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
+            }
+        })).insertAfter('.J-placeholder-layout');
+
+        me.baseOrder.length -= 1;
+
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
             .renderPlayFlower()
+            .renderPlayFlower2()
             .renderSubSessionTab();
 
         // final-test
@@ -1409,6 +1425,18 @@ var App = {
             })
             // $('.J-placeholder-jumpBnr').html(html);
         $('.J-placeholder-playflower').html(html);
+        return me;
+    },
+    renderPlayFlower2: function() {
+        var me = this,
+            html;
+
+        $('.J-placeholder-jumpBnr').remove();
+        html = Juicer($('#tpl-playflower2').html(), {
+                cacheData: me.cacheData,
+                activeInfo: ACTIVEINFO
+            })
+        $('.J-placeholder-playflower2').html(html);
         return me;
     },
     renderProvinceSelect: function() { //渲染省份选择器 - 依赖地理位置
@@ -1627,8 +1655,22 @@ var App = {
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
                 $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
-
-                var scrollTop = $('body').scrollTop();
+                var scrollTop = $('body').scrollTop(),
+                    lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),           
+                    left = 0;
+                $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
+                    var $item = $(item);
+                    if ((!$item.next('.section-item-inner').offset()) || (scrollTop >= $item.offset().top && scrollTop < $item.next('.section-item-inner').offset().top)) {
+                        lastId = $item.attr('id');
+                        $('.page-tab .tab-list .tab-' + lastId).addClass('active').siblings('li').removeClass('active');
+                        $('.page-tab .tab-list').scrollLeft(left-10);
+                        return false;
+                    } else {
+                        $('.page-tab .tab-list li').eq(0).addClass('active').siblings('li').removeClass('active');
+                    }
+                    left += $('.page-tab .tab-list .tab-' + lastId).offset().width;
+                });
+                
                 if ($targetPlaceholder.offset() && $('.J-page-tab').offset()) {
                     var targetTop = $targetPlaceholder.offset().top;
                     var height = $('.J-page-tab').offset().height;

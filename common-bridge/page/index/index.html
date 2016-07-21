@@ -421,6 +421,29 @@
     </ul>
 </script>
 
+<script type="text/template" id="tpl-playflower2">
+    <%
+        var pageConfig = cacheData.pageConfig,
+            channel = cacheData.channel,
+            playflower2 = pageConfig.playflower2.list;
+    %>
+    <ul>
+        {@each playflower2 as item}
+            <li>
+                <a class="list-cont" href="${item.link}">
+                    <div class="pic" style="background-image: url('${item.pic}')">
+                        <i></i>
+                    </div>
+                    <div class="title">
+                        <h1>${item.title}<h1>
+                        <h2>${item.subTitle}</h2>
+                    </div>
+                </a>
+            </li>
+        {@/each}
+    </ul>
+</script>
+
 <script type="text/template" id="tpl-coupon">
     <%
         var pageConfig = cacheData.pageConfig,
@@ -480,6 +503,7 @@
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
             currentOrder = cacheData.currentOrder;
+            console.log(currentOrder);
     %>
     {@if channel.name == 'nuomi'}
         <nav class="page-tab J-page-tab">
@@ -489,7 +513,7 @@
             <div class="tab-list">
                 <ul>
                     {@each currentOrder as item}
-                        <li data-name="${item.id}" pb-id="${item['pb-id']}">
+                        <li class="tab-${item.id}" data-name="${item.id}" pb-id="${item['pb-id']}">
                             <h1>${item.title}</h1>
                         </li>
                     {@/each}
