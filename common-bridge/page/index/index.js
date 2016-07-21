@@ -218,6 +218,7 @@ var App = {
         if (me.cacheData.channel.name == 'map_scope') {
             me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
+            me.mainMeetingOrder_cp.length = 0;
         }
 
         // 预热期结束后 修改分会场卡片数量为10
@@ -1265,7 +1266,7 @@ var App = {
 
         var now = moment(me.cacheData.now),
             list = [];
-
+            
         for (var i in currentOrder) {
             var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
             if (now.isSame(to, 'day')) {
@@ -1299,7 +1300,7 @@ var App = {
             }, 100);
         }
 
-        setUlWidth();
+        // setUlWidth();
 
         $(window).on('resize', function() {
             setUlWidth();
@@ -1454,20 +1455,20 @@ var App = {
         });
         $('.J-placeholder-page-tab').html(html);
 
-        setUlWidth();
+        // setUlWidth();
 
         return me;
 
-        function setUlWidth() {
-            setTimeout(function() {
-                var ulWidth = 0;
-                $('.page-tab .tab-list li').each(function(i, it) {
-                    ulWidth += $(it).offset().width;
-                });
-                ulWidth += $('.page-tab .tab-list li').offset().width / 3;
-                $('.page-tab .tab-list ul').css('width', ulWidth);
-            }, 100);
-        }
+        // function setUlWidth() {
+        //     setTimeout(function() {
+        //         var ulWidth = 0;
+        //         $('.page-tab .tab-list li').each(function(i, it) {
+        //             ulWidth += $(it).offset().width;
+        //         });
+        //         ulWidth += $('.page-tab .tab-list li').offset().width / 3;
+        //         $('.page-tab .tab-list ul').css('width', ulWidth);
+        //     }, 100);
+        // }
     },
     pageTabItemShow: function(opts) { //页面导航项的显示
         var me = this,
@@ -1552,7 +1553,7 @@ var App = {
                 })
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
-            me.pageTabItemShow(_data);
+            // me.pageTabItemShow(_data);
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
             var list = [],
                 current = me.cacheData.mainMeeting[me.cacheData.sid],

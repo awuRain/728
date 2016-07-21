@@ -41,15 +41,15 @@
     },
     "promotionList": {
         "subTitle": "promotionList",
-        "activeDate": "2016-07-17",
-        "endDate": "2016-07-25",
+        "activeDate": "2016-07-21",
+        "endDate": "2016-07-22",
         "pb-id": "",
         "limitNum": 998
     },
     "fixPrice": {
         "subTitle": "fixPrice",
-        "activeDate": "2016-07-15",
-        "endDate": "2016-07-25",
+        "activeDate": "2016-07-21",
+        "endDate": "2016-07-22",
         "pb-id": ""
     },
     "mainMeeting": {
@@ -83,7 +83,7 @@
     "scene_hotel": {
         "title": "景酒分会场",
         "subTitle": "scene_hotel111",
-        "activeDate": "2016-07-15",
+        "activeDate": "2016-07-21",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "http://www.baidu.com",
@@ -92,7 +92,7 @@
     "baby": {
         "title": "亲子分会场",
         "subTitle": "baby111",
-        "activeDate": "2016-07-16",
+        "activeDate": "2016-07-22",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "http://www.baidu.com",
@@ -101,7 +101,7 @@
     "qixi": {
         "title": "七夕分会场",
         "subTitle": "qixi111",
-        "activeDate": "2016-07-17",
+        "activeDate": "2016-07-23",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -110,7 +110,7 @@
     "slow_life": {
         "title": "慢生活分会场",
         "subTitle": "slow_life111",
-        "activeDate": "2016-07-18",
+        "activeDate": "2016-07-24",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -119,7 +119,7 @@
     "olympic": {
         "title": "奥林匹克分会场",
         "subTitle": "olympic111",
-        "activeDate": "2016-07-19",
+        "activeDate": "2016-07-25",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
@@ -128,7 +128,7 @@
     "scenic": {
         "title": "景区分会场",
         "subTitle": "scenic111",
-        "activeDate": "2016-07-20",
+        "activeDate": "2016-07-26",
         "showBtmBanner": 0,
         "banner_pic": "http://t.hiphotos.baidu.com/baidu/pic/item/8326cffc1e178a82552044abfe03738da977e899.jpg",
         "banner_link": "",
