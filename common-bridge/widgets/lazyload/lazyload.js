@@ -56,22 +56,26 @@ $.fn.lazyload = function(t) {
                 o = $(this);
             if (!n.lazyload) {
                 var i = o.data(t.dataAttribute),
+                    backgroundImage = o.data(dataBackgroundImage),
                     r = t.threshold,
                     l = o.offset(),
                     d = l.top - r,
                     c = l.top + l.height + r;
-                (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) && (o.attr("src", i),
-                    n.lazyload = "loading",
+                if (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) {
+                    o.attr("src", i);
+                    backgroundImage && o.css("background-image", 'url(' + backgroundImage + ')');
+                    n.lazyload = "loading";
                     n.onload = function() {
                         n.lazyload = "loaded",
                             $(window).trigger("scroll")
                     }
-                )
+                }
             }
         }
         var r = {
             threshold: 0,
             dataAttribute: "src",
+            dataBackgroundImage: "backgroundImage",
             supportAsync: !1
         };
         t = $.extend({}, r, t),

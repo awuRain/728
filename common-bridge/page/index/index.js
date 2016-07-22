@@ -315,19 +315,19 @@ var App = {
             _settings = opts || {},
             deferred = $.Deferred();
 
-        $.getJSON('./config-' + me.cacheData.channel.name + '.json', {
-            t: T
-        }, function(res) {
-            me.cacheData.pageConfig = res || {};
-            me.getNowTime().then(function() {
-                me.cacheData = me.getCacheDataFromSession();
-                me.setLayoutData();
-                me.renderBase();
-                me.initReady({
-                    pageConfig: res || PAGETEXT,
-                    is_init: 1
-                });
-            });
+        // $.getJSON('./config-' + me.cacheData.channel.name + '.json', {
+        //     t: T
+        // }, function(res) {
+            // me.cacheData.pageConfig = res || {};
+            // me.getNowTime().then(function() {
+            //     me.cacheData = me.getCacheDataFromSession();
+            //     me.setLayoutData();
+            //     me.renderBase();
+            //     me.initReady({
+            //         pageConfig: res || PAGETEXT,
+            //         is_init: 1
+            //     });
+            // });
             // me.getNowTime().then(function() {
             //     me.cacheData = me.getCacheDataFromSession();
             //     return me.renderLayout();
@@ -339,26 +339,26 @@ var App = {
             //         is_init: 1
             //     });
             // });
-            deferred.resolve();
-        });
-
-        // window.configReady = function(res) { //文案配置 ready 后
-        //     me.cacheData.pageConfig = res || {};
-        //     me.getNowTime().then(function() {
-        //         return me.renderLayout();
-        //     }).then(function() {
-        //         me.renderBase()
-        //             .initReady({
-        //                 pageConfig: res || PAGETEXT,
-        //                 is_init: 1
-        //             });
-        //     });
-        //     deferred.resolve();
-        // };
-
-        // $.getJSON('http://lvyou.baidu.com/event/s/dw_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
-        //     t: T
+            // deferred.resolve();
         // });
+
+        window.configReady = function(res) { //文案配置 ready 后
+            me.cacheData.pageConfig = res || {};
+            me.getNowTime().then(function() {
+                me.cacheData = me.getCacheDataFromSession();
+                me.setLayoutData();
+                me.renderBase();
+                me.initReady({
+                    pageConfig: res || PAGETEXT,
+                    is_init: 1
+                });
+            });
+            deferred.resolve();
+        };
+
+        $.getJSON('http://lvyou.baidu.com/event/s/728_promotion/config-' + me.cacheData.channel.name + '.js?callback=?', {
+            t: T
+        });
 
         return deferred;
     },
