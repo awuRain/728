@@ -1508,7 +1508,7 @@ var App = {
             _timer,
             top;
         if (_settings.item && $('.section-item-' + _settings.item).length) {
-            top = $('.section-item-' + _settings.item).offset().top + 1;
+            top = $('.section-item-' + _settings.item).offset().top - 40;
             clearTimeout(me.cacheData._timer);
             me.cacheData._timer = setTimeout(function() {
                 $('html,body').scrollTop(top);
@@ -1615,13 +1615,11 @@ var App = {
                     left = 0;
                 $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
                     var $item = $(item);
-                    if ((!$item.next('.section-item-inner').offset()) || (scrollTop >= $item.offset().top && scrollTop < $item.next('.section-item-inner').offset().top)) {
+                    if ((scrollTop >= $item.offset().top - 60 && scrollTop < $item.offset().top + $item.offset().height - 60)) {
                         lastId = $item.attr('id');
                         $('.page-tab .tab-list .tab-' + lastId).addClass('active').siblings('li').removeClass('active');
                         $('.page-tab .tab-list').scrollLeft(left - 10);
                         return false;
-                    } else {
-                        $('.page-tab .tab-list li').eq(0).addClass('active').siblings('li').removeClass('active');
                     }
                     left += $('.page-tab .tab-list .tab-' + lastId).offset().width;
                 });
