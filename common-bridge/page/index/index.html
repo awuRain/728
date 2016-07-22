@@ -377,7 +377,9 @@
         <span class="close-btn"></span>
         <ul>
             {@each subSession as item}
-            <li><a href="${item.link}">${item.title}</a></li>
+                {@if item.title}
+                    <li><a href="${item.link}">${item.title}</a></li>
+                {@/if}
             {@/each}
         </ul>
     </section>
@@ -407,17 +409,19 @@
     %>
     <ul>
         {@each playflower as item}
-            <li>
-                <a class="list-cont" href="${item.link}">
-                    <div class="pic" style="background-image: url('${item.pic}')">
-                        <i></i>
-                    </div>
-                    <div class="title">
-                        <h1>${item.title}<h1>
-                        <h2>${item.subTitle}</h2>
-                    </div>
-                </a>
-            </li>
+            {@if item.pic}
+                <li>
+                    <a class="list-cont" href="${item.link}">
+                        <div class="pic" style="background-image: url('${item.pic}')">
+                            <i></i>
+                        </div>
+                        <div class="title">
+                            <h1>${item.title}<h1>
+                            <h2>${item.subTitle}</h2>
+                        </div>
+                    </a>
+                </li>
+            {@/if}
         {@/each}
     </ul>
 </script>
@@ -430,17 +434,19 @@
     %>
     <ul>
         {@each playflower2 as item}
-            <li>
-                <a class="list-cont" href="${item.link}">
-                    <div class="pic" style="background-image: url('${item.pic}')">
-                        <i></i>
-                    </div>
-                    <div class="title">
-                        <h1>${item.title}<h1>
-                        <h2>${item.subTitle}</h2>
-                    </div>
-                </a>
-            </li>
+            {@if item.pic}
+                <li>
+                    <a class="list-cont" href="${item.link}">
+                        <div class="pic" style="background-image: url('${item.pic}')">
+                            <i></i>
+                        </div>
+                        <div class="title">
+                            <h1>${item.title}<h1>
+                            <h2>${item.subTitle}</h2>
+                        </div>
+                    </a>
+                </li>
+            {@/if}
         {@/each}
     </ul>
 </script>
