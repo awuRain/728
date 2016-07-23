@@ -1,5 +1,5 @@
 var $ = require('zepto');
-// require('../../widgets/lazyload/lazyload.js');
+require('../../widgets/lazyload/lazyload.js');
 require('../../widgets/lazyelement/lazyelement.js');
 var Bridge = require('Bridge');
 var Juicer = require('juicer');
@@ -268,12 +268,9 @@ var App = {
                 if (_item.id == 'promotionList') {
                     _item.discount = cacheData_id_sid.discount || '';
                     _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
-                }
-            }
-
-            if (_activeDate && _endDate) {
-                if (!(me.cacheData.now >= new Date(_activeDate) - 0 && new Date(_endDate) - 0 > me.cacheData.now)) {
-                    continue;
+                    if (!(me.cacheData.now >= new Date(_activeDate) && me.cacheData.now < new Date(_endDate))) {
+                        continue;
+                    }
                 }
             }
 
@@ -297,6 +294,17 @@ var App = {
 
         arr_innerHtml.length = 0;
 
+        if (me.isLazyload) {
+            return me;
+        }
+        $(".pic").lazyload({
+            threshold: 200,
+            supportAsync: !0,
+            dataAttribute: "src",
+            isBackground: 1
+        });
+        me.isLazyload = 1;
+
         return me;
     },
     createSection: function(opts) { //创建 section
@@ -314,33 +322,6 @@ var App = {
         var me = this,
             _settings = opts || {},
             deferred = $.Deferred();
-
-        // $.getJSON('./config-' + me.cacheData.channel.name + '.json', {
-        //     t: T
-        // }, function(res) {
-            // me.cacheData.pageConfig = res || {};
-            // me.getNowTime().then(function() {
-            //     me.cacheData = me.getCacheDataFromSession();
-            //     me.setLayoutData();
-            //     me.renderBase();
-            //     me.initReady({
-            //         pageConfig: res || PAGETEXT,
-            //         is_init: 1
-            //     });
-            // });
-            // me.getNowTime().then(function() {
-            //     me.cacheData = me.getCacheDataFromSession();
-            //     return me.renderLayout();
-            // }).then(function() {
-            //     me.renderBase()
-            //     return me;
-            //     me.initReady({
-            //         pageConfig: res || PAGETEXT,
-            //         is_init: 1
-            //     });
-            // });
-            // deferred.resolve();
-        // });
 
         window.configReady = function(res) { //文案配置 ready 后
             me.cacheData.pageConfig = res || {};
@@ -723,11 +704,12 @@ var App = {
     loadDataRelyonLoc: function(opts) { //加载基于地理位置的模块
         var me = this,
             _settings = opts || {};
+
         me.getPromotionList().always(function() {
-            return me.getFixprice()
+            me.getFixprice()
         }).always(function() {
             if (me.cacheData.channel.name == 'nuomi') {
-                return me.getMainMeeting()
+                me.getMainMeeting()
             }
         });
 
@@ -737,7 +719,7 @@ var App = {
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
-                $(me).trigger('fixpriceDataReady');
+                $(me).trigger('fixPriceDataReady');
 
                 deferred.resolve();
             };
@@ -848,10 +830,11 @@ var App = {
 
         return me;
     },
-    getPromotionList: function() { //获取7折爆款列表
+    getPromotionList: function() { //获取爆款折扣列表
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
+                $(me).trigger('promotionListReady');
                 deferred.resolve();
             };
 
@@ -896,7 +879,7 @@ var App = {
         });
         return deferred;
     },
-    renderPromotionList: function(opts) { //渲染7折爆款列表
+    renderPromotionList: function(opts) { //渲染爆款折扣列表
         var me = this,
             tpl = me.tpl_promotionList || $('#tpl-promotionList').html(),
             _settings = opts || {},
@@ -927,8 +910,9 @@ var App = {
         //     return me;
         // }
 
-        show_tab1 = me.cacheData.now >= promotionList_sid_list[0].start_time * 1000 ? 1 : 0;
-        show_tab2 = !show_tab1 ? 1 : 0;
+        show_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
+        show_tab1 = !show_tab2;
+        
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
@@ -940,6 +924,7 @@ var App = {
                         type: me.baseOrder_Key[_settings.id]['type'],
                         direction: 'horizontal',
                         data: promotionList_sid_list[0].poi_list,
+                        discount: promotionList_sid_list[0].discount,
                         attrs: {
                             'tab-id': promotionList_sid_list[0].start_time,
                             'tab-rel': promotionList_sid_list[0].start_time,
@@ -957,6 +942,7 @@ var App = {
                         renderFor: _settings.id,
                         type: me.baseOrder_Key[_settings.id]['type'],
                         data: promotionList_sid_list[1].poi_list,
+                        discount: promotionList_sid_list[0].discount,
                         attrs: {
                             'tab-id': promotionList_sid_list[1].start_time,
                             'tab-rel': promotionList_sid_list[0].start_time,
@@ -970,14 +956,14 @@ var App = {
             })
         });
         $('.J-placeholder-' + _settings.id).html(html);
-        // $('#' + _settings.id).removeClass('hide').addClass('show');
-        me.createSoftImg($('.J-placeholder-' + _settings.id));
-        // $('.J-placeholder-' + _settings.id + '-empty').remove();
+
+        me.createSoftImg($('.J-placeholder-' + _settings.id).find('.BN-list ul').eq(show_tab1 ? 0 : 1));
+
         $('.J-loading').removeClass('show').addClass('hide');
-        $(me).trigger('promotionListReady')
-            .trigger('dataLoaded', [{
-                name: 'promotion'
-            }]);
+
+        $(me).trigger('dataLoaded', [{
+            name: 'promotion'
+        }]);
         return me;
     },
     createTicketList: function(opts) { //创建门票卡片
@@ -993,7 +979,8 @@ var App = {
                 type: _settings.type || '',
                 cardNum: _settings.cardNum || 6,
                 renderFor: _settings.renderFor || '',
-                createFlag: _settings.createFlag
+                createFlag: _settings.createFlag,
+                discount: _settings.discount || 1
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1266,24 +1253,41 @@ var App = {
         return me;
     },
     renderBase: function() { //渲染不需要依赖地理位置的基础模块
-        var me = this;
+        var me = this,
+            _item,
+            isPlayflowerEmpty = 1,
+            isPlayflower2Empty = 1,
+            playflower_list = me.cacheData.pageConfig.playflower.list,
+            playflower2_list = me.cacheData.pageConfig.playflower2.list;
 
-        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+        for (var i = 0, len = playflower_list.length; i < len; i++) {
+            _item = playflower_list[i];
+            if (_item.pic && _item.link) {
+                isPlayflowerEmpty = 0; //标记热门分会场列表不为空
+                break;
+            }
+        }!isPlayflowerEmpty && $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+            cacheData: me.cacheData,
+            data: {
+                layout: me.createSection(me.baseOrder[me.baseOrder.length - 2])
+            }
+        })).insertAfter('.J-placeholder-layout');
+        me.baseOrder.splice(me.baseOrder.length - 2, 1);
+
+        for (var i = 0, len = playflower2_list.length; i < len; i++) {
+            _item = playflower2_list[i];
+            if (_item.pic && _item.link) {
+                isPlayflowerEmpty = 0; //标记其它垂直营销列表不为空
+                break;
+            }
+        }
+
+        !isPlayflower2Empty && $(Juicer($('#tpl-layout').html(), { //填充其它垂直营销layout
             cacheData: me.cacheData,
             data: {
                 layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
             }
         })).insertAfter('.J-placeholder-layout');
-
-        me.baseOrder.length -= 1;
-
-        $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
-            cacheData: me.cacheData,
-            data: {
-                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
-            }
-        })).insertAfter('.J-placeholder-layout');
-
         me.baseOrder.length -= 1;
 
         me.renderCalendar()
@@ -1434,18 +1438,16 @@ var App = {
     renderFooter: function() { //渲染footer
         var me = this,
             html = '';
-
+        if (me.cacheData.channel.name == 'map_scope') {
+            return me;
+        } else {
+            $('footer').addClass('active');
+        }
         html = Juicer($('#tpl-footer').html(), {
             cacheData: me.cacheData
         });
         $('.J-placeholder-footer').html(html);
 
-        if (me.cacheData.pageConfig.btmBanner && me.cacheData.pageConfig.btmBanner.pic) {
-            html = Juicer($('#tpl-btmBrn').html(), {
-                cacheData: me.cacheData
-            });
-            $('.J-placeholder-btmBnr').html(html);
-        }
         return me;
     },
     renderPageTab: function(opts) { //渲染页面导航
@@ -1535,9 +1537,10 @@ var App = {
                 flayerTitle: '选择你想出行的省份',
                 is_show: me.gps_success == 0 ? 1 : 0 //定位失败时需要打开省份列表的浮层
             });
+
             $('.J-loading').text('正在检测登录状态');
+
             Bridge.isLogin(function(status) { //检测登录状态
-                // me.is_login = 0;
                 me.is_login = status || 0;
             });
 
@@ -1547,7 +1550,6 @@ var App = {
                 });
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
-            // me.pageTabItemShow(_data);
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
             var list = [],
                 current = me.cacheData.mainMeeting[me.cacheData.sid],
@@ -1579,6 +1581,10 @@ var App = {
 
             me.renderPageTab();
 
+        }).on('promotionListReady', function() { //爆款折扣渲染 ready
+            console.log('promotionListReady');
+        }).on('fixPriceDataReady', function() {
+            console.log('fixPriceDataReady');
             $('.section-item').lazyelement({
                 threshold: 200,
                 supportAsync: !0,
@@ -1594,16 +1600,20 @@ var App = {
                     }
                 }
             });
-        }).on('promotionListReady', function() { //爆款折扣渲染 ready
-            console.log('promotionListReady');
-        }).on('fixPriceDataReady', function() {
-            console.log('fixPriceDataReady');
+            me.renderLayout();
         });
 
-        // $(".img-box img").lazyload({
+        // $(".img-box img,.pic").lazyload({
         //     threshold: 200,
         //     supportAsync: !0,
         //     dataAttribute: "src"
+        // });
+
+        // $(".pic").lazyload({
+        //     threshold: 200,
+        //     supportAsync: !0,
+        //     dataAttribute: "src",
+        //     isBackground: 1
         // });
 
         $(window).on('scroll', function() { //页面内导航的显示/隐藏
@@ -1860,7 +1870,8 @@ var App = {
             var tabId = $(this).attr('tab-for'),
                 tabRel = $(this).attr('tab-relFor');
             $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
-            $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show')
+            $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
+            me.createSoftImg($('[tab-id="' + tabId + '"]'));
         }).on('tap', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
         }).on('tap', '.subSessionTab .close-btn', function() {

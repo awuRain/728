@@ -56,14 +56,12 @@ $.fn.lazyload = function(t) {
                 o = $(this);
             if (!n.lazyload) {
                 var i = o.data(t.dataAttribute),
-                    backgroundImage = o.data(dataBackgroundImage),
                     r = t.threshold,
                     l = o.offset(),
                     d = l.top - r,
                     c = l.top + l.height + r;
                 if (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) {
-                    o.attr("src", i);
-                    backgroundImage && o.css("background-image", 'url(' + backgroundImage + ')');
+                    t.isBackground ? o.css("background-image", 'url(' + i + ')') : o.attr("src", i);
                     n.lazyload = "loading";
                     n.onload = function() {
                         n.lazyload = "loaded",
@@ -75,7 +73,7 @@ $.fn.lazyload = function(t) {
         var r = {
             threshold: 0,
             dataAttribute: "src",
-            dataBackgroundImage: "backgroundImage",
+            isBackground: 0,
             supportAsync: !1
         };
         t = $.extend({}, r, t),

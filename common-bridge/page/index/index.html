@@ -10,17 +10,17 @@
         <div class="J-placeholder J-placeholder-coupon"></div>
         <div class="J-placeholder J-placeholder-layout"></div>
     </section>
-        <footer>
-            <div class="trapezium"></div>
-            <div class="subSessionTab-wrap"></div>
-            <div class="footer-cont-wrap">
-                <div class="footer-cont">
-                    <a class="subSessionTab-btn">子会场</a>
-                    <a class="game-btn">游戏</a>
-                    <a class="mainSessionTab-btn">主会场</a>
-                </div>
+    <footer>
+        <div class="trapezium"></div>
+        <div class="subSessionTab-wrap"></div>
+        <div class="footer-cont-wrap">
+            <div class="footer-cont">
+                <a class="subSessionTab-btn">子会场</a>
+                <a class="game-btn">游戏</a>
+                <a class="mainSessionTab-btn">主会场</a>
             </div>
-        </footer>
+        </div>
+    </footer>
 </section>
 
 <div class="J-placeholder J-placeholder-jumpBnr-rb"></div>
@@ -79,9 +79,10 @@
             case 'sku': className = 'J-sku'; break;
             default: className = '';
         }
-        
-        {# console.log('cardNum:',cardNum);
+        {# 
+        console.log('cardNum:',cardNum);
         console.log('renderFor:',renderFor);
+        console.log('createFlag:',createFlag);
         console.log('pageConfig:',pageConfig_id.limitNum);
         console.log('direction:',direction);
         console.log('type:',type);
@@ -117,11 +118,13 @@
                 }
                 if(renderFor == 'fixPrice'){
                     flags = item.status ? [createFlag(item.status)] : [];
+                    current_price = item.fixprice;
                 } else {
-                    flags = [createFlag(renderFor)] || [];
+                    flags = createFlag ? [createFlag(renderFor)] || [] : [];
                 }
                 if(renderFor == 'promotionList'){
-                    max_price = max_price || 0;
+                    current_price = (min_price * discount).toFixed(2);
+                    market_price = min_price;
                 }
             %>
             {@if index < cardNum}
@@ -378,7 +381,7 @@
         <ul>
             {@each subSession as item}
                 {@if item.title}
-                    <li><a href="${item.link}">${item.title}</a></li>
+                    <li><a class="J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">${item.title}</a></li>
                 {@/if}
             {@/each}
         </ul>
@@ -411,8 +414,8 @@
         {@each playflower as item}
             {@if item.pic}
                 <li>
-                    <a class="list-cont" href="${item.link}">
-                        <div class="pic" style="background-image: url('${item.pic}')">
+                    <a class="list-cont J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">
+                        <div class="pic" data-src="${item.pic}">
                             <i></i>
                         </div>
                         <div class="title">
@@ -436,8 +439,8 @@
         {@each playflower2 as item}
             {@if item.pic}
                 <li>
-                    <a class="list-cont" href="${item.link}">
-                        <div class="pic" style="background-image: url('${item.pic}')">
+                    <a class="list-cont J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">
+                        <div class="pic" data-src="${item.pic}">
                             <i></i>
                         </div>
                         <div class="title">
@@ -460,7 +463,6 @@
             mapDisCountStatusItem,
             class_hot = 0,
             class_out = 0;
-            console.log(pageConfig);
     %>
 
     {@if pageConfig.coupon.is_open == 1}
@@ -468,7 +470,7 @@
             <section class="coupon coupon-nuomi">
                 <div class="coupon-cont">
                     {@each pageConfig.coupon.list as item,index}
-                        <div data-id="${item.id}" class="coupon coupon-item"></div>
+                        <div data-id="${item.id}" pb-id="${item['pb-id']}" class="coupon coupon-item"></div>
                     {@/each}
                 </div>
             </section>
@@ -510,7 +512,6 @@
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
             currentOrder = cacheData.currentOrder;
-            console.log(currentOrder);
     %>
     {@if channel.name == 'nuomi'}
         <nav class="page-tab J-page-tab">
