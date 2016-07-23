@@ -268,7 +268,7 @@ var App = {
                 if (_item.id == 'promotionList') {
                     _item.discount = cacheData_id_sid.discount || '';
                     _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
-                    if (!(me.cacheData.now >= new Date(_activeDate) && me.cacheData.now < new Date(_endDate))) {
+                    if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
                         continue;
                     }
                 }
@@ -291,7 +291,7 @@ var App = {
         }
 
         $('.J-placeholder-layout').replaceWith(html);
-        console.log('html:', html);
+
         arr_innerHtml.length = 0;
 
         if (me.isLazyload) {
@@ -682,8 +682,7 @@ var App = {
 
         Bridge.getCityProvince(function(data) { //获取当前位置的城市/省份信息
             clearTimeout(_timeout);
-            // alert('data:' + JSON.stringify(data));
-            // console.log('data:' + JSON.stringify(data));
+            
             if (data) {
                 me.cacheData.gps_city = $.extend({}, data.city);
                 me.cacheData.gps_province = $.extend({}, data.province);
@@ -1572,8 +1571,6 @@ var App = {
                 current = me.cacheData.mainMeeting[me.cacheData.sid],
                 _arr_innerHtml = [],
                 pageConfigItem;
-            // alert('trigger-mainMeetingBySidDataReady:');
-            // me.renderLayout();
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
@@ -1602,8 +1599,8 @@ var App = {
             console.log('promotionListReady');
         }).on('fixPriceDataReady', function() {
             // alert('fixPriceDataReady');
-            // setTimeout(function() {
             me.renderLayout();
+
             $('.section-item').lazyelement({
                 threshold: 200,
                 supportAsync: !0,
@@ -1619,7 +1616,6 @@ var App = {
                     }
                 }
             });
-            // }, 100)
         });
 
         // $(".img-box img,.pic").lazyload({
