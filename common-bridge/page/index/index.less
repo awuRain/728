@@ -1340,12 +1340,14 @@ footer {
         border-top: 2px solid #231815;
     }
     .footer-cont {
-        width: 80%;
+        width: 100%;
         // height: 100/16rem;
         // padding-bottom: 4%;
-        padding: 2% 0 3% 0;
+        padding: 4% 0 3% 0;
         margin: 0 auto;
         position: relative;
+        .flex;
+        .flex-pack-center;
     }
     a {
         font-size: 0;
@@ -1356,7 +1358,7 @@ footer {
     .mainSessionTab-btn {
         vertical-align: super;
         margin-top: -1%;
-        width: 23%;
+        width: 18%;
         &:after {
             content: '';
             display: block;
@@ -1374,7 +1376,7 @@ footer {
     }
     .game-btn {
         position: relative;
-        width: 43%;
+        width: 35%;
         margin: 0 3% 0 5%;
         &:before {
             content: '';
@@ -1418,6 +1420,13 @@ footer {
             border-bottom: #c1092f 2px solid;
             // .border-top-orange;
             // .border-bottom-orange;
+        }
+        .date-list::-webkit-scrollbar-thumb {
+            height: 0;
+        }
+        .date-list::-webkit-scrollbar
+        {
+            height: 0;
         }
         .date-list {
             position: relative;
@@ -1525,7 +1534,11 @@ footer {
         }
     }
     .tab-list::-webkit-scrollbar-thumb {
-        background-color: red;
+        height: 0;
+    }
+    .tab-list::-webkit-scrollbar
+    {
+        height: 0;
     }
     .tab-list {
         width: 100%;
