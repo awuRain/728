@@ -585,6 +585,7 @@ body {
 .section-item {
     position: relative;
     z-index: 1;
+    padding-bottom: 40/750*100%;
     &:before {
         display: block;
         position: absolute;
@@ -672,7 +673,8 @@ body {
 }
 
 .section-item-inner {
-    margin-top: 40/750*100%;
+    // margin-top: 40/750*100%;
+    padding-bottom: 40/750*100%;
     &:before {
         display: none;
     }
@@ -706,8 +708,9 @@ body {
         padding-bottom: 0;
     }
     &:last-child {
+        padding-bottom: 0;
         .section-item-bd {
-            padding-bottom: 40/750*100%;
+            padding-bottom: 0;
         }
     }
     // .section-item-subTitle {
@@ -785,7 +788,7 @@ body {
 }
 
 .section-item-fixPrice {
-    margin-bottom: 40/750*100%;
+    padding-bottom: 40/750*100%;
     .section-item-title {
         &:after {
             background-position: 0 100*3/500*100%;
@@ -919,7 +922,6 @@ body {
 
 // 爆款7折限量抢
 .section-item-promotionList {
-    margin-bottom: 65/750*100%;
     .tab-hd {
         .flex;
         width: 100%;
@@ -1426,8 +1428,7 @@ footer {
             opacity: 0;
             background-color: transparent;
         }
-        .date-list::-webkit-scrollbar
-        {
+        .date-list::-webkit-scrollbar {
             height: 0;
             opacity: 0;
             background-color: transparent;
@@ -1542,8 +1543,7 @@ footer {
         opacity: 0;
         background-color: transparent;
     }
-    .tab-list::-webkit-scrollbar
-    {
+    .tab-list::-webkit-scrollbar {
         height: 0;
         opacity: 0;
         background-color: transparent;

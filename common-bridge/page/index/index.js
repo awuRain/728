@@ -130,7 +130,7 @@ var App = {
         attrs: {
             'section-type': 'fixPrice'
         },
-        type: 'sku'
+        type: 'orderFill'
     }, {
         id: 'mainMeeting',
         title: '嗨翻出游主题趴'
@@ -267,11 +267,11 @@ var App = {
                 }
                 //限量抢
                 if (_item.id == 'promotionList') {
-                    _item.discount = cacheData_id_sid.discount || '';
-                    _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                     if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
                         continue;
                     }
+                    _item.discount = cacheData_id_sid_list[0].discount * 10 || '';
+                    _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                 }
             }
 
@@ -1743,14 +1743,15 @@ var App = {
                 data: $.extend({}, _params)
             });
         }).on('tap', '.J-orderFill', function() { //进入门票填单页
-            var td_id = $(this).data('td_id'),
-                partner_id = $(this).data('partner_id'),
-                productId = $(this).data('productid'),
-                uid = $(this).data('uid'),
-                scope_name = $(this).data('scope_name') || '';
+            var src = $(this).attr('data-src'),
+                ctrip_id = $(this).attr('data-ctrip_id') || '',
+                qunar_id = $(this).attr('data-qunar_id') || '',
+                pid = $(this).attr('data-pid') || '',
+                uid = $(this).attr('data-uid') || '',
+                ticket_id = $(this).attr('data-ticket_id') || '';
 
-            var scope_id = td_id,
-                ticket_id = productId;
+            var scope_id = src == 'qunar' ? qunar_id : ctrip_id,
+                td_id = scope_id;
 
             Bridge.pushWindow({
                 page: 'orderFill',
@@ -1759,24 +1760,24 @@ var App = {
                         ticket_id: ticket_id,
                         td_id: td_id,
                         scope_id: scope_id,
-                        partner_id: partner_id,
+                        partner_id: src,
                         uid: uid
                     }, _params),
                     map: $.extend({
-                        "param": '{"partner_id":"' + partner_id + '","scope_id":"' + scope_id + '","scope_name":"' + scope_name + '","ticket_id":"' + ticket_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"map_scope"}',
+                        "param": '{"partner_id":"' + src + '","scope_id":"' + scope_id + '","ticket_id":"' + pid + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"map_scope"}',
                         "popRoot": "no"
                     }, _params),
                     'nuomi-webapp': $.extend({
                         td_id: td_id,
-                        partner_id: partner_id,
+                        partner_id: src,
                         scope_id: scope_id,
                         ticket_id: ticket_id,
                         uid: uid
                     }, _params),
                     'map-webapp': $.extend({
-                        partner_id: partner_id,
+                        partner_id: src,
                         scope_id: scope_id,
-                        ticket_id: ticket_id,
+                        ticket_id: pid,
                         uid: uid
                     }, _params)
                 }
