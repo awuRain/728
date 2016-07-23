@@ -268,6 +268,7 @@ var App = {
                 if (_item.id == 'promotionList') {
                     _item.discount = cacheData_id_sid.discount || '';
                     _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
+                    console.log(cacheData_id_sid_list);
                     if (!(me.cacheData.now >= new Date(_activeDate) && me.cacheData.now < new Date(_endDate))) {
                         continue;
                     }
@@ -1569,8 +1570,6 @@ var App = {
                 current = me.cacheData.mainMeeting[me.cacheData.sid],
                 _arr_innerHtml = [],
                 pageConfigItem;
-            // alert('trigger-mainMeetingBySidDataReady:');
-            // me.renderLayout();
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
@@ -1599,8 +1598,8 @@ var App = {
             console.log('promotionListReady');
         }).on('fixPriceDataReady', function() {
             // alert('fixPriceDataReady');
-            // setTimeout(function() {
             me.renderLayout();
+
             $('.section-item').lazyelement({
                 threshold: 200,
                 supportAsync: !0,
@@ -1616,7 +1615,6 @@ var App = {
                     }
                 }
             });
-            // }, 100)
         });
 
         // $(".img-box img,.pic").lazyload({
