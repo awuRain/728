@@ -1321,6 +1321,10 @@ var App = {
         }
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
+
+        // $('footer .game-btn').attr({'data-link': me.cacheData.pageConfig.lottery.url, "pb-id": me.cacheData.pageConfig.lottery['pb-id']});
+        $('footer .game-btn').attr({'data-link': "me.cacheData.pageConfig.lottery.url", "pb-id": "me.cacheData.pageConfig.lottery['pb-id']"});
+
         return me;
     },
     renderCalendar: function() { //渲染每日专场
