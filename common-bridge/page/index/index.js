@@ -267,11 +267,11 @@ var App = {
                 }
                 //限量抢
                 if (_item.id == 'promotionList') {
-                    _item.discount = cacheData_id_sid.discount || '';
-                    _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                     if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
                         continue;
                     }
+                    _item.discount = cacheData_id_sid_list[0].discount * 10 || '';
+                    _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                 }
             }
 
@@ -1323,7 +1323,7 @@ var App = {
         $('.J-loading').text('').removeClass('show').addClass('hide');
 
         // $('footer .game-btn').attr({'data-link': me.cacheData.pageConfig.lottery.url, "pb-id": me.cacheData.pageConfig.lottery['pb-id']});
-        $('footer .game-btn').attr({'data-link': "me.cacheData.pageConfig.lottery.url", "pb-id": "me.cacheData.pageConfig.lottery['pb-id']"});
+        $('footer .game-btn').attr({ 'data-link': "me.cacheData.pageConfig.lottery.url", "pb-id": "me.cacheData.pageConfig.lottery['pb-id']" });
 
         return me;
     },
