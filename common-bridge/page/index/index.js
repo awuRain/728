@@ -334,6 +334,9 @@ var App = {
                     is_init: 1
                 });
             });
+            if (me.cacheData.channel.name == 'map_scope') {
+                me.getMapDisCountStatus();
+            }
             deferred.resolve();
         };
 
