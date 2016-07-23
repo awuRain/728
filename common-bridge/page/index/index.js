@@ -195,6 +195,7 @@ var App = {
             me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
             me.mainMeetingOrder_cp.length = 0;
+            return me;
         }
 
         // 预热期结束后 修改分会场卡片数量为10
@@ -682,7 +683,7 @@ var App = {
 
         Bridge.getCityProvince(function(data) { //获取当前位置的城市/省份信息
             clearTimeout(_timeout);
-            
+
             if (data) {
                 me.cacheData.gps_city = $.extend({}, data.city);
                 me.cacheData.gps_province = $.extend({}, data.province);
@@ -1273,8 +1274,10 @@ var App = {
             _item,
             isPlayflowerEmpty = 1,
             isPlayflower2Empty = 1,
-            playflower_list = me.cacheData.pageConfig.playflower.list,
-            playflower2_list = me.cacheData.pageConfig.playflower2.list;
+            playflower = me.cacheData.pageConfig.playflower || {},
+            playflower2 = me.cacheData.pageConfig.playflower2 || {},
+            playflower_list = playflower.list || [],
+            playflower2_list = playflower2.list || [];
 
         for (var i = 0, len = playflower_list.length; i < len; i++) {
             _item = playflower_list[i];
@@ -1282,7 +1285,7 @@ var App = {
                 isPlayflowerEmpty = 0; //标记热门分会场列表不为空
                 break;
             }
-        }!isPlayflowerEmpty && $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
+        }!isPlayflowerEmpty && me.cacheData.channel.name == 'nuomi' && $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
             cacheData: me.cacheData,
             data: {
                 layout: me.createSection(me.baseOrder[me.baseOrder.length - 2])
@@ -1298,7 +1301,7 @@ var App = {
             }
         }
 
-        !isPlayflower2Empty && $(Juicer($('#tpl-layout').html(), { //填充其它垂直营销layout
+        !isPlayflower2Empty && me.cacheData.channel.name == 'nuomi' && $(Juicer($('#tpl-layout').html(), { //填充其它垂直营销layout
             cacheData: me.cacheData,
             data: {
                 layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
@@ -1309,15 +1312,13 @@ var App = {
         me.renderCalendar()
             .renderHeader()
             .renderFooter()
-            .renderPlayFlower()
-            .renderPlayFlower2()
-            .renderSubSessionTab();
+            .renderCoupon();
 
-        // final-test
-
-        me.renderCoupon();
-
-        // final-test
+        if (me.cacheData.channel.name == 'nuomi') {
+            me.renderPlayFlower()
+                .renderPlayFlower2()
+                .renderSubSessionTab();
+        }
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
         return me;
