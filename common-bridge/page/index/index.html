@@ -66,7 +66,7 @@
         var arr_attrs = [],
             pageConfig = cacheData.pageConfig,
             pageConfig_id = pageConfig[renderFor] || {},
-            id, uid, td_id, ticket_id, src, grounpon_id, qunar_id, ctrip_id, min_price, max_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score,
+            id, uid, td_id, ticket_id, src, grounpon_id, qunar_id, ctrip_id, min_price, max_price, current_price, market_price, pic, title, city, saleNum, webappUrl, score, pid,
             className;
 
         for(var attr in attrs){
@@ -77,6 +77,7 @@
             case 'link': className = 'J-link'; break;
             case 'poi': className = 'J-poi'; break;
             case 'sku': className = 'J-sku'; break;
+            case 'orderFill': className = 'J-orderFill'; break;
             default: className = '';
         }
         {# 
@@ -111,6 +112,7 @@
                 saleNum = item.saleNum;
                 webappUrl = item.webapp_url || '';
                 score = item.score || 0;
+                pid = item.pid || '';
                 type = item.type || type;
                 switch(type){
                     case 'onedaytour': className = 'J-onedaytour'; break;
@@ -129,7 +131,7 @@
             %>
             {@if index < cardNum}
                 <li>
-                    <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}">
+                    <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}" data-pid="${pid}">
                         <div class="ticket-item-container">
                             {@if flags.length}
                                 <p class="flag-wrap">
