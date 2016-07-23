@@ -1322,8 +1322,9 @@ var App = {
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
 
-        // $('footer .game-btn').attr({'data-link': me.cacheData.pageConfig.lottery.url, "pb-id": me.cacheData.pageConfig.lottery['pb-id']});
-        $('footer .game-btn').attr({'data-link': "me.cacheData.pageConfig.lottery.url", "pb-id": "me.cacheData.pageConfig.lottery['pb-id']"});
+        if (me.cacheData.channel.name == 'nuomi') {
+            $('footer .game-btn').attr({'data-link': me.cacheData.pageConfig.footer.lottery.url, "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id']});
+        }
 
         return me;
     },
