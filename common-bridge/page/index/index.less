@@ -225,7 +225,7 @@ body {
         img {
             display: block;
             position: absolute;
-            max-width: 100%;
+            // max-width: 100%;
             left: 0;
             top: 0;
         }
@@ -540,8 +540,8 @@ body {
                 strong {
                     .fontSize(20, 50% 100%);
                     line-height: .7;
-                    margin-left: .3rem;
-                    margin-right: .3rem;
+                    margin-left: .7rem;
+                    margin-right: .7rem;
                 }
             }
         }
@@ -705,6 +705,11 @@ body {
     .section-item-bd {
         padding-bottom: 0;
     }
+    &:last-child {
+        .section-item-bd {
+            padding-bottom: 40/750*100%;
+        }
+    }
     // .section-item-subTitle {
     //     margin: 0 auto 30/750*100%;
     //     span {
@@ -766,7 +771,7 @@ body {
 .section-item-mainMeeting {
     .section-item-title {
         &:after {
-            background-position: 0 100/300*100%;
+            background-position: 0 100/500*100%;
         }
     }
 }
@@ -774,7 +779,7 @@ body {
 .section-item-playflower {
     .section-item-title {
         &:after {
-            background-position: 0 100*2/300*100%;
+            background-position: 0 100*2/500*100%;
         }
     }
 }
@@ -783,7 +788,23 @@ body {
     margin-bottom: 40/750*100%;
     .section-item-title {
         &:after {
-            background-position: 0 100*3/300*100%;
+            background-position: 0 100*3/500*100%;
+        }
+    }
+}
+
+.section-item-playflower2 {
+    .section-item-title {
+        &:after {
+            background-position: 0 100*4/500*100%;
+        }
+    }
+}
+
+.section-item-promotionList-5 {
+    .section-item-title {
+        &:after {
+            background-position: 0 100*5/500*100%;
         }
     }
 }
@@ -1267,6 +1288,11 @@ footer {
     left: 0;
     z-index: 20;
     width: 100%;
+    transform: translate3d(0, 150%, 0);
+    transition: all .2;
+    &.active {
+        transform: translate3d(0, 0, 0);
+    }
     .arc {
         width: 100%;
         padding-bottom: 6%;

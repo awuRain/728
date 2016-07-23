@@ -60,18 +60,20 @@ $.fn.lazyload = function(t) {
                     l = o.offset(),
                     d = l.top - r,
                     c = l.top + l.height + r;
-                (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) && (o.attr("src", i),
-                    n.lazyload = "loading",
+                if (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) {
+                    t.isBackground ? o.css("background-image", 'url(' + i + ')') : o.attr("src", i);
+                    n.lazyload = "loading";
                     n.onload = function() {
                         n.lazyload = "loaded",
                             $(window).trigger("scroll")
                     }
-                )
+                }
             }
         }
         var r = {
             threshold: 0,
             dataAttribute: "src",
+            isBackground: 0,
             supportAsync: !1
         };
         t = $.extend({}, r, t),

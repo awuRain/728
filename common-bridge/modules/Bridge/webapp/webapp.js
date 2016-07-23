@@ -4,8 +4,7 @@ var bridge = {
         this.getCity(function(data) {
             if (data.cityId) {
                 $.ajax({
-                    // url: self.host + "/business/ajax/dailysale/getsidbycityid?map_city_id=" + data.cityId,
-                    url: 'http://cp01-lvyou-pengkuan.epc.baidu.com:8080/business/ajax/promotion/getmappingbycityid?map_city_id=' + data.cityId,
+                    url: self.host + '/business/ajax/promotion/getmappingbycityid?map_city_id=' + data.cityId,
                     method: "get",
                     dataType: 'jsonp',
                     success: function(res) {
