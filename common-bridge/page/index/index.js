@@ -291,7 +291,7 @@ var App = {
         }
 
         $('.J-placeholder-layout').replaceWith(html);
-
+        console.log('html:', html);
         arr_innerHtml.length = 0;
 
         if (me.isLazyload) {
@@ -679,19 +679,26 @@ var App = {
 
         Bridge.getCityProvince(function(data) { //获取当前位置的城市/省份信息
             clearTimeout(_timeout);
-            me.cacheData.gps_city = $.extend({}, data.city);
-            me.cacheData.gps_province = $.extend({}, data.province);
-            console.log('me.cacheData.gps_city.sid in me.cacheData.domainList.city:', me.cacheData.gps_city.sid in me.cacheData.domainList.city);
-            console.log('me.cacheData.gps_city:', me.cacheData.gps_city)
-            console.log('me.cacheData.gps_province.sid in me.cacheData.domainList.province:', me.cacheData.gps_province.sid in me.cacheData.domainList.province);
-            console.log('me.cacheData.gps_province:', me.cacheData.gps_province)
+            // alert('data:' + JSON.stringify(data));
+            // console.log('data:' + JSON.stringify(data));
+            if (data) {
+                me.cacheData.gps_city = $.extend({}, data.city);
+                me.cacheData.gps_province = $.extend({}, data.province);
+                console.log('me.cacheData.gps_city.sid in me.cacheData.domainList.city:', me.cacheData.gps_city.sid in me.cacheData.domainList.city);
+                console.log('me.cacheData.gps_city:', me.cacheData.gps_city)
+                console.log('me.cacheData.gps_province.sid in me.cacheData.domainList.province:', me.cacheData.gps_province.sid in me.cacheData.domainList.province);
+                console.log('me.cacheData.gps_province:', me.cacheData.gps_province)
 
-            if (me.cacheData.gps_city.sid in me.cacheData.domainList.city) { //当前位置在城市列表中
-                _sid = me.cacheData.gps_city.sid;
-                _sname = me.cacheData.gps_city.sname;
-            } else if (me.cacheData.gps_province.sid in me.cacheData.domainList.province) { //当前位置在省份列表中
-                _sid = me.cacheData.gps_province.sid;
-                _sname = me.cacheData.gps_province.sname;
+                if (me.cacheData.gps_city.sid in me.cacheData.domainList.city) { //当前位置在城市列表中
+                    _sid = me.cacheData.gps_city.sid;
+                    _sname = me.cacheData.gps_city.sname;
+                } else if (me.cacheData.gps_province.sid in me.cacheData.domainList.province) { //当前位置在省份列表中
+                    _sid = me.cacheData.gps_province.sid;
+                    _sname = me.cacheData.gps_province.sname;
+                }
+            } else {
+                _sid = '';
+                _sname = '';
             }
 
             _fun({
@@ -705,13 +712,19 @@ var App = {
         var me = this,
             _settings = opts || {};
 
-        me.getPromotionList().always(function() {
-            me.getFixprice()
-        }).always(function() {
-            if (me.cacheData.channel.name == 'nuomi') {
-                me.getMainMeeting()
-            }
-        });
+        setTimeout(function() {
+            me.getPromotionList().always(function() {
+                me.getFixprice()
+            }).always(function() {
+                setTimeout(function() {
+                    if (me.cacheData.channel.name == 'nuomi') {
+                        setTimeout(function() {
+                            me.getMainMeeting()
+                        }, 100)
+                    }
+                }, 100)
+            });
+        }, 0)
 
         return me;
     },
@@ -719,7 +732,9 @@ var App = {
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
-                $(me).trigger('fixPriceDataReady');
+                setTimeout(function() {
+                    $(me).trigger('fixPriceDataReady');
+                }, 0);
 
                 deferred.resolve();
             };
@@ -912,7 +927,7 @@ var App = {
 
         show_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
         show_tab1 = !show_tab2;
-        
+
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
@@ -990,7 +1005,6 @@ var App = {
             deferred = $.Deferred(),
             _dataReady = function() {
                 $(me).trigger('mainMeetingBySidDataReady');
-
                 deferred.resolve();
             };
 
@@ -1555,8 +1569,8 @@ var App = {
                 current = me.cacheData.mainMeeting[me.cacheData.sid],
                 _arr_innerHtml = [],
                 pageConfigItem;
-
-            me.renderLayout();
+            // alert('trigger-mainMeetingBySidDataReady:');
+            // me.renderLayout();
 
             me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
                 item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
@@ -1584,7 +1598,9 @@ var App = {
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
             console.log('promotionListReady');
         }).on('fixPriceDataReady', function() {
-            console.log('fixPriceDataReady');
+            // alert('fixPriceDataReady');
+            // setTimeout(function() {
+            me.renderLayout();
             $('.section-item').lazyelement({
                 threshold: 200,
                 supportAsync: !0,
@@ -1600,7 +1616,7 @@ var App = {
                     }
                 }
             });
-            me.renderLayout();
+            // }, 100)
         });
 
         // $(".img-box img,.pic").lazyload({
