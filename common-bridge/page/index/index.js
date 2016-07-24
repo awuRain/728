@@ -483,6 +483,7 @@ var App = {
             _dataReady();
         }
 
+        me.cacheData.Math = Math;
         return me;
     },
     getNowTime: function(opts) { //获取当前时间
@@ -802,6 +803,12 @@ var App = {
                         setTimeout(function() {
                             me.getMainMeeting()
                         }, 200)
+                    }
+                    if (me.cacheData.channel.name == 'map_scope') {
+                        setTimeout(function() {
+                            me.getMapPromotionIndex({"id": "map-promotion"});
+                            me.getMapTicket({"id": "map-ticket"});
+                        }, 100)
                     }
                 }, 200)
             });
@@ -1649,6 +1656,10 @@ var App = {
                 .loadDataRelyonLoc({
                     is_init: 1
                 });
+            if (me.cacheData.channel.name == "map_scope") {
+                me.getMapForeign({"id": "map-foreign"});
+                me.getMapCtrip({"id": "map-ctrip"});
+            }
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
@@ -1678,6 +1689,7 @@ var App = {
 
             $('.J-placeholder-mainMeeting').html(_arr_innerHtml.join(''));
 
+            $('.J-page-tab').remove();
             me.renderPageTab();
 
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
@@ -1986,6 +1998,312 @@ var App = {
         });
 
         return this;
+    },
+    getMapCtrip: function(opts) { //获取携程列表
+        var me = this,
+            _settings = opts || {},
+            pn = _settings.pn || 0,
+            // rn = _settings.rn || 18,
+            rn = _settings.rn || 10,
+            total = me.cacheData.ctrip_total;
+        me.cacheData.ctrip = me.cacheData.ctrip || {};
+        if (me.cacheData.ctrip_pn == pn) {
+            return me;
+        }
+        if (me.cacheData.ctrip[pn]) {
+            me.cacheData.ctrip_pn = pn;
+            me.cacheData.ctrip_rn = rn;
+            me.renderCtrip(_settings);
+            return me;
+        }
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/promotion/getctriplist',
+            dataType: 'jsonp',
+            data: {
+                activity_name: 'duanwu',
+                pn: pn,
+                rn: rn
+            },
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('获取携程列表:' + res.msg);
+                    return false;
+                }
+                me.cacheData.ctrip[pn] = res.data.list || [];
+                me.cacheData.ctrip_pn = pn;
+                me.cacheData.ctrip_rn = rn;
+                me.cacheData.ctrip_total = res.data.total;
+                me.reSizeImg({
+                    type: 'ctrip',
+                });
+                me.renderMapCtrip(_settings);
+            },
+            fail: function() {
+
+            }
+        });
+        return me;
+    },
+    renderMapCtrip: function(opts) { //渲染携程列表
+        var me = this,
+            html = Juicer($('#tpl-map-ctrip').html(), {
+                cacheData: me.cacheData,
+                activeInfo: ACTIVEINFO
+            }),
+            _settings = opts || {};
+        $('.J-placeholder-map-ctrip').html(html);
+        if (!html.length) {
+            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-ctrip');
+        }
+        // me.lazyLoadImg('.J-placeholder-ctrip');
+        // me.getMapForeign();
+        _settings.callback && _settings.callback();
+        $(me).trigger('dataLoaded', [{
+            name: 'ctrip'
+        }]);
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        return me;
+    },
+    getMapForeign: function(opts) { //获取海外特价列表
+        var me = this,
+            _settings = opts || {},
+            pn = _settings.pn || 0,
+            // rn = _settings.rn || 20,
+            rn = _settings.rn || 10,
+            total = me.cacheData.foreign_total;
+        if (me.cacheData.noForeign) {
+            // $('.J-placeholder-foreign').remove();
+            return me;
+        }
+        me.cacheData.foreign = me.cacheData.foreign || {};
+        if (me.cacheData.foreign_pn == pn) {
+            return me;
+        }
+        if (me.cacheData.foreign[pn]) {
+            me.cacheData.foreign_pn = pn;
+            me.cacheData.foreign_rn = rn;
+            me.renderMapForeign(_settings);
+            return me;
+        }
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/overseasale/getsalelistsku',
+            dataType: 'jsonp',
+            data: {
+                activity_name: 'duanwu',
+                pn: pn,
+                rn: rn
+            },
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('获取携程列表:' + res.msg);
+                    return me;
+                }
+                me.cacheData.foreign[pn] = res.data.list || [];
+                me.cacheData.foreign_pn = pn;
+                me.cacheData.foreign_rn = rn;
+                me.cacheData.foreign_total = res.data.total;
+                me.reSizeImg({
+                    type: 'foreign',
+                });
+                me.renderMapForeign(_settings);
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
+            }
+        });
+        return me;
+    },
+    renderMapForeign: function(opts) { //渲染海外特价列表
+        var me = this,
+            _settings = opts || {},
+            html = Juicer($('#tpl-map-foreign').html(), {
+                cacheData: me.cacheData,
+                settings: _settings
+            }),
+            _settings = opts || {};
+        $('.J-placeholder-map-foreign').html(html);
+        if (!html.length) {
+            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-foreign');
+        }
+        // me.lazyLoadImg('.J-placeholder-foreign');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        _settings.callback && _settings.callback();
+        $(me).trigger('dataLoaded', [{
+            name: 'foreign'
+        }]);
+        return me;
+    },
+    getMapTicket: function(opts) { //获取推荐门票
+        var me = this,
+            url,
+            _settings = opts,
+            _query = {
+                sid: me.cacheData.sid,
+                pn: 1,
+                rn: 28,
+                category: 'qunar-jingdian'
+            },
+            item, jtem;
+        if (me.cacheData.channel.name == 'nuomi') {
+            Bridge.Loader.get({
+                url: Bridge.host + '/business/ajax/searchnew/',
+                dataType: 'jsonp',
+                data: _query,
+                success: function(res) {
+                    if (res.errno != 0) {
+                        Bridge.toast('获取推荐门票:' + res.msg);
+                        return me;
+                    }
+                    me.cacheData.ticket = res.data.list || [];
+                    me.reSizeImg({
+                        type: 'ticket'
+                    });
+                    //景点列表中重复的poi 点需要过滤掉
+                    // var promotionIndex = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
+                    // final
+                    var promotionIndex = me.cacheData.promotionIndex[100000000] || {},
+                        promotionList = promotionIndex.promotionList || {},
+                        list = promotionList.list || [];
+                    for (var index in list) {
+                        item = list[index];
+                        for (var jndex in me.cacheData.ticket) {
+                            jtem = me.cacheData.ticket[jndex];
+                            if (item.td_id == jtem.id || jtem.price == 0) {
+                                me.cacheData.ticket.splice(jndex, 1);
+                            }
+                        }
+                    }
+                    me.renderMapTicket(_settings);
+                },
+                fail: function() {
+                    Bridge.toast('网络错误, 请稍候重试');
+                }
+            });
+        } else {
+            _query.qt = 'scope_favorable';
+            _query.city_id = me.cacheData.city_code;
+            _query.rn = 80;
+            Bridge.Loader.get({
+                url: 'http://client.map.baidu.com/scope',
+                dataType: 'jsonp',
+                data: _query,
+                success: function(res) {
+                    if (res.err_no != 0) {
+                        Bridge.toast('获取门票列表:' + res.err_msg);
+                        return false;
+                    }
+                    me.cacheData.ticket = res.data.list || [];
+                    //景点列表中重复的poi 点需要过滤掉
+                    var promotionIndex = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
+                        promotionList = promotionIndex.promotionList || {},
+                        list = promotionList.list || [];
+                    for (var index in list) {
+                        item = list[index];
+                        for (var jndex in me.cacheData.ticket) {
+                            jtem = me.cacheData.ticket[jndex];
+                            if (item.td_id == jtem.id || jtem.price == 0) {
+                                me.cacheData.ticket.splice(jndex, 1);
+                            }
+                        }
+                    }
+                    me.renderMapTicket(_settings);
+                },
+                fail: function() {
+                    Bridge.toast('网络错误, 请稍候重试');
+                }
+            });
+        }
+        return me;
+    },
+    renderMapTicket: function(opts) { //渲染推荐门票区域
+        var me = this,
+            _settings = opts || {},
+            html = '';
+
+        me.reSizeImg({
+            type: 'ticket'
+        });
+        html = Juicer($('#tpl-map-ticket').html(), {
+            cacheData: me.cacheData,
+            settings: _settings
+        });
+        $('.J-placeholder-map-ticket').html(html);
+        if (!html.length) {
+            console.log('insertAfter');
+            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-ticket');
+        }
+        // me.lazyLoadImg('.J-placeholder-ticket');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        $(me).trigger('dataLoaded', [{
+            name: 'ticket'
+        }]);
+        return me;
+    },
+    getMapPromotionIndex: function(opts) { //获取立减数据
+        var me = this,
+            _settings = opts || {},
+            _dataReady = function() {
+                me.renderMapPromotionIndex(_settings);
+            };
+        me.cacheData.promotionIndex = me.cacheData.promotionIndex || {};
+        me.cacheData.promotionIndex[me.cacheData.city_code] = me.cacheData.promotionIndex[me.cacheData.city_code] || null;
+        if (me.cacheData.promotionIndex[me.cacheData.city_code]) {
+            _dataReady();
+            return me;
+        }
+
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/ticket/getpromotionindex/',
+            dataType: 'jsonp',
+            data: $.extend({}, {
+                // promotion_scene_key: me.cacheData.city_code,
+                // final
+                promotion_scene_key: 100000000,
+                promotion_product_show: me.cacheData.channel.name,
+                request_device: 'webapp',
+                activity_id: me.cacheData.channel.activity_id,
+                t: T
+            }, me.params),
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('获取其它门票信息:' + res.msg);
+                    return me;
+                }
+                me.cacheData.promotionIndex[me.cacheData.city_code] = res.data || null;
+                me.reSizeImg({
+                    type: 'promotionIndex'
+                });
+                _dataReady();
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
+            }
+        });
+        return me;
+    },
+    renderMapPromotionIndex: function(opts) { //渲染立减信息
+        var me = this,
+            _settings = opts;
+        $('.J-loading').hide();
+        $(window).trigger('scroll');
+        me.renderMapPromotion(_settings);
+        $(me).trigger('dataLoaded', [{
+            name: 'promotion'
+        }]);
+        return me;
+    },
+    renderMapPromotion: function(opts) { //渲染立减区域
+        var me = this,
+            _settings = opts,
+            html = Juicer($('#tpl-map-promotion').html(), {
+                cacheData: me.cacheData,
+                activeInfo: ACTIVEINFO
+            });
+        console.log(me.cacheData.promotionIndex[me.cacheData.city_code]);
+        $('.J-placeholder-map-promotion').html(html);
+        // me.lazyLoadImg('.J-placeholder-promotion');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        return me;
     }
 };
 
