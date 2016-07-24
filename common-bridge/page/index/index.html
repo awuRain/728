@@ -80,9 +80,9 @@
             case 'orderFill': className = 'J-orderFill'; break;
             default: className = '';
         }
+        console.log('renderFor:',renderFor);
         {# 
         console.log('cardNum:',cardNum);
-        console.log('renderFor:',renderFor);
         console.log('createFlag:',createFlag);
         console.log('pageConfig:',pageConfig_id.limitNum);
         console.log('direction:',direction);
@@ -238,7 +238,7 @@
 <script type="text/template" id="tpl-mainMeeting">
     <%
         var pageConfig = cacheData.pageConfig,
-            pageConfig_id = pageConfig[data.id],
+            pageConfig_id = pageConfig[data.id] || {},
             channel = cacheData.channel,
             showBtmBanner = pageConfig_id.showBtmBanner || 0;
     %>
@@ -294,7 +294,7 @@
                         <h3 class="domain-title">热门城市</h3>
                         <ul>
                             {@each cityList as item, sid}
-                                <li class="province-li ${item.city == cacheData.sname ? 'active' : ''}" data-sname="${item.city}" data-sid="${sid}">${item.city}</li>
+                                <li class="province-li ${item.city == cacheData.sname ? 'active' : ''}" data-sname="${item.city}" data-sid="${sid}" data-province_sid="${item.province_sid}">${item.city}</li>
                             {@/each}
                         </ul>
                     </div>

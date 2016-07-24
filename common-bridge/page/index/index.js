@@ -7,6 +7,8 @@ var pblog = require('../../widgets/pblog-webapp/pblog-webapp.js');
 var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
+var PROVINCELIST = require('promotion_list.js');
+console.log('PROVINCELIST:', PROVINCELIST);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -98,7 +100,6 @@ var App = {
             delete res.cityid;
             delete res.sname;
 
-
             me.cacheData.channel = me.cacheData.channel || {};
             me.cacheData.channel.name = me.params.na_from || 'nuomi';
 
@@ -109,6 +110,8 @@ var App = {
             } else {
                 me.cacheData.channel.name = 'nuomi';
             }
+
+            me.cacheData.provinceList = $.extend({}, PROVINCELIST);
 
             me.getPageConfig();
         });
@@ -121,7 +124,8 @@ var App = {
         attrs: {
             'section-type': 'promotionList'
         },
-        type: 'poi'
+        type: 'poi',
+        dependOnLoc: 1
     }, {
         id: 'fixPrice',
         title: '爆款折扣',
@@ -130,22 +134,61 @@ var App = {
         attrs: {
             'section-type': 'fixPrice'
         },
-        type: 'orderFill'
+        type: 'orderFill',
+        dependOnLoc: 1
     }, {
         id: 'mainMeeting',
-        title: '嗨翻出游主题趴'
+        title: '嗨翻出游主题趴',
+        orderFor: 'nuomi',
+        dependOnLoc: 1
     }, {
         id: 'playflower',
         title: '热门城市玩花样',
         attrs: {
             'section-type': 'playflower'
-        }
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
     }, {
         id: 'playflower2',
         title: '热门城市玩花样2',
         attrs: {
             'section-type': 'playflower'
-        }
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'promotion',
+        title: 'promotion',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'ticket',
+        title: 'ticket',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'foreign',
+        title: 'foreign',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }, {
+        id: 'ctrip',
+        title: 'ctrip',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
     }],
     mainMeetingOrder: [{
         id: 'scenic',
@@ -182,6 +225,16 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         }
+    }, {
+        id: 'holiday',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
+    }, {
+        id: 'water',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
     }],
     setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
@@ -191,8 +244,13 @@ var App = {
 
         me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
 
+        me.baseOrder = me.baseOrder.filter(function(item, index) {
+            if (!item.orderFor || item.orderFor == me.cacheData.channel.name) {
+                return item;
+            }
+        });
+
         if (me.cacheData.channel.name == 'map_scope') {
-            me.baseOrder.splice(2, 1);
             me.mainMeetingOrder.length = 0;
             me.mainMeetingOrder_cp.length = 0;
             return me;
@@ -233,7 +291,7 @@ var App = {
             _settings = opts || {},
             arr_innerHtml = [],
             html = '',
-            _item, _arr_innerHtml, pageConfigItem, _activeDate, _endDate, cacheData_id, cacheData_id_sid, cacheData_id_sid_list, _start_time, _end_time;
+            _item, _arr_innerHtml, pageConfigItem, cacheData_id, cacheData_id_sid, cacheData_id_sid_list, _start_time, _end_time;
 
         me.tpl_layout = tpl;
 
@@ -245,8 +303,6 @@ var App = {
             _item.className = _item.className ? _item.className + ' J-section-item-loc' : ' J-section-item-loc';
             _arr_innerHtml = [];
             pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
-            _activeDate = pageConfigItem.activeDate;
-            _endDate = pageConfigItem.endDate;
 
             if (_item.id == 'promotionList' || _item.id == 'fixPrice') {
                 cacheData_id = me.cacheData[_item.id] || {};
@@ -270,6 +326,12 @@ var App = {
                     if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
                         continue;
                     }
+                    if (cacheData_id_sid_list[0] && cacheData_id_sid_list[0].poi_list && cacheData_id_sid_list[0].poi_list.length == 0) { //数据为空时不展示折扣模块
+                        continue;
+                    }
+                    if (cacheData_id_sid_list[1] && cacheData_id_sid_list[1].poi_list && cacheData_id_sid_list[1].poi_list.length == 0) { //数据为空时不展示折扣模块
+                        continue;
+                    }
                     _item.discount = cacheData_id_sid_list[0].discount * 10 || '';
                     _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                 }
@@ -291,7 +353,7 @@ var App = {
             $('.J-section-item-loc').remove();
         }
 
-        $('.J-placeholder-layout').replaceWith(html);
+        $.trim(html).length && $('.J-placeholder-layout').replaceWith(html);
 
         arr_innerHtml.length = 0;
 
@@ -538,11 +600,10 @@ var App = {
     },
     share: function() {
         var me = this,
-            url = 'http://lvyou.baidu.com/event/s/728_promotion/nuomi/?fr=wechat';
-        // url = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/event/s/728_promotion/nuomi/page/index.html?fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?na_from=nuomi&fr=wechat';
         if (me.cacheData.channel.name == 'map_scope') {
-            url = 'http://map.baidu.com/fwmap/upload/728_promotion/map/?fr=wechat';
-            // url = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/event/s/728_promotion/nuomi/page/index.html?na_from=map_scope&fr=wechat';
+            // url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
         }
 
         Bridge.initShare({
@@ -607,6 +668,7 @@ var App = {
                     return me;
                 }
                 me.cacheData.domainList = res.data;
+                console.log('me.cacheData.domainList:', me.cacheData.domainList);
                 me.setCacheDataToSession();
                 me.renderDomainList();
             },
@@ -619,9 +681,13 @@ var App = {
     renderDomainList: function() { //渲染省份/城市列表
         var me = this,
             _sid = sessionStorage.getItem('sid') || '',
-            _sname = '',
+            _province_sid = sessionStorage.getItem('procince_sid') || '',
+            _sname,
+            _city_code,
+            _cityid,
             _fun = function(opts) {
                 var _settings = opts || {};
+
                 if (_times > 0) { //防止重复初始化
                     return me;
                 }
@@ -632,18 +698,25 @@ var App = {
                     me.cacheData.gps_success = 0;
                     me.cacheData.gps_sid = DEFAULTACTIVEINFO.sid;
                     me.cacheData.gps_sname = DEFAULTACTIVEINFO.sname;
+                    me.cacheData.province_sid = DEFAULTACTIVEINFO.sid;
                 } else { //gps 定位成功
+                    me.cacheData.gps_success = 1;
                     me.cacheData.gps_sid = _settings.sid;
                     me.cacheData.gps_sname = _settings.sname;
-                    me.cacheData.gps_success = 1;
+                    me.cacheData.province_sid = _settings.province_sid;
                 }
+
                 me.cacheData.sid = me.cacheData.gps_sid;
                 me.cacheData.sname = me.cacheData.gps_sname;
+                me.cacheData.city_code = me.cacheData.provinceList[me.cacheData.province_sid].city_code;
+                me.cacheData.cityid = me.cacheData.provinceList[me.cacheData.province_sid].cityid;
+
                 me.setCacheDataToSession();
 
                 try {
                     if (!me.dasouParams.cityid) {
                         sessionStorage.setItem('sid', me.cacheData.sid);
+                        sessionStorage.setItem('province_sid', me.cacheData.province_sid);
                     }
                 } catch (e) {
                     console.log(e);
@@ -661,21 +734,26 @@ var App = {
         if (_sid.length) {
             if (_sid in me.cacheData.domainList.city) {
                 _sname = me.cacheData.domainList.city[_sid].city;
+                _province_sid = me.cacheData.domainList.city[_sid].province_sid;
             } else if (_sid in me.cacheData.domainList.province) {
                 _sname = me.cacheData.domainList.province[_sid];
+                _province_sid = _sid;
             }
             _fun({
                 sid: _sid,
-                sname: _sname
+                sname: _sname,
+                province_sid: _province_sid
             });
             return me;
         }
+
         _timeout = setTimeout(function() {
             clearTimeout(_timeout);
 
             _fun({
                 sid: '',
-                sname: ''
+                sname: '',
+                province_sid: ''
             });
 
             console.warn('getProvinceSid 超时 将已北京作为默认省份');
@@ -687,26 +765,26 @@ var App = {
             if (data) {
                 me.cacheData.gps_city = $.extend({}, data.city);
                 me.cacheData.gps_province = $.extend({}, data.province);
-                console.log('me.cacheData.gps_city.sid in me.cacheData.domainList.city:', me.cacheData.gps_city.sid in me.cacheData.domainList.city);
-                console.log('me.cacheData.gps_city:', me.cacheData.gps_city)
-                console.log('me.cacheData.gps_province.sid in me.cacheData.domainList.province:', me.cacheData.gps_province.sid in me.cacheData.domainList.province);
-                console.log('me.cacheData.gps_province:', me.cacheData.gps_province)
 
                 if (me.cacheData.gps_city.sid in me.cacheData.domainList.city) { //当前位置在城市列表中
                     _sid = me.cacheData.gps_city.sid;
                     _sname = me.cacheData.gps_city.sname;
+                    _province_sid = me.cacheData.gps_province.sid;
                 } else if (me.cacheData.gps_province.sid in me.cacheData.domainList.province) { //当前位置在省份列表中
                     _sid = me.cacheData.gps_province.sid;
                     _sname = me.cacheData.gps_province.sname;
+                    _province_sid = _sid;
                 }
             } else {
                 _sid = '';
                 _sname = '';
+                _province_sid = '';
             }
 
             _fun({
                 sid: _sid,
-                sname: _sname
+                sname: _sname,
+                province_sid: _province_sid
             });
         });
         return me;
@@ -723,9 +801,9 @@ var App = {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
                             me.getMainMeeting()
-                        }, 100)
+                        }, 200)
                     }
-                }, 100)
+                }, 200)
             });
         }, 0)
 
@@ -859,10 +937,10 @@ var App = {
         me.cacheData.promotionList = me.cacheData.promotionList || {};
         me.cacheData.promotionList[me.cacheData.sid] = me.cacheData.promotionList[me.cacheData.sid] || null;
 
-        if (me.cacheData.promotionList[me.cacheData.sid]) {
-            _dataReady();
-            return deferred;
-        }
+        // if (me.cacheData.promotionList[me.cacheData.sid]) {
+        //     _dataReady();
+        //     return deferred;
+        // }
 
         Bridge.Loader.get({
             url: Bridge.host + '/business/ajax/promotion/getdiscountbuying',
@@ -927,6 +1005,10 @@ var App = {
         //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
         //     return me;
         // }
+        if (!promotionList_sid_list[1]) {
+            $('#' + _settings.id).remove();
+            return me;
+        }
 
         show_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
         show_tab1 = !show_tab2;
@@ -1272,42 +1354,39 @@ var App = {
     renderBase: function() { //渲染不需要依赖地理位置的基础模块
         var me = this,
             _item,
-            isPlayflowerEmpty = 1,
-            isPlayflower2Empty = 1,
-            playflower = me.cacheData.pageConfig.playflower || {},
-            playflower2 = me.cacheData.pageConfig.playflower2 || {},
-            playflower_list = playflower.list || [],
-            playflower2_list = playflower2.list || [];
+            isListEmpty = 1,
+            pageConfig_id,
+            pageConfig_id_list;
 
-        for (var i = 0, len = playflower_list.length; i < len; i++) {
-            _item = playflower_list[i];
-            if (_item.pic && _item.link) {
-                isPlayflowerEmpty = 0; //标记热门分会场列表不为空
-                break;
+        var noLocOrder = me.baseOrder.filter(function(item, index) { //选出不依赖定位的数据模块
+            if (item.dependOnLoc != 1) {
+                return item;
             }
-        }!isPlayflowerEmpty && me.cacheData.channel.name == 'nuomi' && $(Juicer($('#tpl-layout').html(), { //填充热门分会场layout
-            cacheData: me.cacheData,
-            data: {
-                layout: me.createSection(me.baseOrder[me.baseOrder.length - 2])
+        });
+        var _baseOrder = me.baseOrder.filter(function(item, index) { //选出依赖定位的数据模块
+            if (item.dependOnLoc == 1) {
+                return item;
             }
-        })).insertAfter('.J-placeholder-layout');
-        me.baseOrder.splice(me.baseOrder.length - 2, 1);
+        });
+        me.baseOrder = $.extend([], _baseOrder);
 
-        for (var i = 0, len = playflower2_list.length; i < len; i++) {
-            _item = playflower2_list[i];
-            if (_item.pic && _item.link) {
-                isPlayflowerEmpty = 0; //标记其它垂直营销列表不为空
-                break;
-            }
-        }
-
-        !isPlayflower2Empty && me.cacheData.channel.name == 'nuomi' && $(Juicer($('#tpl-layout').html(), { //填充其它垂直营销layout
-            cacheData: me.cacheData,
-            data: {
-                layout: me.createSection(me.baseOrder[me.baseOrder.length - 1])
-            }
-        })).insertAfter('.J-placeholder-layout');
-        me.baseOrder.length -= 1;
+        noLocOrder.forEach(function(item, index) {
+            pageConfig_id = me.cacheData.pageConfig[item.id] || {};
+            pageConfig_id_list = pageConfig_id.list || [];
+            isListEmpty = 1;
+            for (var i = 0, len = pageConfig_id_list.length; i < len; i++) {
+                _item = pageConfig_id_list[i];
+                if (_item.pic.length > 0 && _item.link.length > 0) {
+                    isListEmpty = 0;
+                    break;
+                }
+            }!isListEmpty && $(Juicer($('#tpl-layout').html(), { //填充不依赖地理位置的模块 layout
+                cacheData: me.cacheData,
+                data: {
+                    layout: me.createSection(item)
+                }
+            })).insertAfter('.J-placeholder-layout');
+        });
 
         me.renderCalendar()
             .renderHeader()
@@ -1323,7 +1402,7 @@ var App = {
         $('.J-loading').text('').removeClass('show').addClass('hide');
 
         if (me.cacheData.channel.name == 'nuomi') {
-            $('footer .game-btn').attr({'data-link': me.cacheData.pageConfig.footer.lottery.url, "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id']});
+            $('footer .game-btn').attr({ 'data-link': me.cacheData.pageConfig.footer.lottery.url, "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id'] });
         }
 
         return me;
@@ -1683,18 +1762,24 @@ var App = {
                 is_show: 1
             });
         }).on('tap', '.province-li', function(e) { //省份切换
-            var sid = $(this).data('sid');
+            var sid = $(this).data('sid'),
+                province_sid = $(this).attr('data-province_sid') || sid;
             if (sid == me.cacheData.sid) {
                 $('.J-flayer-close').trigger('tap');
                 return me;
             }
+            console.log('sid:', sid);
+            console.log('province_sid:', province_sid)
             $('.province-li').removeClass('active');
             $(this).addClass('active');
             $('#J_cur-pro').html(me.cacheData.sname = $(this).data('sname'));
             me.cacheData.sid = sid || me.cacheData.sid;
+            me.cacheData.province_sid = province_sid || me.cacheData.province_sid;
             $('.J-flayer-close').trigger('tap');
+
             try {
                 sessionStorage.setItem('sid', me.cacheData.sid);
+                sessionStorage.setItem('province_sid', me.cacheData.province_sid);
             } catch (e) {
 
             }
