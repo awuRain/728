@@ -492,11 +492,11 @@ body {
                         display: block;
                         content: '\20';
                         width: 100%;
-                        height: 1px;
+                        height: 2px;
                         background: #999;
                         position: absolute;
                         left: 0;
-                        top: 50%;
+                        top: 48%;
                         margin: 0;
                         transform: scaleY(.5);
                     }
@@ -914,7 +914,37 @@ body {
     &.section-item-top {
         .section-item-title {
             &:before {
-                transform: translate3d(-280%, -70%, 0);
+                transform: translate3d(-315%, -70%, 0);
+            }
+        }
+    }
+}
+
+.section-item-holiday {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*6/420*100%;
+        }
+    }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-350%, -70%, 0);
+            }
+        }
+    }
+}
+
+.section-item-water {
+    .section-item-title {
+        &:after {
+            background-position: 0 60*7/420*100%;
+        }
+    }
+    &.section-item-top {
+        .section-item-title {
+            &:before {
+                transform: translate3d(-350%, -70%, 0);
             }
         }
     }

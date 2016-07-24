@@ -225,6 +225,16 @@ var App = {
         attrs: {
             'section-type': 'mainMeeting'
         }
+    }, {
+        id: 'holiday',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
+    }, {
+        id: 'water',
+        attrs: {
+            'section-type': 'mainMeeting'
+        }
     }],
     setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
@@ -314,6 +324,12 @@ var App = {
                 //限量抢
                 if (_item.id == 'promotionList') {
                     if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
+                        continue;
+                    }
+                    if (cacheData_id_sid_list[0] && cacheData_id_sid_list[0].poi_list && cacheData_id_sid_list[0].poi_list.length == 0) { //数据为空时不展示折扣模块
+                        continue;
+                    }
+                    if (cacheData_id_sid_list[1] && cacheData_id_sid_list[1].poi_list && cacheData_id_sid_list[1].poi_list.length == 0) { //数据为空时不展示折扣模块
                         continue;
                     }
                     _item.discount = cacheData_id_sid_list[0].discount * 10 || '';
@@ -584,11 +600,10 @@ var App = {
     },
     share: function() {
         var me = this,
-            url = 'http://lvyou.baidu.com/event/s/728_promotion/nuomi/?fr=wechat';
-        // url = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/event/s/728_promotion/nuomi/page/index.html?fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?na_from=nuomi&fr=wechat';
         if (me.cacheData.channel.name == 'map_scope') {
-            url = 'http://map.baidu.com/fwmap/upload/728_promotion/map/?fr=wechat';
-            // url = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/event/s/728_promotion/nuomi/page/index.html?na_from=map_scope&fr=wechat';
+            // url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
         }
 
         Bridge.initShare({
@@ -922,10 +937,10 @@ var App = {
         me.cacheData.promotionList = me.cacheData.promotionList || {};
         me.cacheData.promotionList[me.cacheData.sid] = me.cacheData.promotionList[me.cacheData.sid] || null;
 
-        if (me.cacheData.promotionList[me.cacheData.sid]) {
-            _dataReady();
-            return deferred;
-        }
+        // if (me.cacheData.promotionList[me.cacheData.sid]) {
+        //     _dataReady();
+        //     return deferred;
+        // }
 
         Bridge.Loader.get({
             url: Bridge.host + '/business/ajax/promotion/getdiscountbuying',
@@ -990,6 +1005,10 @@ var App = {
         //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
         //     return me;
         // }
+        if (!promotionList_sid_list[1]) {
+            $('#' + _settings.id).remove();
+            return me;
+        }
 
         show_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
         show_tab1 = !show_tab2;
@@ -1357,12 +1376,11 @@ var App = {
             isListEmpty = 1;
             for (var i = 0, len = pageConfig_id_list.length; i < len; i++) {
                 _item = pageConfig_id_list[i];
-                if (_item.pic.length>0 && _item.link.length>0) {
+                if (_item.pic.length > 0 && _item.link.length > 0) {
                     isListEmpty = 0;
                     break;
                 }
-            }
-            !isListEmpty && $(Juicer($('#tpl-layout').html(), { //填充不依赖地理位置的模块 layout
+            }!isListEmpty && $(Juicer($('#tpl-layout').html(), { //填充不依赖地理位置的模块 layout
                 cacheData: me.cacheData,
                 data: {
                     layout: me.createSection(item)
@@ -1758,7 +1776,7 @@ var App = {
             me.cacheData.sid = sid || me.cacheData.sid;
             me.cacheData.province_sid = province_sid || me.cacheData.province_sid;
             $('.J-flayer-close').trigger('tap');
-            
+
             try {
                 sessionStorage.setItem('sid', me.cacheData.sid);
                 sessionStorage.setItem('province_sid', me.cacheData.province_sid);
