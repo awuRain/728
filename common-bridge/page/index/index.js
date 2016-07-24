@@ -229,12 +229,14 @@ var App = {
         id: 'holiday',
         attrs: {
             'section-type': 'mainMeeting'
-        }
+        },
+        type: 'link'
     }, {
         id: 'water',
         attrs: {
             'section-type': 'mainMeeting'
-        }
+        },
+        type: 'link'
     }],
     setLayoutData: function(opts) { //组织分会场顺序
         var me = this,
