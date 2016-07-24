@@ -28,7 +28,7 @@ $.extend(Bridge.prototype, {
     pageConfig: {
         "orderFill":{
             "nuomi":"http://lvyou.baidu.com/static/foreign/page/ticket/orderFill/orderFill.html?a=1",
-            'map':'http://map.baidu.com/mobile/webapp/scope/orderFill/qt=order_input?a=1'
+            'map':'http://map.baidu.com/mobile/webapp/scope/orderFill/qt=order_input&a=1'
         },
         "poiDetail":{
             "map":"http://map.baidu.com/mobile/webapp/place/detail/foo=bar",
