@@ -81,15 +81,16 @@
             default: className = '';
         }
         console.log('renderFor:',renderFor);
-        console.log('cardNum:',cardNum);
+        console.log('flags:',flags);
         {# 
+        console.log('cardNum:',cardNum);
         console.log('createFlag:',createFlag);
         console.log('pageConfig:',pageConfig_id.limitNum);
         console.log('direction:',direction);
         console.log('type:',type);
         console.log('data:',data);
         console.log('attrs:',attrs);
-        console.log('flags:',flags);}
+        }
     %>
     <ul ${arr_attrs.join(' ')}>
         {@each data as item, index}
@@ -119,8 +120,10 @@
                     case 'scenehotel': className = 'J-scenehotel'; break;
                 }
                 if(renderFor == 'fixPrice'){
-                    flags = item.status ? [createFlag(item.status)] : [];
+                    flags = item.status != undefined ? [createFlag(item.status)] : [];
                     current_price = item.fixprice;
+                } else if (renderFor == 'promotionList'){
+
                 } else {
                     flags = createFlag ? [createFlag(renderFor)] || [] : [];
                 }
@@ -245,7 +248,7 @@
     <div class="BN-list BN-list-cols${data.colsNum}">
         $${data.list.html}
         {@if pageConfig_id.showBtmBanner && pageConfig_id.banner_pic}
-            <p class="more-link J-jumpBnr" data-link="${pageConfig_id.banner_link}" pb-id="${pageConfig_id['pb-id']}">
+            <p class="more-link J-jumpBnr" data-link="${pageConfig_id.banner_link}" data-nalink="${pageConfig_id.banner_nalink}" pb-id="${pageConfig_id['pb-id']}">
                 <img src="${pageConfig_id.banner_pic}">
             </p>
         {@/if}
@@ -261,9 +264,9 @@
             promotionFixPrice = cacheData.promotionFixPrice || {},
             promotionFixPriceData = promotionFixPrice || {},
             ticket = promotionFixPriceData.ticket || {},
-            domainList = cacheData.domainList || {},
-            provinceList = domainList.province || [],
-            cityList = domainList.city || [],
+            domainOrder = cacheData.domainOrder || {},
+            provinceList = domainOrder.province || [],
+            cityList = domainOrder.city || [],
             flayerTitle = settings.flayerTitle || '',
             type = settings.type,
             data = settings.data || {};
@@ -294,15 +297,19 @@
                         <h3 class="domain-title">热门城市</h3>
                         <ul>
                             {@each cityList as item, sid}
-                                <li class="province-li ${item.city == cacheData.sname ? 'active' : ''}" data-sname="${item.city}" data-sid="${sid}" data-province_sid="${item.province_sid}">${item.city}</li>
+                                <%for(var sid in item){%>
+                                    <li class="province-li ${item[sid].city == cacheData.sname ? 'active' : ''}" data-sname="${item[sid].city}" data-sid="${sid}" data-province_sid="${item[sid].province_sid}">${item[sid].city}</li>
+                                <%}%>
                             {@/each}
                         </ul>
                     </div>
                     <div class="domain-list">
-                        <h3 class="domain-title">所在省份</h3>
+                        <h3 class="domain-title">访问省份</h3>
                         <ul>
-                            {@each provinceList as sname, sid}
-                                <li class="province-li ${sname == cacheData.sname ? 'active' : ''}" data-sname="${sname}" data-sid="${sid}">${sname}</li>
+                            {@each provinceList as item, index}
+                                <%for(var sid in item){%>
+                                    <li class="province-li ${item[sid] == cacheData.sname ? 'active' : ''}" data-sname="${item[sid]}" data-sid="${sid}">${item[sid]}</li>
+                                <%}%>
                             {@/each}
                         </ul>
                     </div>
@@ -383,7 +390,7 @@
         <ul>
             {@each subSession as item}
                 {@if item.title}
-                    <li><a class="J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">${item.title}</a></li>
+                    <li><a class="J-jumpBnr" data-link="${item.link}" data-nalink="${item.nalink}" pb-id="${item['pb-id']}">${item.title}</a></li>
                 {@/if}
             {@/each}
         </ul>
@@ -416,7 +423,7 @@
         {@each playflower as item}
             {@if item.pic}
                 <li>
-                    <a class="list-cont J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">
+                    <a class="list-cont J-jumpBnr" data-link="${item.link}" data-nalink="${item.nalink}" pb-id="${item['pb-id']}">
                         <div class="pic" data-src="${item.pic}">
                             <i></i>
                         </div>
@@ -441,7 +448,7 @@
         {@each playflower2 as item}
             {@if item.pic}
                 <li>
-                    <a class="list-cont J-jumpBnr" data-link="${item.link}" pb-id="${item['pb-id']}">
+                    <a class="list-cont J-jumpBnr" data-link="${item.link}" data-nalink="${item.nalink}" pb-id="${item['pb-id']}">
                         <div class="pic" data-src="${item.pic}">
                             <i></i>
                         </div>
