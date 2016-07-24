@@ -206,5 +206,26 @@
             "url": "http://.baidu.com",
             "pb-id": "gamegame"
         }
+    },
+    "mapctrip": {
+        "subTitle": "title",
+        "pb-id": "123",
+        "page-change": "321"
+    },
+    "mapForeign": {
+        "subTitle": "title",
+        "pb-id": "123",
+        "page-change": "321"
+    },
+    "mapTicket": {
+        "subTitle": "title",
+        "pb-id": "123",
+        "page-change": "321",
+        "show_tag": 1
+    },
+    "mapPromotion": {
+        "subTitle": "title",
+        "pb-id": "123",
+        "page-change": "321"
     }
 }
