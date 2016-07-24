@@ -158,7 +158,7 @@ var App = {
         orderFor: 'nuomi',
         dependOnLoc: 0
     }, {
-        id: 'promotion',
+        id: 'map-promotion',
         title: 'promotion',
         attrs: {
             'section-type': 'bbb'
@@ -166,7 +166,7 @@ var App = {
         orderFor: 'map_scope',
         dependOnLoc: 1
     }, {
-        id: 'ticket',
+        id: 'map-ticket',
         title: 'ticket',
         attrs: {
             'section-type': 'bbb'
@@ -174,7 +174,7 @@ var App = {
         orderFor: 'map_scope',
         dependOnLoc: 1
     }, {
-        id: 'foreign',
+        id: 'map-foreign',
         title: 'foreign',
         attrs: {
             'section-type': 'bbb'
@@ -182,7 +182,7 @@ var App = {
         orderFor: 'map_scope',
         dependOnLoc: 0
     }, {
-        id: 'ctrip',
+        id: 'map-ctrip',
         title: 'ctrip',
         attrs: {
             'section-type': 'bbb'
@@ -1376,18 +1376,23 @@ var App = {
             }
         });
         me.baseOrder = $.extend([], _baseOrder);
-
         noLocOrder.forEach(function(item, index) {
             pageConfig_id = me.cacheData.pageConfig[item.id] || {};
             pageConfig_id_list = pageConfig_id.list || [];
             isListEmpty = 1;
+
             for (var i = 0, len = pageConfig_id_list.length; i < len; i++) {
                 _item = pageConfig_id_list[i];
                 if (_item.pic.length > 0 && _item.link.length > 0) {
                     isListEmpty = 0;
                     break;
                 }
-            }!isListEmpty && $(Juicer($('#tpl-layout').html(), { //填充不依赖地理位置的模块 layout
+            }
+            if(item.id == 'map-foreign' || item.id == 'map-ctrip'){
+                isListEmpty = 0;
+            }
+
+            !isListEmpty && $(Juicer($('#tpl-layout').html(), { //填充不依赖地理位置的模块 layout
                 cacheData: me.cacheData,
                 data: {
                     layout: me.createSection(item)
@@ -1404,6 +1409,10 @@ var App = {
             me.renderPlayFlower()
                 .renderPlayFlower2()
                 .renderSubSessionTab();
+        }
+        if(me.cacheData.channel.name == 'map_scope'){
+            me.getMapForeign({"id": "map-foreign"});
+            me.getMapCtrip({"id": "map-ctrip"});
         }
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
@@ -1657,8 +1666,8 @@ var App = {
                     is_init: 1
                 });
             if (me.cacheData.channel.name == "map_scope") {
-                me.getMapForeign({"id": "map-foreign"});
-                me.getMapCtrip({"id": "map-ctrip"});
+                // me.getMapForeign({"id": "map-foreign"});
+                // me.getMapCtrip({"id": "map-ctrip"});
             }
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
