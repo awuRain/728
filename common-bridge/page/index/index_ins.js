@@ -8,7 +8,7 @@ var CountDown = require('../../widgets/countdown/countdown.js');
 var lite = require('../../widgets/lite/lite.js');
 var moment = require('moment');
 var PROVINCELIST = require('promotion_list.js');
-var DOMAINORDER = require('domain_order.js');
+console.log('PROVINCELIST:', PROVINCELIST);
 
 var T = (new Date()) - 0,
     DEFAULTACTIVEINFO = {
@@ -112,7 +112,6 @@ var App = {
             }
 
             me.cacheData.provinceList = $.extend({}, PROVINCELIST);
-            me.cacheData.domainOrder = $.extend({}, DOMAINORDER);
 
             me.getPageConfig();
         });
@@ -120,79 +119,77 @@ var App = {
         return me;
     },
     baseOrder: [{
-            id: 'promotionList',
-            title: '爆款抢购',
-            attrs: {
-                'section-type': 'promotionList'
-            },
-            type: 'poi',
-            dependOnLoc: 1
-        }, {
-            id: 'fixPrice',
-            title: '爆款折扣',
-            activeDate: '2016-07-17',
-            endDate: '2016-07-20',
-            attrs: {
-                'section-type': 'fixPrice'
-            },
-            type: 'orderFill',
-            dependOnLoc: 1
-        }, {
-            id: 'mainMeeting',
-            title: '嗨翻出游主题趴',
-            orderFor: 'nuomi',
-            dependOnLoc: 1
-        }, {
-            id: 'playflower',
-            title: '热门城市玩花样',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }, {
-            id: 'playflower2',
-            title: '热门城市玩花样2',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }
-        /*, {
-                id: 'map-promotion',
-                title: 'promotion',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-ticket',
-                title: 'ticket',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-foreign',
-                title: 'foreign',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }, {
-                id: 'map-ctrip',
-                title: 'ctrip',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }*/
-    ],
+        id: 'promotionList',
+        title: '爆款抢购',
+        attrs: {
+            'section-type': 'promotionList'
+        },
+        type: 'poi',
+        dependOnLoc: 1
+    }, {
+        id: 'fixPrice',
+        title: '爆款折扣',
+        activeDate: '2016-07-17',
+        endDate: '2016-07-20',
+        attrs: {
+            'section-type': 'fixPrice'
+        },
+        type: 'orderFill',
+        dependOnLoc: 1
+    }, {
+        id: 'mainMeeting',
+        title: '嗨翻出游主题趴',
+        orderFor: 'nuomi',
+        dependOnLoc: 1
+    }, {
+        id: 'playflower',
+        title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'map-promotion',
+        title: 'promotion',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-ticket',
+        title: 'ticket',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-foreign',
+        title: 'foreign',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }, {
+        id: 'map-ctrip',
+        title: 'ctrip',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }],
     mainMeetingOrder: [{
         id: 'scenic',
         attrs: {
@@ -358,12 +355,7 @@ var App = {
             $('.J-section-item-loc').remove();
         }
 
-        if ($.trim(html).length) {
-            $('.J-placeholder-layout').replaceWith(html);
-            // setTimeout(function() {
-            //     $(window).trigger('scroll');
-            // }, 200);
-        }
+        $.trim(html).length && $('.J-placeholder-layout').replaceWith(html);
 
         arr_innerHtml.length = 0;
 
@@ -661,21 +653,32 @@ var App = {
 
         $('.J-loading').text('正在拉取省份列表...');
 
-        me.cacheData.domainList = { city: {}, province: {} };
-        me.cacheData.domainOrder.city.forEach(function(item, index) {
-            for (var sid in item) {
-                me.cacheData.domainList.city[sid] = item[sid];
+        if (me.cacheData.domainList) {
+            me.renderDomainList();
+            return me;
+        }
 
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/promotion/getprovincecity/',
+            dataType: 'jsonp',
+            data: {
+                activity_name: 'summer',
+                t: T
+            },
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('省份列表:' + res.msg);
+                    return me;
+                }
+                me.cacheData.domainList = res.data;
+                console.log('me.cacheData.domainList:', me.cacheData.domainList);
+                me.setCacheDataToSession();
+                me.renderDomainList();
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
             }
         });
-        me.cacheData.domainOrder.province.forEach(function(item, index) {
-            for (var sid in item) {
-                me.cacheData.domainList.province[sid] = item[sid];
-            }
-        });
-        me.setCacheDataToSession();
-        me.renderDomainList();
-
         return me;
     },
     renderDomainList: function() { //渲染省份/城市列表
@@ -780,6 +783,7 @@ var App = {
                 _sname = '';
                 _province_sid = '';
             }
+
             _fun({
                 sid: _sid,
                 sname: _sname,
@@ -799,13 +803,13 @@ var App = {
                 setTimeout(function() {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
-                            me.getMainMeeting();
+                            me.getMainMeeting()
                         }, 200)
                     }
                     if (me.cacheData.channel.name == 'map_scope') {
                         setTimeout(function() {
-                            me.getMapPromotionIndex({ "id": "map-promotion" });
-                            me.getMapTicket({ "id": "map-ticket" });
+                            me.getMapPromotionIndex({"id": "map-promotion"});
+                            me.getMapTicket({"id": "map-ticket"});
                         }, 100)
                     }
                 }, 200)
@@ -899,13 +903,16 @@ var App = {
                         data: fixPrice_sid.list || [],
                         createFlag: function(status) {
                             var text, className;
-                            if (status == 2) {
+                            if (status == 0) {
                                 text = '即将开始';
                                 className = 'flag-comming';
                             } else if (status == 1) {
-                                text = '8.6特价';
+                                text = '抢购中';
                                 className = 'flag-discount';
-                            } else if (status == 0) {
+                            } else if (status == 2) {
+                                text = '抢购结束';
+                                className = 'flag-past';
+                            } else if (status == 3) {
                                 text = '抢购结束';
                                 className = 'flag-past';
                             } else {
@@ -981,14 +988,13 @@ var App = {
         var me = this,
             tpl = me.tpl_promotionList || $('#tpl-promotionList').html(),
             _settings = opts || {},
-            createFlag = function(status, discount) {
-                discount *= 10;
+            createFlag = function(status) {
                 var text, className;
                 if (status == 0) {
                     text = '即将开始';
                     className = 'flag-comming';
                 } else if (status == 1) {
-                    text = discount + '折抢购中';
+                    text = '抢购中';
                     className = 'flag-discount';
                 } else if (status == 2) {
                     text = '抢购结束';
@@ -1000,6 +1006,7 @@ var App = {
             promotionList_sid = promotionList[me.cacheData.sid] || {},
             promotionList_sid_list = promotionList_sid.list || [],
             show_tab1, show_tab2, html;
+
         me.tpl_promotionList = tpl;
 
         // if (promotionList_sid_list.length == 0) {
@@ -1007,7 +1014,6 @@ var App = {
         //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter($('#' + _settings.id));
         //     return me;
         // }
-
         if (!promotionList_sid_list[1]) {
             $('#' + _settings.id).remove();
             return me;
@@ -1034,7 +1040,7 @@ var App = {
                             'style': 'display:' + (show_tab1 ? 'block' : 'none')
                         },
                         flags: [
-                            createFlag(promotionList_sid_list[0].status, promotionList_sid_list[0].discount)
+                            createFlag(promotionList_sid_list[0].status)
                         ]
                     })
                 },
@@ -1052,7 +1058,7 @@ var App = {
                             'style': 'display:' + (show_tab2 ? 'block' : 'none')
                         },
                         flags: [
-                            createFlag(promotionList_sid_list[1].status, promotionList_sid_list[1].discount)
+                            createFlag(promotionList_sid_list[1].status)
                         ]
                     })
                 }
@@ -1384,7 +1390,7 @@ var App = {
                     break;
                 }
             }
-            if (item.id == 'map-foreign' || item.id == 'map-ctrip') {
+            if(item.id == 'map-foreign' || item.id == 'map-ctrip'){
                 isListEmpty = 0;
             }
 
@@ -1406,19 +1412,15 @@ var App = {
                 .renderPlayFlower2()
                 .renderSubSessionTab();
         }
-        if (me.cacheData.channel.name == 'map_scope') {
-            me.getMapForeign({ "id": "map-foreign" });
-            me.getMapCtrip({ "id": "map-ctrip" });
+        if(me.cacheData.channel.name == 'map_scope'){
+            me.getMapForeign({"id": "map-foreign"});
+            me.getMapCtrip({"id": "map-ctrip"});
         }
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
 
         if (me.cacheData.channel.name == 'nuomi') {
-            $('footer .game-btn').attr({
-                'data-link': me.cacheData.pageConfig.footer.lottery.link,
-                'data-nalink': me.cacheData.pageConfig.footer.lottery.nalink,
-                "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id']
-            });
+            $('footer .game-btn').attr({ 'data-link': me.cacheData.pageConfig.footer.lottery.url, "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id'] });
         }
 
         return me;
@@ -1429,10 +1431,12 @@ var App = {
             html = '';
         var currentOrder = me.mainMeetingOrder_cp;
 
+        var endDate_s_1 = moment2Str(moment(me.cacheData.pageConfig.mainMeeting.peakEndDate).subtract(1, 'day'));
+
         var now = moment(me.cacheData.now),
             list = [];
 
-        if(now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
+        if(now.isAfter(endDate_s_1)) {
             for (var i in currentOrder) {
                 var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                 if (now.isSame(to, 'day')) {
@@ -1656,11 +1660,10 @@ var App = {
         }
 
         $(me).on('locationReady', function() { //地理位置信息已经 ready
-
             me.renderFlayer({
                 type: 'domainList',
-                flayerTitle: '选择你想出行的目的地',
-                is_show: me.cacheData.gps_success ? 0 : 1 //定位失败时需要打开省份列表的浮层
+                flayerTitle: '选择你想出行的省份',
+                is_show: me.gps_success == 0 ? 1 : 0 //定位失败时需要打开省份列表的浮层
             });
 
             $('.J-loading').text('正在检测登录状态');
@@ -1673,6 +1676,10 @@ var App = {
                 .loadDataRelyonLoc({
                     is_init: 1
                 });
+            if (me.cacheData.channel.name == "map_scope") {
+                // me.getMapForeign({"id": "map-foreign"});
+                // me.getMapCtrip({"id": "map-ctrip"});
+            }
         }).on('dataLoaded', function(e, data) { //所有请求已加载完成
             var _data = data || {};
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
@@ -1793,6 +1800,8 @@ var App = {
                 $('.J-flayer-close').trigger('tap');
                 return me;
             }
+            console.log('sid:', sid);
+            console.log('province_sid:', province_sid)
             $('.province-li').removeClass('active');
             $(this).addClass('active');
             $('#J_cur-pro').html(me.cacheData.sname = $(this).data('sname'));
@@ -1806,7 +1815,7 @@ var App = {
             } catch (e) {
 
             }
-            // $('.section-item').unlazyelement();
+            $('.section-item').unlazyelement();
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
@@ -1983,14 +1992,12 @@ var App = {
             });
             $link.addClass('active').siblings('li').removeClass('active');
         }).on('tap', '.J-jumpBnr', function() { //banner位点击
-            var link = $(this).data('link'),
-                nalink = $(this).attr('data-nalink');
+            var link = $(this).data('link');
             if (link.length == 0) {
                 return me;
             }
             Bridge.pushWindow({
-                // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: decodeURIComponent(nalink),
+                nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
                 "nuomi-webapp": link,
                 "map-webapp": link,
                 "map-ios": link,
@@ -2299,6 +2306,7 @@ var App = {
         });
         $('.J-placeholder-map-ticket').html(html);
         if (!html.length) {
+            console.log('insertAfter');
             $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-ticket');
         }
         // me.lazyLoadImg('.J-placeholder-ticket');
@@ -2368,6 +2376,7 @@ var App = {
                 cacheData: me.cacheData,
                 activeInfo: ACTIVEINFO
             });
+        console.log(me.cacheData.promotionIndex[me.cacheData.city_code]);
         $('.J-placeholder-map-promotion').html(html);
         // me.lazyLoadImg('.J-placeholder-promotion');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
