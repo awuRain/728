@@ -1570,7 +1570,7 @@ footer {
                     width: 39/2/16rem;
                     height: 100%;
                     background-image: url('./img/dates.jpg');
-                    background-position: 90% 0;
+                    background-position: 50% 0;
                     background-repeat: no-repeat;
                     background-size: cover;
                 }
@@ -1582,6 +1582,39 @@ footer {
                     &:after {
                         background-position: 0 0;
                     }
+                }
+            }
+            ul.peak-list {
+                width: 90%;
+                background-color: #e50218;
+                li {
+                    .flex-1;
+                    .list-cont {
+                        background-color: #e50118;
+                        color: #fff;
+                    }
+                    &:nth-child(2) {
+                        .list-cont {
+                            background-color: #ffff00;
+                            color: #ac1e10;
+                        }
+                    }
+                    &:after {
+                        background-position: 94% 0;
+                    }
+                    &:nth-child(2):after {
+                        background-position: 0 0;
+                    }
+                    &:nth-child(3):after {
+                        background-position: 50% 0;
+                    }
+                }
+            }
+            ul.return-list {
+                width: 100%;
+                background-color: #e50218;
+                li .list-cont {
+                    padding: 7/16rem 30/16rem;
                 }
             }
         }
