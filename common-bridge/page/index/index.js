@@ -1464,7 +1464,7 @@ var App = {
                 list = me.cacheData.pageConfig.peakCalendar;
                 calendarType = "peak";
             } else {
-                list = me.cacheData.pageConfig.returnCalendar;
+                list = me.cacheData.pageConfig.peakCalendar;
                 calendarType = "return";
             }
 

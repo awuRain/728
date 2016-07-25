@@ -1623,10 +1623,29 @@ footer {
                 }
             }
             ul.return-list {
-                width: 100%;
+                width: 90%;
                 background-color: #e50218;
-                li .list-cont {
-                    padding: 7/16rem 30/16rem;
+                li {
+                    .flex-1;
+                    .list-cont {
+                        background-color: #e50118;
+                        color: #fff;
+                    }
+                    &:nth-child(3) {
+                        .list-cont {
+                            background-color: #ffff00;
+                            color: #ac1e10;
+                        }
+                    }
+                    &:after {
+                        background-position: 50% 0;
+                    }
+                    &:nth-child(2):after {
+                        background-position: 94% 0;
+                    }
+                    &:nth-child(3):after {
+                        background-position: 0 0;
+                    }
                 }
             }
         }
