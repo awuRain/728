@@ -120,79 +120,77 @@ var App = {
         return me;
     },
     baseOrder: [{
-            id: 'promotionList',
-            title: '爆款抢购',
-            attrs: {
-                'section-type': 'promotionList'
-            },
-            type: 'poi',
-            dependOnLoc: 1
-        }, {
-            id: 'fixPrice',
-            title: '爆款折扣',
-            activeDate: '2016-07-17',
-            endDate: '2016-07-20',
-            attrs: {
-                'section-type': 'fixPrice'
-            },
-            type: 'orderFill',
-            dependOnLoc: 1
-        }, {
-            id: 'mainMeeting',
-            title: '嗨翻出游主题趴',
-            orderFor: 'nuomi',
-            dependOnLoc: 1
-        }, {
-            id: 'playflower',
-            title: '热门城市玩花样',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }, {
-            id: 'playflower2',
-            title: '热门城市玩花样2',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }
-        /*, {
-                id: 'map-promotion',
-                title: 'promotion',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-ticket',
-                title: 'ticket',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-foreign',
-                title: 'foreign',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }, {
-                id: 'map-ctrip',
-                title: 'ctrip',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }*/
-    ],
+        id: 'promotionList',
+        title: '爆款抢购',
+        attrs: {
+            'section-type': 'promotionList'
+        },
+        type: 'poi',
+        dependOnLoc: 1
+    }, {
+        id: 'fixPrice',
+        title: '爆款折扣',
+        activeDate: '2016-07-17',
+        endDate: '2016-07-20',
+        attrs: {
+            'section-type': 'fixPrice'
+        },
+        type: 'orderFill',
+        dependOnLoc: 1
+    }, {
+        id: 'mainMeeting',
+        title: '嗨翻出游主题趴',
+        orderFor: 'nuomi',
+        dependOnLoc: 1
+    }, {
+        id: 'playflower',
+        title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }/*, {
+        id: 'map-promotion',
+        title: 'promotion',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-ticket',
+        title: 'ticket',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-foreign',
+        title: 'foreign',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }, {
+        id: 'map-ctrip',
+        title: 'ctrip',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }*/],
     mainMeetingOrder: [{
         id: 'scenic',
         attrs: {
@@ -609,10 +607,10 @@ var App = {
     },
     share: function() {
         var me = this,
-            url = Bridge.host + '/event/s/728_promotion/index/?na_from=nuomi&fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?fr=wechat';
         if (me.cacheData.channel.name == 'map_scope') {
-            // url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
-            url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
+            url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
+            // url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
         }
 
         Bridge.initShare({
@@ -759,7 +757,6 @@ var App = {
 
         Bridge.getCityProvince(function(data) { //获取当前位置的城市/省份信息
             clearTimeout(_timeout);
-
             if (data) {
                 me.cacheData.gps_city = $.extend({}, data.city);
                 me.cacheData.gps_province = $.extend({}, data.province);
@@ -789,7 +786,6 @@ var App = {
     loadDataRelyonLoc: function(opts) { //加载基于地理位置的模块
         var me = this,
             _settings = opts || {};
-
         setTimeout(function() {
             me.getPromotionList().always(function() {
                 me.getFixprice()
@@ -798,15 +794,15 @@ var App = {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
                             me.getMainMeeting();
-                        }, 200)
+                        }, 400)
                     }
                     if (me.cacheData.channel.name == 'map_scope') {
                         setTimeout(function() {
                             me.getMapPromotionIndex({ "id": "map-promotion" });
                             me.getMapTicket({ "id": "map-ticket" });
-                        }, 100)
+                        }, 400)
                     }
-                }, 200)
+                }, 400)
             });
         }, 0)
 
@@ -1656,7 +1652,6 @@ var App = {
         }
 
         $(me).on('locationReady', function() { //地理位置信息已经 ready
-
             me.renderFlayer({
                 type: 'domainList',
                 flayerTitle: '选择你想出行的目的地',
@@ -2366,9 +2361,15 @@ var App = {
             html = Juicer($('#tpl-map-promotion').html(), {
                 cacheData: me.cacheData,
                 activeInfo: ACTIVEINFO
-            });
+            }),
+            promotionData = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
+            promotionList = promotionData.promotionList || {},
+            list = promotionList.list || [];
+        if (list.length == 0) {
+            $('#map-promotion').remove();
+            return me;
+        }
         $('.J-placeholder-map-promotion').html(html);
-        // me.lazyLoadImg('.J-placeholder-promotion');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         return me;
     }
