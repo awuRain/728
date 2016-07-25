@@ -1587,7 +1587,7 @@ var App = {
         if (me.cacheData.channel.name == 'map_scope') {
             return me;
         } else {
-            $('footer .footer-wrap').addClass('active');
+            $('footer').addClass('active');
         }
         html = Juicer($('#tpl-footer').html(), {
             cacheData: me.cacheData
@@ -2023,8 +2023,13 @@ var App = {
             me.createSoftImg($('[tab-id="' + tabId + '"]'));
         }).on('tap', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
+            // $('body').on('tap', 'section:not(.subSessionTab)', function () {
+            //     $('.subSessionTab').removeClass('active');
+            //     $('body').off('tap', 'section:not(.subSessionTab)');
+            // })
         }).on('tap', '.subSessionTab .close-btn', function() {
             $('.subSessionTab').removeClass('active');
+            $('body').off('tap', 'section:not(.subSessionTab)');
         }).on('tap', '.J-more-ticket', function() { //更多热门景点
             var _sid = me.cacheData.gps_sid,
                 _cityid = me.cacheData.gps_cityid,

@@ -92,8 +92,8 @@ body {
 .btn {
     display: block;
     position: relative;
-    width: 20/16rem;
-    height: 35/16rem;
+    width: 28/16rem;
+    height: 50/16rem;
     border-radius: 5/16rem 0 0 5/16rem;
     background: @backgroundColorBtn url(./img/icon-btn.png?__inline) no-repeat;
     background-size: 100% auto;
@@ -1179,26 +1179,19 @@ body {
 .btn-toTop {
     display: none;
     position: fixed;
-    z-index: 20;
+    z-index: 50;
     right: 0;
-    bottom: 0;
-    margin: 0 0 20/16rem 0;
+    bottom: 200/16rem;
     background-color: #fff000;
     border: 2px solid #363636;
     border-right: 0 solid transparent;
-    transform: translate3d(0, 200%, 0);
+    // transform: translate3d(0, 200%, 0);
     transition: all .2s;
     opacity: 0;
     &.active {
         display: block;
-        transform: translate3d(0, 0, 0);
+        // transform: translate3d(0, 0, 0);
         opacity: 1;
-    }
-}
-
-html.nuomi {
-    .btn-toTop {
-        margin-bottom: 210/16rem;
     }
 }
 
@@ -1393,111 +1386,107 @@ header {
 
 // 页脚
 footer {
-    .footer-wrap{
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        z-index: 20;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    width: 100%;
+    display: none;
+    &.active {
+        display: block;
+    }
+    .arc {
         width: 100%;
-        transform: translate3d(0, 150%, 0);
-        transition: all .2;
-        &.active {
-            transform: translate3d(0, 0, 0);
-        }
-        .arc {
-            width: 100%;
-            padding-bottom: 6%;
-            overflow: hidden;
-            position: relative;
+        padding-bottom: 6%;
+        overflow: hidden;
+        position: relative;
+        background-color: #fff;
+        &:after {
+            content: '';
             background-color: #fff;
-            &:after {
-                content: '';
-                background-color: #fff;
-                position: absolute;
-                display: block;
-                width: 120%;
-                transform: translate(-10%, -67%);
-                padding-bottom: 17%;
-                background-color: #ffd200;
-                border: 2/16rem solid #111;
-                border-radius: 50%;
-            }
-        }
-        // .trapezium {
-        //     width: 100%;
-        //     position: relative;
-        //     border-bottom: 10/16rem solid #ffdecb;
-        //     border-left: 10/16rem solid transparent;
-        //     border-right: 10/16rem solid transparent;
-        // }
-        .trapezium {
-            z-index: -3;
-            border: #483f41 2px solid;
-            border-radius: 20/16rem;
-            box-shadow: 0 -2px 20px #5e1200;
-            margin: 0 auto;
-            width: 100%;
-            padding-bottom: 5%;
-            position: relative;
-            background-color: #ffdecb;
-            transform: translate3d(0, 56%, 0);
-        }
-        .footer-cont-wrap {
-            position: relative;
-            z-index: 2;
-            z-index: 30;
-            background: -webkit-linear-gradient(top, #ffa41d 0%, #fb5e00 100%);
-            background: linear-gradient(to bottom, #ffa41d 0%, #fb5e00 100%);
-            border-top: 2px solid #231815;
-        }
-        .footer-cont {
-            width: 100%;
-            // height: 100/16rem;
-            // padding-bottom: 4%;
-            padding: 4% 0 3% 0;
-            margin: 0 auto;
-            position: relative;
-            .flex;
-            .flex-pack-center;
-        }
-        a {
-            font-size: 0;
-            height: 21/16rem;
+            position: absolute;
             display: block;
+            width: 120%;
+            transform: translate(-10%, -67%);
+            padding-bottom: 17%;
+            background-color: #ffd200;
+            border: 2/16rem solid #111;
+            border-radius: 50%;
         }
-        .subSessionTab-btn,
-        .mainSessionTab-btn {
-            vertical-align: super;
-            margin-top: -1%;
-            width: 18%;
-            &:after {
-                content: '';
-                display: block;
-                width: 100%;
-                background-image: url('./img/session.png');
-                background-position: 0 0;
-                background-size: cover;
-                padding-bottom: 36%;
-            }
+    }
+    // .trapezium {
+    //     width: 100%;
+    //     position: relative;
+    //     border-bottom: 10/16rem solid #ffdecb;
+    //     border-left: 10/16rem solid transparent;
+    //     border-right: 10/16rem solid transparent;
+    // }
+    .trapezium {
+        z-index: -3;
+        border: #483f41 2px solid;
+        border-radius: 20/16rem;
+        box-shadow: 0 -2px 20px #5e1200;
+        margin: 0 auto;
+        width: 100%;
+        padding-bottom: 5%;
+        position: relative;
+        background-color: #ffdecb;
+        transform: translate3d(0, 56%, 0);
+    }
+    .footer-cont-wrap {
+        position: relative;
+        z-index: 30;
+        background: -webkit-linear-gradient(top, #ffa41d 0%, #fb5e00 100%);
+        background: linear-gradient(to bottom, #ffa41d 0%, #fb5e00 100%);
+        border-top: 2px solid #231815;
+    }
+    .footer-cont {
+        width: 100%;
+        // height: 100/16rem;
+        // padding-bottom: 4%;
+        padding: 4% 0 3% 0;
+        margin: 0 auto;
+        position: relative;
+        .flex;
+        .flex-pack-center;
+    }
+    a {
+        font-size: 0;
+        height: 21/16rem;
+        display: block;
+    }
+    .subSessionTab-btn,
+    .mainSessionTab-btn {
+        vertical-align: super;
+        margin-top: -1%;
+        width: 18%;
+        &:after {
+            content: '';
+            display: block;
+            width: 100%;
+            background-image: url('./img/session.png');
+            background-position: 0 0;
+            background-size: cover;
+            padding-bottom: 36%;
         }
-        .mainSessionTab-btn {
-            &:after {
-                background-position: 100% 0;
-            }
+    }
+    .mainSessionTab-btn {
+        &:after {
+            background-position: 100% 0;
         }
-        .game-btn {
-            position: relative;
-            width: 35%;
-            margin: 0 3% 0 5%;
-            &:before {
-                content: '';
-                position: absolute;
-                top: -52/16rem;
-                width: 100%;
-                padding-bottom: 63%;
-                background-image: url('./img/game.png');
-                background-size: cover;
-            }
+    }
+    .game-btn {
+        position: relative;
+        width: 35%;
+        margin: 0 3% 0 5%;
+        &:before {
+            content: '';
+            position: absolute;
+            top: -52/16rem;
+            width: 100%;
+            padding-bottom: 63%;
+            background-image: url('./img/game.png');
+            background-size: cover;
         }
     }
 }
@@ -1777,8 +1766,8 @@ footer {
     }
     .close-btn {
         position: absolute;
-        width: 20/16rem;
-        height: 20/16rem;
+        width: 25/16rem;
+        height: 25/16rem;
         right: 5/16rem;
         top: 5/16rem;
         background-color: #fe9617;

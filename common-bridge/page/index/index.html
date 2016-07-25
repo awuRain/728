@@ -18,15 +18,13 @@
         </div>
     </section>
     <footer>
-        <div class="footer-wrap">
-            <div class="trapezium"></div>
-            <div class="subSessionTab-wrap"></div>
-            <div class="footer-cont-wrap">
-                <div class="footer-cont">
-                    <a class="subSessionTab-btn">子会场</a>
-                    <a class="game-btn J-jumpBnr">游戏</a>
-                    <a class="mainSessionTab-btn">主会场</a>
-                </div>
+        <div class="trapezium"></div>
+        <div class="subSessionTab-wrap"></div>
+        <div class="footer-cont-wrap">
+            <div class="footer-cont">
+                <a class="subSessionTab-btn">子会场</a>
+                <a class="game-btn J-jumpBnr">游戏</a>
+                <a class="mainSessionTab-btn">主会场</a>
             </div>
         </div>
     </footer>
@@ -382,12 +380,14 @@
                             <ul class="return-list">
                         {@/if}
                                 {@each list as item}
-                                    <li>
-                                        <div class="list-cont">
-                                            <h1>${item.title}</h1>
-                                            <h2>${item.activeDate | dateFomat}</h2>
-                                        </div>
-                                    </li>
+                                    {@if item.dateRange}
+                                        <li>
+                                            <div class="list-cont">
+                                                <h1>${item.title}</h1>
+                                                <h2>${item.dateRange}</h2>
+                                            </div>
+                                        </li>
+                                    {@/if}
                                 {@/each}
                             </ul>
                     </div>
