@@ -2021,13 +2021,13 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
             $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
             me.createSoftImg($('[tab-id="' + tabId + '"]'));
-        }).on('tap', '.subSessionTab-btn', function() {
+        }).on('touchend', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
             // $('body').on('tap', 'section:not(.subSessionTab)', function () {
             //     $('.subSessionTab').removeClass('active');
             //     $('body').off('tap', 'section:not(.subSessionTab)');
             // })
-        }).on('tap', '.subSessionTab .close-btn', function() {
+        }).on('touchend', '.subSessionTab .close-btn', function() {
             $('.subSessionTab').removeClass('active');
             $('body').off('tap', 'section:not(.subSessionTab)');
         }).on('tap', '.J-more-ticket', function() { //更多热门景点
