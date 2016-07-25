@@ -29,7 +29,9 @@ Juicer.register('numFomat', numFomat);
 
 // 日期格式化
 var dateFomat = function(date) {
-    return date.slice(6).replace('-', '.');
+    if (date) {
+        return date.slice(6).replace('-', '.');
+    }
 }
 
 Juicer.register('dateFomat', dateFomat);
@@ -1436,28 +1438,46 @@ var App = {
         var now = moment(me.cacheData.now),
             list = [];
 
-        if (me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
-            for (var i in currentOrder) {
-                var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                if (now.isSame(to, 'day')) {
-                    list = currentOrder.slice(i);
-                    break;
+        var calendarType = "";
+
+        // me.cacheData.pageConfig.mainMeeting.introEndDate = "2016-07-26";
+        me.cacheData.pageConfig.mainMeeting.introEndDate = "2016-07-21";
+        me.cacheData.pageConfig.mainMeeting.peakEndDate = "2016-07-23";
+
+
+        if (me.cacheData.pageConfig.mainMeeting) {
+            if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
+                console.log(0);
+                for (var i in currentOrder) {
+                    var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
+                    if (now.isSame(to, 'day')) {
+                        list = currentOrder.slice(i);
+                        break;
+                    }
                 }
-            }
 
-            if (list.length < 3) {
-                list = currentOrder.slice(-3);
-            }
+                if (list.length < 3) {
+                    list = currentOrder.slice(-3);
+                }
 
-            for (var i in list) {
-                list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
-                    id: list[i].id
-                });
+                for (var i in list) {
+                    list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
+                        id: list[i].id
+                    });
+                }
+                calendarType = "intro";
+            } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {  
+                list = me.cacheData.pageConfig.peakCalendar;
+                calendarType = "peak";
+            } else {
+                list = me.cacheData.pageConfig.returnCalendar;
+                calendarType = "return";
             }
 
             html = Juicer($('#tpl-calendar').html(), {
                 cacheData: me.cacheData,
-                list: list
+                list: list,
+                "calendarType": calendarType
             });
 
             $('.J-placeholder-calendar').html(html);
@@ -1481,6 +1501,8 @@ var App = {
         for (var i in headerPics) {
             if (now.isSame(headerPics[i].activeDate, 'day')) {
                 var pic = headerPics[i].pic;
+            } else {
+                var pic = "http://e.hiphotos.baidu.com/baidu/pic/item/c2fdfc039245d68815f582c6acc27d1ed31b24d8.jpg";
             }
         }
         $('.J-header').css({
