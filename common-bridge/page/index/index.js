@@ -1440,14 +1440,8 @@ var App = {
 
         var calendarType = "";
 
-        // me.cacheData.pageConfig.mainMeeting.introEndDate = "2016-07-26";
-        me.cacheData.pageConfig.mainMeeting.introEndDate = "2016-07-21";
-        me.cacheData.pageConfig.mainMeeting.peakEndDate = "2016-07-23";
-
-
         if (me.cacheData.pageConfig.mainMeeting) {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
-                console.log(0);
                 for (var i in currentOrder) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                     if (now.isSame(to, 'day')) {
