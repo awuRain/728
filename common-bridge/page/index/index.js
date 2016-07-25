@@ -1210,7 +1210,7 @@ var App = {
                 }
                 me.renderFlayer({
                     type: 'couponPick',
-                    data: $.extend({}, res.data, {"id": _settings.id}),
+                    data: res.data,
                     is_show: 1
                 });
                 if (res.data.is_success == 1 || res.data.err_no == '40108') {
@@ -1431,44 +1431,35 @@ var App = {
             html = '';
         var currentOrder = me.mainMeetingOrder_cp;
 
-        var endDate_s_1 = moment2Str(moment(me.cacheData.pageConfig.mainMeeting.peakEndDate).subtract(1, 'day'));
-
         var now = moment(me.cacheData.now),
             list = [];
 
-        if(now.isAfter(endDate_s_1)) {
-            for (var i in currentOrder) {
-                var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                if (now.isSame(to, 'day')) {
-                    list = currentOrder.slice(i);
-                    break;
-                }
+        for (var i in currentOrder) {
+            var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
+            if (now.isSame(to, 'day')) {
+                list = currentOrder.slice(i);
+                break;
             }
-
-            if (list.length < 3) {
-                list = currentOrder.slice(-3);
-            }
-
-            for (var i in list) {
-                list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
-                    id: list[i].id
-                });
-            }
-
-            html = Juicer($('#tpl-calendar').html(), {
-                cacheData: me.cacheData,
-                list: list
-            });
-
-            $('.J-placeholder-calendar').html(html);
         }
+
+        if (list.length < 3) {
+            list = currentOrder.slice(-3);
+        }
+
+        for (var i in list) {
+            list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
+                id: list[i].id
+            });
+        }
+
+        html = Juicer($('#tpl-calendar').html(), {
+            cacheData: me.cacheData,
+            list: list
+        });
+
+        $('.J-placeholder-calendar').html(html);
 
         return me;
-
-        function moment2Str(momentObj, separator) {
-            var separator = separator || '-'
-            return momentObj.year() + separator + ((momentObj.month() + 1) >= 10 ? (momentObj.month() + 1) : '0' + (momentObj.month() + 1)) + separator + ((momentObj.date()) >= 10 ? (momentObj.date()) : '0' + (momentObj.date()))
-        }
     },
 
     renderHeader: function() { //渲染header
@@ -1925,10 +1916,12 @@ var App = {
                 }
             });
         }).on('tap', '.J-sku', function() { //进入sku详情页
-            var ticket_id = $(this).attr('data-ticketid'),
-                td_id = $(this).attr('data-td_id');
+            var src = $(this).attr('data-src'),
+                ticket_id = $(this).attr('data-ticket_id'),
+                qunar_id = $(this).attr('data-qunar_id'),
+                ctrip_id = $(this).attr('data-ctrip_id');
 
-            var scope_id = td_id;
+            var scope_id = src == 'qunar' ? qunar_id : ctrip_id;
 
             var __params = $.extend({
                     pids: ticket_id,
@@ -2013,65 +2006,6 @@ var App = {
             $('.subSessionTab').addClass('active');
         }).on('tap', '.subSessionTab .close-btn', function() {
             $('.subSessionTab').removeClass('active');
-        }).on('tap', '.J-more-ticket', function() { //更多热门景点
-            var _sid = me.cacheData.gps_sid,
-                _cityid = me.cacheData.gps_cityid,
-                _timeout = 0;
-
-            if (me.gps == 0) { //定位失败
-                _timeout = 3000;
-            }
-
-            setTimeout(function() {
-                if (me.gps == 0) { //定位失败
-                    Bridge.toast('亲~定位失败了哟~~~');
-                }
-                Bridge.pushWindow({
-                    page: 'poiList',
-                    data: {
-                        nuomi: $.extend({
-                            sid: _sid,
-                            tag_id: 0
-                        }, _params),
-                        'nuomi-webapp': $.extend({
-                            sid: _sid
-                        }, _params),
-                        'map-webapp': $.extend({
-                            c: _cityid
-                        }, _params)
-                    }
-                });
-            }, _timeout);
-        }).on('tap', '.J-page-info', function(e) { //分页
-            var item = $(this).data('item'),
-                Item = item.replace(/(\w)/, function(v) {
-                    return v.toUpperCase()
-                }),
-                $target = $(e.target),
-                type = $target.data('type'),
-                page_cur, rn, pages;
-            if (item && type) {
-                rn = me.cacheData[item.toLocaleLowerCase() + '_rn'];
-                page_cur = me.cacheData[item.toLocaleLowerCase() + '_pn'] / rn;
-                pages = Math.ceil(me.cacheData[item.toLocaleLowerCase() + '_total'] / rn);
-                pages = pages < 0 ? 0 : pages;
-                if (type == 'next') {
-                    page_cur = ++page_cur >= pages ? pages - 1 : page_cur;
-                } else if (type == 'prev') {
-                    page_cur = --page_cur < 0 ? 0 : page_cur;
-                } else if (type == 'page') {
-                    page_cur = parseInt($target.data('page_num'), 10);
-                }
-                me['getMap' + Item]({
-                    pn: page_cur * rn,
-                    rn: rn,
-                    callback: function() {
-                        me.goToSection({
-                            item: item
-                        });
-                    }
-                });
-            }
         });
 
         return this;
@@ -2090,7 +2024,7 @@ var App = {
         if (me.cacheData.ctrip[pn]) {
             me.cacheData.ctrip_pn = pn;
             me.cacheData.ctrip_rn = rn;
-            me.renderMapCtrip(_settings);
+            me.renderCtrip(_settings);
             return me;
         }
         Bridge.Loader.get({
