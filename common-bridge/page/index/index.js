@@ -358,7 +358,12 @@ var App = {
             $('.J-section-item-loc').remove();
         }
 
-        $.trim(html).length && $('.J-placeholder-layout').replaceWith(html);
+        if ($.trim(html).length) {
+            $('.J-placeholder-layout').replaceWith(html);
+            // setTimeout(function() {
+            //     $(window).trigger('scroll');
+            // }, 200);
+        }
 
         arr_innerHtml.length = 0;
 
@@ -794,7 +799,7 @@ var App = {
                 setTimeout(function() {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
-                            me.getMainMeeting()
+                            me.getMainMeeting();
                         }, 200)
                     }
                     if (me.cacheData.channel.name == 'map_scope') {
@@ -1794,7 +1799,7 @@ var App = {
             } catch (e) {
 
             }
-            $('.section-item').unlazyelement();
+            // $('.section-item').unlazyelement();
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
