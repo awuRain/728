@@ -360,9 +360,9 @@ var App = {
 
         if ($.trim(html).length) {
             $('.J-placeholder-layout').replaceWith(html);
-            // setTimeout(function() {
-            //     $(window).trigger('scroll');
-            // }, 200);
+            setTimeout(function() { //手动触发一下分会场模块的渲染
+                $(window).trigger('scroll');
+            }, 500);
         }
 
         arr_innerHtml.length = 0;
@@ -591,13 +591,11 @@ var App = {
             //     item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=710&height=450&quality=100&align=middle,middle&src=' + item['picUrl'];
             // });
         } else if (type == 'fixPrice') {
-            console.log('fixPrice:', me.cacheData.fixPrice[me.cacheData.sid]);
             data = me.cacheData.fixPrice[me.cacheData.sid] || {};
             $.each(data.list || [], function(indx, item) {
                 item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic'];
             });
         } else if (type == 'mainMeeting') {
-            console.log('mainMeeting:', me.cacheData.mainMeeting[me.cacheData.sid]);
             data = me.cacheData.mainMeeting[me.cacheData.sid] || {};
             $.each(data, function(id, item) {
                 $.each(item.list || [], function(index, card) {
@@ -719,7 +717,7 @@ var App = {
                         sessionStorage.setItem('province_sid', me.cacheData.province_sid);
                     }
                 } catch (e) {
-                    console.log(e);
+                    console.warn(e);
                 }
 
                 $(me).trigger('locationReady');
@@ -1204,7 +1202,7 @@ var App = {
                 }
                 me.renderFlayer({
                     type: 'couponPick',
-                    data: $.extend({}, res.data, {"id": _settings.id}),
+                    data: $.extend({}, res.data, { "id": _settings.id }),
                     is_show: 1
                 });
                 if (res.data.is_success == 1 || res.data.err_no == '40108') {
@@ -1432,7 +1430,7 @@ var App = {
         var now = moment(me.cacheData.now),
             list = [];
 
-        if(me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
+        if (me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
             for (var i in currentOrder) {
                 var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                 if (now.isSame(to, 'day')) {
@@ -1479,15 +1477,17 @@ var App = {
                 var pic = headerPics[i].pic;
             }
         }
-
-        html = Juicer($('#tpl-header').html(), {
-            cacheData: me.cacheData,
-            pic: pic
+        $('.J-header').css({
+            'background-image': 'url(' + pic + ')'
         });
+        // html = Juicer($('#tpl-header').html(), {
+        //     cacheData: me.cacheData,
+        //     pic: pic
+        // });
         // if (coupon_show) {
         //     $(html).addClass('header-coupon_show');
         // }
-        $('.J-placeholder-header').html(html);
+        // $('.J-placeholder-header').html(html);
 
         function isInDateScope(now, from, to) {
             var from = moment2Str(moment(from).subtract(1, 'day')),
@@ -1706,9 +1706,7 @@ var App = {
             me.renderPageTab();
 
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
-            console.log('promotionListReady');
         }).on('fixPriceDataReady', function() {
-            // alert('fixPriceDataReady');
             me.renderLayout();
 
             $('.section-item').lazyelement({
