@@ -1851,7 +1851,7 @@ var App = {
             });
         }).on('tap', '.J-flayer-close', function() { //隐藏浮层
             $('.flayer').removeClass('show').addClass('hide');
-        }).on('click', '.J-btn-toTop', function() { //回到顶部
+        }).on('touchend', '.J-btn-toTop', function() { //回到顶部
             $('.J-page-container').scrollTop(0);
             $('body').scrollTop(0);
         }).on('tap', '.J-link', function() { //进入自营团单页
