@@ -120,79 +120,77 @@ var App = {
         return me;
     },
     baseOrder: [{
-            id: 'promotionList',
-            title: '爆款抢购',
-            attrs: {
-                'section-type': 'promotionList'
-            },
-            type: 'poi',
-            dependOnLoc: 1
-        }, {
-            id: 'fixPrice',
-            title: '爆款折扣',
-            activeDate: '2016-07-17',
-            endDate: '2016-07-20',
-            attrs: {
-                'section-type': 'fixPrice'
-            },
-            type: 'orderFill',
-            dependOnLoc: 1
-        }, {
-            id: 'mainMeeting',
-            title: '嗨翻出游主题趴',
-            orderFor: 'nuomi',
-            dependOnLoc: 1
-        }, {
-            id: 'playflower',
-            title: '热门城市玩花样',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }, {
-            id: 'playflower2',
-            title: '热门城市玩花样2',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }
-        /*, {
-                id: 'map-promotion',
-                title: 'promotion',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-ticket',
-                title: 'ticket',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-foreign',
-                title: 'foreign',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }, {
-                id: 'map-ctrip',
-                title: 'ctrip',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }*/
-    ],
+        id: 'promotionList',
+        title: '爆款抢购',
+        attrs: {
+            'section-type': 'promotionList'
+        },
+        type: 'poi',
+        dependOnLoc: 1
+    }, {
+        id: 'fixPrice',
+        title: '爆款折扣',
+        activeDate: '2016-07-17',
+        endDate: '2016-07-20',
+        attrs: {
+            'section-type': 'fixPrice'
+        },
+        type: 'orderFill',
+        dependOnLoc: 1
+    }, {
+        id: 'mainMeeting',
+        title: '嗨翻出游主题趴',
+        orderFor: 'nuomi',
+        dependOnLoc: 1
+    }, {
+        id: 'playflower',
+        title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }/*, {
+        id: 'map-promotion',
+        title: 'promotion',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-ticket',
+        title: 'ticket',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'map-foreign',
+        title: 'foreign',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }, {
+        id: 'map-ctrip',
+        title: 'ctrip',
+        attrs: {
+            'section-type': 'bbb'
+        },
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }*/],
     mainMeetingOrder: [{
         id: 'scenic',
         attrs: {
@@ -358,7 +356,12 @@ var App = {
             $('.J-section-item-loc').remove();
         }
 
-        $.trim(html).length && $('.J-placeholder-layout').replaceWith(html);
+        if ($.trim(html).length) {
+            $('.J-placeholder-layout').replaceWith(html);
+            setTimeout(function() { //手动触发一下分会场模块的渲染
+                $(window).trigger('scroll');
+            }, 500);
+        }
 
         arr_innerHtml.length = 0;
 
@@ -586,13 +589,11 @@ var App = {
             //     item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=710&height=450&quality=100&align=middle,middle&src=' + item['picUrl'];
             // });
         } else if (type == 'fixPrice') {
-            console.log('fixPrice:', me.cacheData.fixPrice[me.cacheData.sid]);
             data = me.cacheData.fixPrice[me.cacheData.sid] || {};
             $.each(data.list || [], function(indx, item) {
                 item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic'];
             });
         } else if (type == 'mainMeeting') {
-            console.log('mainMeeting:', me.cacheData.mainMeeting[me.cacheData.sid]);
             data = me.cacheData.mainMeeting[me.cacheData.sid] || {};
             $.each(data, function(id, item) {
                 $.each(item.list || [], function(index, card) {
@@ -606,10 +607,10 @@ var App = {
     },
     share: function() {
         var me = this,
-            url = Bridge.host + '/event/s/728_promotion/index/?na_from=nuomi&fr=wechat';
+            url = Bridge.host + '/event/s/728_promotion/index/?fr=wechat';
         if (me.cacheData.channel.name == 'map_scope') {
-            // url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
-            url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
+            url = 'http://map.baidu.com/fwmap/upload/728_promotion/index/?na_from=map_scope&fr=wechat';
+            // url = Bridge.host + '/event/s/728_promotion/index/?na_from=map_scope&fr=wechat';
         }
 
         Bridge.initShare({
@@ -714,7 +715,7 @@ var App = {
                         sessionStorage.setItem('province_sid', me.cacheData.province_sid);
                     }
                 } catch (e) {
-                    console.log(e);
+                    console.warn(e);
                 }
 
                 $(me).trigger('locationReady');
@@ -756,7 +757,6 @@ var App = {
 
         Bridge.getCityProvince(function(data) { //获取当前位置的城市/省份信息
             clearTimeout(_timeout);
-
             if (data) {
                 me.cacheData.gps_city = $.extend({}, data.city);
                 me.cacheData.gps_province = $.extend({}, data.province);
@@ -786,7 +786,6 @@ var App = {
     loadDataRelyonLoc: function(opts) { //加载基于地理位置的模块
         var me = this,
             _settings = opts || {};
-
         setTimeout(function() {
             me.getPromotionList().always(function() {
                 me.getFixprice()
@@ -794,16 +793,16 @@ var App = {
                 setTimeout(function() {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
-                            me.getMainMeeting()
-                        }, 200)
+                            me.getMainMeeting();
+                        }, 400)
                     }
                     if (me.cacheData.channel.name == 'map_scope') {
                         setTimeout(function() {
                             me.getMapPromotionIndex({ "id": "map-promotion" });
                             me.getMapTicket({ "id": "map-ticket" });
-                        }, 100)
+                        }, 400)
                     }
-                }, 200)
+                }, 400)
             });
         }, 0)
 
@@ -1199,7 +1198,7 @@ var App = {
                 }
                 me.renderFlayer({
                     type: 'couponPick',
-                    data: $.extend({}, res.data, {"id": _settings.id}),
+                    data: $.extend({}, res.data, { "id": _settings.id }),
                     is_show: 1
                 });
                 if (res.data.is_success == 1 || res.data.err_no == '40108') {
@@ -1427,7 +1426,7 @@ var App = {
         var now = moment(me.cacheData.now),
             list = [];
 
-        if(me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
+        if (me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
             for (var i in currentOrder) {
                 var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                 if (now.isSame(to, 'day')) {
@@ -1474,15 +1473,17 @@ var App = {
                 var pic = headerPics[i].pic;
             }
         }
-
-        html = Juicer($('#tpl-header').html(), {
-            cacheData: me.cacheData,
-            pic: pic
+        $('.J-header').css({
+            'background-image': 'url(' + pic + ')'
         });
+        // html = Juicer($('#tpl-header').html(), {
+        //     cacheData: me.cacheData,
+        //     pic: pic
+        // });
         // if (coupon_show) {
         //     $(html).addClass('header-coupon_show');
         // }
-        $('.J-placeholder-header').html(html);
+        // $('.J-placeholder-header').html(html);
 
         function isInDateScope(now, from, to) {
             var from = moment2Str(moment(from).subtract(1, 'day')),
@@ -1651,7 +1652,6 @@ var App = {
         }
 
         $(me).on('locationReady', function() { //地理位置信息已经 ready
-
             me.renderFlayer({
                 type: 'domainList',
                 flayerTitle: '选择你想出行的目的地',
@@ -1701,9 +1701,7 @@ var App = {
             me.renderPageTab();
 
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
-            console.log('promotionListReady');
         }).on('fixPriceDataReady', function() {
-            // alert('fixPriceDataReady');
             me.renderLayout();
 
             $('.section-item').lazyelement({
@@ -1801,7 +1799,7 @@ var App = {
             } catch (e) {
 
             }
-            $('.section-item').unlazyelement();
+            // $('.section-item').unlazyelement();
 
             me.loadDataRelyonLoc();
         }).on('tap', '.J-btn-help', function() { //活动规则
@@ -2363,9 +2361,15 @@ var App = {
             html = Juicer($('#tpl-map-promotion').html(), {
                 cacheData: me.cacheData,
                 activeInfo: ACTIVEINFO
-            });
+            }),
+            promotionData = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
+            promotionList = promotionData.promotionList || {},
+            list = promotionList.list || [];
+        if (list.length == 0) {
+            $('#map-promotion').remove();
+            return me;
+        }
         $('.J-placeholder-map-promotion').html(html);
-        // me.lazyLoadImg('.J-placeholder-promotion');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         return me;
     }

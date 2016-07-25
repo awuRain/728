@@ -7,8 +7,15 @@
     <section class="J-page page">
         <div class="J-placeholder J-placeholder-calendar"></div>
         <div class="J-placeholder J-placeholder-header"></div>
+        <header class="flex flex-align-center J-header">
+            <p class="btn-help"><span class="J-btn-help">活动规则</span></p>
+        </header>
         <div class="J-placeholder J-placeholder-coupon"></div>
-        <div class="J-placeholder J-placeholder-layout"></div>
+        <div class="J-placeholder J-placeholder-layout">
+            <section class="section-item section-item-loading">
+                <div class="section-placeholder"></div>
+            </section>
+        </div>
     </section>
     <footer>
         <div class="trapezium"></div>
@@ -80,9 +87,9 @@
             case 'orderFill': className = 'J-orderFill'; break;
             default: className = '';
         }
+        {# 
         console.log('renderFor:',renderFor);
         console.log('flags:',flags);
-        {# 
         console.log('cardNum:',cardNum);
         console.log('createFlag:',createFlag);
         console.log('pageConfig:',pageConfig_id.limitNum);
