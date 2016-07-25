@@ -2056,6 +2056,7 @@ var App = {
                 me['getMap' + Item]({
                     pn: page_cur * rn,
                     rn: rn,
+                    id: 'map-' + item,
                     callback: function() {
                         me.goToSection({
                             item: item
