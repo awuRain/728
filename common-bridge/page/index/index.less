@@ -669,7 +669,7 @@ body {
             display: block;
             width: 100%;
             height: auto;
-            border: 2px @color-border-yellow solid;
+            // border: 2px @color-border-yellow solid;
             border-radius: 3/16rem;
         }
     }
@@ -733,11 +733,11 @@ body {
             .section-item-subTitle {
                 color: @color-subTitle-purple;
             }
-            .more-link {
-                img {
-                    border-color: @color-border-purple;
-                }
-            }
+            // .more-link {
+            //     img {
+            //         // border-color: @color-border-purple;
+            //     }
+            // }
         }
         &:nth-child(2n+1) {
             background: @color-section-yellow;
@@ -750,11 +750,14 @@ body {
             .ticket-item {
                 border-color: @color-border-yellow;
             }
-            .more-link {
-                img {
-                    border-color: @color-border-yellow;
-                }
-            }
+            // .more-link {
+            //     img {
+            //         // border-color: @color-border-yellow;
+            //     }
+            // }
+        }
+        &:last-child {
+            // padding-bottom: 150/750*100%;
         }
     }
 }
@@ -1817,7 +1820,7 @@ footer {
     // background-color: #ffd200;
     ul {
         width: 95%;
-        margin: 0 auto 90/16rem auto;
+        margin: 0 auto;
         li {
             position: relative;
             margin-top: 7/16rem;
