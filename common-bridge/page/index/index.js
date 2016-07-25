@@ -120,77 +120,79 @@ var App = {
         return me;
     },
     baseOrder: [{
-        id: 'promotionList',
-        title: '爆款抢购',
-        attrs: {
-            'section-type': 'promotionList'
-        },
-        type: 'poi',
-        dependOnLoc: 1
-    }, {
-        id: 'fixPrice',
-        title: '爆款折扣',
-        activeDate: '2016-07-17',
-        endDate: '2016-07-20',
-        attrs: {
-            'section-type': 'fixPrice'
-        },
-        type: 'orderFill',
-        dependOnLoc: 1
-    }, {
-        id: 'mainMeeting',
-        title: '嗨翻出游主题趴',
-        orderFor: 'nuomi',
-        dependOnLoc: 1
-    }, {
-        id: 'playflower',
-        title: '热门城市玩花样',
-        attrs: {
-            'section-type': 'playflower'
-        },
-        orderFor: 'nuomi',
-        dependOnLoc: 0
-    }, {
-        id: 'playflower2',
-        title: '热门城市玩花样2',
-        attrs: {
-            'section-type': 'playflower'
-        },
-        orderFor: 'nuomi',
-        dependOnLoc: 0
-    }/*, {
-        id: 'map-promotion',
-        title: 'promotion',
-        attrs: {
-            'section-type': 'bbb'
-        },
-        orderFor: 'map_scope',
-        dependOnLoc: 1
-    }, {
-        id: 'map-ticket',
-        title: 'ticket',
-        attrs: {
-            'section-type': 'bbb'
-        },
-        orderFor: 'map_scope',
-        dependOnLoc: 1
-    }, {
-        id: 'map-foreign',
-        title: 'foreign',
-        attrs: {
-            'section-type': 'bbb'
-        },
-        orderFor: 'map_scope',
-        dependOnLoc: 0
-    }, {
-        id: 'map-ctrip',
-        title: 'ctrip',
-        attrs: {
-            'section-type': 'bbb'
-        },
-        orderFor: 'map_scope',
-        dependOnLoc: 0
-    }*/],
+            id: 'promotionList',
+            title: '爆款抢购',
+            attrs: {
+                'section-type': 'promotionList'
+            },
+            type: 'poi',
+            dependOnLoc: 1
+        }, {
+            id: 'fixPrice',
+            title: '爆款折扣',
+            activeDate: '2016-07-17',
+            endDate: '2016-07-20',
+            attrs: {
+                'section-type': 'fixPrice'
+            },
+            type: 'orderFill',
+            dependOnLoc: 1
+        }, {
+            id: 'mainMeeting',
+            title: '嗨翻出游主题趴',
+            orderFor: 'nuomi',
+            dependOnLoc: 1
+        }, {
+            id: 'playflower',
+            title: '热门城市玩花样',
+            attrs: {
+                'section-type': 'playflower'
+            },
+            orderFor: 'nuomi',
+            dependOnLoc: 0
+        }, {
+            id: 'playflower2',
+            title: '热门城市玩花样2',
+            attrs: {
+                'section-type': 'playflower'
+            },
+            orderFor: 'nuomi',
+            dependOnLoc: 0
+        }
+        /*, {
+                id: 'map-promotion',
+                title: 'promotion',
+                attrs: {
+                    'section-type': 'bbb'
+                },
+                orderFor: 'map_scope',
+                dependOnLoc: 1
+            }, {
+                id: 'map-ticket',
+                title: 'ticket',
+                attrs: {
+                    'section-type': 'bbb'
+                },
+                orderFor: 'map_scope',
+                dependOnLoc: 1
+            }, {
+                id: 'map-foreign',
+                title: 'foreign',
+                attrs: {
+                    'section-type': 'bbb'
+                },
+                orderFor: 'map_scope',
+                dependOnLoc: 0
+            }, {
+                id: 'map-ctrip',
+                title: 'ctrip',
+                attrs: {
+                    'section-type': 'bbb'
+                },
+                orderFor: 'map_scope',
+                dependOnLoc: 0
+            }*/
+    ],
     mainMeetingOrder: [{
         id: 'scenic',
         attrs: {
@@ -581,13 +583,14 @@ var App = {
             type = _settings.type || 'promotionList';
 
         if (type == 'promotionList') {
-            console.log('promotionList:', me.cacheData.promotionList[me.cacheData.sid]);
-            // data = me.cacheData.promotionList[me.cacheData.sid] || {};
-            // ctripList = data.ctripList || {};
-            // promotionList = data.promotionList || {};
-            // $.each(promotionList.list || [], function(indx, item) {
-            //     item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=710&height=450&quality=100&align=middle,middle&src=' + item['picUrl'];
-            // });
+            data = me.cacheData.promotionList[me.cacheData.sid] || {};
+            data = data.list || [];
+            $.each((data[0] || {}).poi_list || [], function(index, item) {
+                item['pic_url'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic_url'];
+            });
+            $.each((data[1] || {}).poi_list || [], function(index, item) {
+                item['pic_url'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic_url'];
+            });
         } else if (type == 'fixPrice') {
             data = me.cacheData.fixPrice[me.cacheData.sid] || {};
             $.each(data.list || [], function(indx, item) {
@@ -599,6 +602,8 @@ var App = {
                 $.each(item.list || [], function(index, card) {
                     card['pic'] && (card['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic']);
                     card['image'] && (card['image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['image']);
+                    card['pic_url'] && (card['pic_url'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic_url']);
+                    
                 });
             });
         }
@@ -1162,14 +1167,19 @@ var App = {
                         data: mainMeeting_sid_id.list || [],
                         createFlag: function(renderFor) {
                             var text, className;
-                            if (renderFor == 'scene_hotel') {
-                                text = '热销';
-                            } else {
-                                if (me.cacheData.pageConfig.showFlagDiscount != 1) {
-                                    return;
-                                }
-                                text = '随机立减';
+
+                            if (me.cacheData.pageConfig.showFlagDiscount != 1) {
+                                return;
                             }
+                            text = '随机立减';
+                            // if (renderFor == 'scene_hotel') {
+                            //     text = '热销';
+                            // } else {
+                            //     if (me.cacheData.pageConfig.showFlagDiscount != 1) {
+                            //         return;
+                            //     }
+                            //     text = '随机立减';
+                            // }
                             className = 'flag-discount';
                             return '<em class="' + className + '">' + text + '</em>'
                         }
@@ -1825,7 +1835,7 @@ var App = {
             });
         }).on('tap', '.J-flayer-close', function() { //隐藏浮层
             $('.flayer').removeClass('show').addClass('hide');
-        }).on('tap', '.J-btn-toTop', function() { //回到顶部
+        }).on('click', '.J-btn-toTop', function() { //回到顶部
             $('.J-page-container').scrollTop(0);
             $('body').scrollTop(0);
         }).on('tap', '.J-link', function() { //进入自营团单页
@@ -1977,13 +1987,13 @@ var App = {
             $link.addClass('active').siblings('li').removeClass('active');
         }).on('tap', '.J-jumpBnr', function() { //banner位点击
             var link = $(this).data('link'),
-                nalink = $(this).attr('data-nalink');
+                nalink = $(this).attr('data-nalink') || '';
             if (link.length == 0) {
                 return me;
             }
             Bridge.pushWindow({
                 // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: decodeURIComponent(nalink),
+                nuomi: /^baidunuo\:/igm.test(nalink) ? decodeURIComponent(nalink) : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
                 "nuomi-webapp": link,
                 "map-webapp": link,
                 "map-ios": link,
