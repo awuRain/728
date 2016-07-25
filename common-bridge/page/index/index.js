@@ -2012,7 +2012,7 @@ var App = {
             }
             Bridge.pushWindow({
                 // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: /^bainuo\:/igm.test(nalink) ? decodeURIComponent(nalink) : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
+                nuomi: /^bainuo\:/igm.test(nalink) ? nalink : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
                 "nuomi-webapp": link,
                 "map-webapp": link,
                 "map-ios": link,
