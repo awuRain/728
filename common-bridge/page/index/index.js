@@ -1432,7 +1432,7 @@ var App = {
         var now = moment(me.cacheData.now),
             list = [];
 
-        if(now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
+        if(me.cacheData.pageConfig.mainMeeting && now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
             for (var i in currentOrder) {
                 var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                 if (now.isSame(to, 'day')) {
