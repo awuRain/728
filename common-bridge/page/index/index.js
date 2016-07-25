@@ -1492,9 +1492,12 @@ var App = {
 
         var now = moment(me.cacheData.now);
 
+        console.log(headerPics);
+
         for (var i in headerPics) {
             if (now.isSame(headerPics[i].activeDate, 'day')) {
                 var pic = headerPics[i].pic;
+                break;
             } else {
                 var pic = "http://e.hiphotos.baidu.com/baidu/pic/item/c2fdfc039245d68815f582c6acc27d1ed31b24d8.jpg";
             }
