@@ -1043,7 +1043,75 @@ body {
 }
 
 .BN-list {
-    &.BN-list-cols2 {}
+    &.BN-list-cols2 {
+        li {
+            float: left;
+            width: 50%;
+            padding: 0 10/720*100%;
+            &:nth-child(2n+1) {
+                padding-left: 0;
+            }
+            &:nth-child(2n) {
+                padding-right: 0;
+            }
+        }
+        .ticket-item {
+            padding: 0 0 10/345*100%;
+            margin-top: 20/345*100%;
+            flex-direction: column;
+            .img-box {
+                width: 100%;
+                margin: 0 0 10/345*100%;
+                &:after {
+                    padding-bottom: 160/345*100%;
+                }
+                // height: 80/16rem;
+                // img {
+                //     padding-bottom: 324/710*100%;
+                //     background-size: 100% auto;
+                // }
+            }
+            .ticket-main {
+                margin: 0;
+            }
+            // .img-box {
+            //     img {
+            //         padding-bottom: 324/710*100%;
+            //         background-size: 100% auto;
+            //     }
+            // }
+            .ticket-title-wrap {
+                padding: 0 10/345*100%;
+            }
+            .ticket-title {
+                font-size: 14/16rem;
+                // padding: 7/16rem 0 5/16rem;
+                p {
+                    margin: 0 0 10/345*100% 0;
+                    // white-space: nowrap;
+                    // overflow: hidden;
+                    // text-overflow: ellipsis;
+                    width: 100%;
+                    // height: auto;
+                    // display: block;
+                }
+            }
+            .price-wrap {
+                position: static;
+                margin: 0;
+                border: none;
+                transform: none;
+                width: auto;
+                background: none;
+            }
+            &.ticket-item-discount,
+            &.ticket-item-minus {
+                &:before {
+                    margin: 0;
+                }
+            }
+        }
+    }
     ul {
         padding: 0 15/750*100%;
     }
@@ -1060,23 +1128,23 @@ body {
             margin-bottom: 0;
         }
     }
-    &.BN-list-cols2 {
-        ul {}
-        li {
-            float: left;
-            width: 50%;
-            // margin-left: 0;
-            margin-bottom: 7.5/360*100%;
-            padding-right: 7.5/2/360*100%;
-            &:nth-child(2n+2) {
-                padding-left: 7.5/2/360*100%;
-                padding-right: 0;
-            }
-            &:after {
-                display: none;
-            }
-        }
-    }
+    // &.BN-list-cols2 {
+    //     ul {}
+    //     li {
+    //         float: left;
+    //         width: 50%;
+    //         // margin-left: 0;
+    //         margin-bottom: 7.5/360*100%;
+    //         padding-right: 7.5/2/360*100%;
+    //         &:nth-child(2n+2) {
+    //             padding-left: 7.5/2/360*100%;
+    //             padding-right: 0;
+    //         }
+    //         &:after {
+    //             display: none;
+    //         }
+    //     }
+    // }
 }
 
 .logo-nuomi,
@@ -1384,7 +1452,7 @@ footer {
     a {
         font-size: 0;
         height: 21/16rem;
-        display: inline-block;
+        display: block;
     }
     .subSessionTab-btn,
     .mainSessionTab-btn {
@@ -2055,184 +2123,7 @@ footer {
     }
 }
 
-.section-item-ticket,
-.section-item-sceneryHotel,
-.section-item-oneDayTour,
-.section-item-autotrophy,
-.section-item-ctrip,
-.section-item-foreign {
-    .section-item-title {
-        &:after {
-            background-position: 0 100%;
-        }
-    }
-    .ticket-title {
-        p {
-            margin: 0;
-        }
-    }
-    .ticket-item {
-        display: flex;
-        padding: 20/710*100% 0;
-        &:active {
-            background: #e7e7e7;
-        }
-        .img-box {
-            width: 184/710*100%;
-            margin: 0 20/710*100%;
-            &:after {
-                padding-bottom: 100%;
-            }
-        }
-        .ticket-main {
-            margin-right: 20/710*100%;
-        }
-        .ticket-title-wrap {
-            padding: 0;
-        }
-        .price-wrap {
-            width: 100%;
-            border: none;
-            background: none;
-            .price-now {
-                color: @highLightColor;
-                em {
-                    display: inline-block;
-                    font-size: 20/16rem;
-                }
-            }
-            .price-original {
-                em {
-                    display: inline-block;
-                    font-size: 12/16rem;
-                    text-decoration: line-through;
-                    &:before {
-                        text-decoration: line-through;
-                    }
-                }
-            }
-        }
-    }
-    .page-info {
-        padding: 20/750*100% 0;
-        color: #fff;
-        font-size: 15/16rem;
-        .prev-page {
-            position: relative;
-            &:after {
-                display: inline-block;
-                width: 1px;
-                height: 1em;
-                content: '\20';
-                background: #fff;
-                vertical-align: top;
-                margin-right: .5em;
-                margin-left: .5em;
-            }
-        }
-    }
-}
-
-.section-item-ticket {
-    .section-item-title {
-        &:after {
-            background-position: 0 120*2/840*100%;
-        }
-    }
-}
-
-.section-item-foreign {
-    .section-item-title {
-        &:after {
-            background-position: 0 120*5/840*100%;
-        }
-    }
-}
-
-.section-item-ctrip {
-    .section-item-title {
-        &:after {
-            background-position: 0 120*7/840*100%;
-        }
-    }
-}
-
-/*两列门票*/
-
-.section-item-cols2 {
-    // .section-item-bd {
-    //     width: 720/750*100%;
-    // }
-    li {
-        float: left;
-        width: 50%;
-        padding: 0 10/720*100%;
-        &:nth-child(2n+1) {
-            padding-left: 0;
-        }
-        &:nth-child(2n) {
-            padding-right: 0;
-        }
-    }
-    .ticket-item {
-        padding: 0 0 10/345*100%;
-        margin-top: 20/345*100%;
-        flex-direction: column;
-        .img-box {
-            width: 100%;
-            margin: 0 0 10/345*100%;
-            &:after {
-                padding-bottom: 160/345*100%;
-            }
-            // height: 80/16rem;
-            // img {
-            //     padding-bottom: 324/710*100%;
-            //     background-size: 100% auto;
-            // }
-        }
-        .ticket-main {
-            margin: 0;
-        }
-        // .img-box {
-        //     img {
-        //         padding-bottom: 324/710*100%;
-        //         background-size: 100% auto;
-        //     }
-        // }
-        .ticket-title-wrap {
-            padding: 0 10/345*100%;
-        }
-        .ticket-title {
-            font-size: 14/16rem;
-            // padding: 7/16rem 0 5/16rem;
-            p {
-                margin: 0 0 10/345*100% 0;
-                // white-space: nowrap;
-                // overflow: hidden;
-                // text-overflow: ellipsis;
-                width: 100%;
-                // height: auto;
-                // display: block;
-            }
-        }
-        .price-wrap {
-            position: static;
-            margin: 0;
-            border: none;
-            transform: none;
-            width: auto;
-            background: none;
-        }
-        &.ticket-item-discount,
-        &.ticket-item-minus {
-            &:before {
-                margin: 0;
-            }
-        }
-    }
-}
-
-.section-item-promotion .ticket-item {
+.section-item-map-promotion .ticket-item {
     display: block;
     width: 100%;
     position: relative;
@@ -2486,5 +2377,17 @@ footer {
                 }
             }
         }
+    }
+}
+
+.more-link {
+    display: block;
+    text-align: center;
+    padding: 60/710*100% 0 0;
+    a,
+    span {
+        font-size: 12/16rem;
+        text-decoration: underline;
+        color: #fff;
     }
 }

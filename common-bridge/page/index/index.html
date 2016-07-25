@@ -284,7 +284,11 @@
                             <p>（每人每种优惠券只能领用1张哦！）</p>
                         {@/if}
                     {@else}
-                        <p>恭喜你~<br>领取成功~</p>
+                        {@if data.id == 99} 
+                            <p>${pageConfig.package.text}</p>
+                        {@else}
+                            <p>恭喜你~<br>领取成功~</p>
+                        {@/if}
                     {@/if}
                     <span class="flayer-btn-ok J-flayer-close">我知道了</span>
                 </div>
@@ -598,38 +602,36 @@
     %>
     {@if ticket.length}
         <div class="ticket-list-wrap">
-            <div class="ticket-list J-ticket-list" tab-content="ticket">
+            <div class="ticket-list J-ticket-list BN-list BN-list-cols2" tab-content="ticket">
                 <ul>
                     {@each ticket as item,index}
                         {@if index <= 15}
                             <li>
-                                {#
-                                    <div class="ticket-item J-poi flex flex-pack-justify J-Detail ${pageConfig.mapTicket['show_tag'] == 1 ? 'ticket-item-discount' : ''}" data-uid="${item.uid}" data-qunar_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
+                                {# 
+                                    <div class="ticket-item ticket-item-v J-poi flex flex-pack-justify J-Detail ${pageConfig.mapTicket['show_tag'] == 1 ? 'ticket-item-discount' : ''}" data-uid="${item.uid}" data-qunar_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
                                 }
-                                    <div class="ticket-item J-poi flex flex-pack-justify J-Detail" data-uid="${item.uid}" data-td_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
+                                    <div class="ticket-item ticket-item-v J-poi flex flex-pack-justify J-Detail" data-uid="${item.uid}" data-td_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
                                     <div class="img-box img-wrap"><img data-src="${item.pic}" /></div>
                                     {#<div class="img-box img-wrap" data-purl="${item.pic}"></div>}
                                     <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                        <div class="ticket-title-wrap">
-                                            <div class="ticket-title flex">
-                                                <p class="flex-1">
-                                                    {@if channel.name == "map_scope"}
-                                                        {@if item.city_name}
-                                                            <em>${item.city_name.replace('市','')}</em>
-                                                        {@/if}
-                                                    {@else}
-                                                        {@if item.star}
-                                                            <em>${item.star}</em>
-                                                        {@/if}
+                                        <div class="ticket-title">
+                                            <p>
+                                                {@if channel.name == "map_scope"}
+                                                    {@if item.city_name}
+                                                        <em>${item.city_name.replace('市','')}</em>
                                                     {@/if}
-                                                    ${item.name}
-                                                </p>
-                                            </div>
+                                                {@else}
+                                                    {@if item.star}
+                                                        <em>${item.star}</em>
+                                                    {@/if}
+                                                {@/if}
+                                                ${item.name}
+                                            </p>
                                         </div>
                                         <div class="price-wrap">
                                             <span class="price price-now"><em>${item.price}</em>起</span>
                                             {@if item.originPrice && item.originPrice > item.price}
-                                                <span class="price price-original"><em>${item.originPrice}</em></span>
+                                                <span class="price price-original price-marketPrice price-font10"><em><strong>${item.originPrice}</strong></em></span>
                                             {@/if}
                                         </div>
                                     </div>
@@ -674,37 +676,31 @@
     %>
     {@if list.length}
         <div class="ticket-list-wrap">
-            <div class="ticket-list">
+            <div class="ticket-list BN-list">
                 <ul>
                     {@each list as item,index}
                         <li>
-                            <div class="ticket-item ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" pb-id="{pageConfig.mapForeign['pb-id']}">
-                                <div class="img-box img-wrap"><img data-src="${item.pic}" /></div>
-                                {#<div class="img-box img-wrap" data-purl="${item.pic}"></div>}
-                                <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                    <div class="ticket-title-wrap">
-                                        <div class="ticket-title flex">
-                                            <p class="flex-1">
-                                                {@if item.country}
-                                                    <em>${item.country}</em>
-                                                {@/if}
-                                                ${item.ticket_name}
-                                            </p>
+                            <div class="ticket-item ticket-item ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" pb-id="{pageConfig.mapForeign['pb-id']}">
+                                <div class="ticket-item-container">
+                                    <div class="img-box img-wrap"><img data-src="${item.pic}" /></div>
+                                    {#<div class="img-box img-wrap" data-purl="${item.pic}"></div>}
+                                    <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
+                                        <div class="ticket-title-wrap">
+                                            <div class="ticket-title flex">
+                                                <p class="flex-1">
+                                                    {@if item.country}
+                                                        <em>${item.country}</em>
+                                                    {@/if}
+                                                    ${item.ticket_name}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    {@if item.score>0}
-                                        <%
-                                            score = (item.score-0).toFixed(1);
-                                        %>
-                                        <div class="stars-wrap">
-                                            <div class="stars" data-stars="${score}"><span style="width:${(item.score-0)/5*100}%"></span></div>
+                                        <div class="price-wrap">
+                                            <span class="price price-now price-font20"><em><strong>${item.sale_price}</strong></em></span>
+                                            {@if item.market_price && item.market_price > item.sale_price}
+                                                <span class="price price-original"><em><strong>${item.market_price}</strong></em></span>
+                                            {@/if}
                                         </div>
-                                    {@/if}
-                                    <div class="price-wrap">
-                                        <span class="price price-now"><em>${item.sale_price}</em></span>
-                                        {@if item.market_price && item.market_price > item.sale_price}
-                                            <span class="price price-original"><em>${item.market_price}</em></span>
-                                        {@/if}
                                     </div>
                                 </div>
                             </div>
@@ -727,7 +723,6 @@
 
 <script type="text/template" id="tpl-map-ctrip">
     <%
-        console.log(cacheData.Math);
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
             pn = cacheData.ctrip_pn,
@@ -750,28 +745,26 @@
     %>
     {@if list.length}
         <div class="ticket-list-wrap">
-            <div class="ticket-list">
+            <div class="ticket-list BN-list BN-list-cols2">
                 <ul>
                     {@each list as item,index}
                         <li>
-                            <div class="ticket-item ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" data-ticket_id="${item.ticket_id}" data-partner_id="ctripticket" data-ticket_id="${item.ticket_id}" data-partner_id="${item.scope_id}" data-scope_name="${item.scope_name}" data-productid="${item.productId}" pb-id="{pageConfig.mapCtrip['pb-id']}">
+                            <div class="ticket-item ticket-item-v ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" data-ticket_id="${item.ticket_id}" data-partner_id="ctripticket" data-ticket_id="${item.ticket_id}" data-partner_id="${item.scope_id}" data-scope_name="${item.scope_name}" data-productid="${item.productId}" pb-id="{pageConfig.mapCtrip['pb-id']}">
                                 <div class="img-box img-wrap"><img data-src="${item.picUrl}" /></div>
                                 {#<div class="img-box img-wrap" data-src="${item.picUrl}"></div>}
                                 <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                    <div class="ticket-title-wrap">
-                                        <div class="ticket-title flex">
-                                            <p class="flex-1">
-                                                {@if item.city}
-                                                    <em>${item.city}</em>
-                                                {@/if}
-                                                ${item.poiName}
-                                            </p>
-                                        </div>
+                                    <div class="ticket-title">
+                                        <p>
+                                            {@if item.city}
+                                                <em>${item.city}</em>
+                                            {@/if}
+                                            ${item.poiName}
+                                        </p>
                                     </div>
                                     <div class="price-wrap">
-                                        <span class="price price-now"><em>${item.price}</em></span>
+                                        <span class="price price-now price-floor price-font16"><em><strong>${item.price}</strong></em></span>
                                         {@if item.mprice && item.mprice > item.price}
-                                            <span class="price price-original"><em>${item.mprice}</em></span>
+                                            <span class="price price-original price-marketPrice price-font10"><em><strong>${item.mprice}</strong></em></span>
                                         {@/if}
                                     </div>
                                 </div>
