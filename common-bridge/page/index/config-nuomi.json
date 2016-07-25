@@ -227,5 +227,23 @@
         "subTitle": "title",
         "pb-id": "123",
         "page-change": "321"
-    }
+    },
+    "peakCalendar": [
+        {
+            "title": "预热期",
+            "date": "7.18 - 7.28"
+        }, {
+            "title": "高峰期",
+            "date": "7.18 - 7.28"
+        }, {
+            "title": "返场期",
+            "date": "7.18 - 7.28"
+        }
+    ],
+    "returnCalendar": [
+        {
+            "title": "预热期",
+            "date": "7.18 - 7.28"
+        }
+    ]
 }

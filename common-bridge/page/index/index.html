@@ -362,6 +362,9 @@
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
             list = list;
+            calendarType = calendarType;
+            console.log('list');
+            console.log(list);
     %>
     {@if channel.name == "nuomi"}
         <section class="calendar">
@@ -369,16 +372,22 @@
                 <div class="list-header"></div>
                 <div class="date-list-wrap">
                     <div class="date-list">
-                        <ul>
-                            {@each list as item}
-                                <li>
-                                    <div class="list-cont">
-                                        <h1>${item.title}</h1>
-                                        <h2>${item.activeDate | dateFomat}</h2>
-                                    </div>
-                                </li>
-                            {@/each}
-                        </ul>
+                        {@if calendarType == "intro"}
+                            <ul class="intro-list">
+                        {@else if calendarType == "peak"}
+                            <ul class="peak-list">
+                        {@else}
+                            <ul class="return-list">
+                        {@/if}
+                                {@each list as item}
+                                    <li>
+                                        <div class="list-cont">
+                                            <h1>${item.title}</h1>
+                                            <h2>${item.activeDate | dateFomat}</h2>
+                                        </div>
+                                    </li>
+                                {@/each}
+                            </ul>
                     </div>
                 </div>
             </div>
