@@ -1587,7 +1587,7 @@ var App = {
         if (me.cacheData.channel.name == 'map_scope') {
             return me;
         } else {
-            $('footer').addClass('active');
+            $('footer .footer-wrap').addClass('active');
         }
         html = Juicer($('#tpl-footer').html(), {
             cacheData: me.cacheData
