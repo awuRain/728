@@ -1622,7 +1622,7 @@ footer {
         &:after {
             content: '';
             display: inline-block;
-            width: 22/16rem;
+            width: 32/16rem;
             height: 100%;
             background-color: #ff2a00;
         }
@@ -1650,7 +1650,7 @@ footer {
     }
     .tab-list {
         width: 100%;
-        height: 25/16rem;
+        height: 32/16rem;
         position: relative;
         overflow-x: scroll;
         overflow-y: hidden;
@@ -2391,5 +2391,24 @@ footer {
         font-size: 12/16rem;
         text-decoration: underline;
         color: #fff;
+    }
+}
+
+.page-info {
+    padding: 20/750*100% 2%;
+    color: #fff;
+    font-size: 15/16rem;
+    .prev-page {
+        position: relative;
+        &:after {
+            display: inline-block;
+            width: 1px;
+            height: 1em;
+            content: '\20';
+            background: #fff;
+            vertical-align: top;
+            margin-right: .5em;
+            margin-left: .5em;
+        }
     }
 }
