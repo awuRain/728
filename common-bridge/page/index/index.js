@@ -605,7 +605,7 @@ var App = {
                     card['pic'] && (card['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic']);
                     card['image'] && (card['image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['image']);
                     card['pic_url'] && (card['pic_url'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic_url']);
-                    
+
                 });
             });
         }
@@ -801,15 +801,15 @@ var App = {
                     if (me.cacheData.channel.name == 'nuomi') {
                         setTimeout(function() {
                             me.getMainMeeting();
-                        }, 400)
+                        }, 350)
                     }
                     if (me.cacheData.channel.name == 'map_scope') {
                         setTimeout(function() {
                             me.getMapPromotionIndex({ "id": "map-promotion" });
                             me.getMapTicket({ "id": "map-ticket" });
-                        }, 400)
+                        }, 350)
                     }
-                }, 400)
+                }, 350)
             });
         }, 0)
 
@@ -1460,7 +1460,7 @@ var App = {
                     });
                 }
                 calendarType = "intro";
-            } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {  
+            } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
                 list = me.cacheData.pageConfig.peakCalendar;
                 calendarType = "peak";
             } else {
@@ -2009,7 +2009,7 @@ var App = {
             }
             Bridge.pushWindow({
                 // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: /^baidunuo\:/igm.test(nalink) ? decodeURIComponent(nalink) : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
+                nuomi: /^bainuo\:/igm.test(nalink) ? decodeURIComponent(nalink) : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
                 "nuomi-webapp": link,
                 "map-webapp": link,
                 "map-ios": link,
