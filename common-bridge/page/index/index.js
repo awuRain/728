@@ -1442,15 +1442,9 @@ var App = {
 
         if (me.cacheData.pageConfig.mainMeeting) {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
-                for (var i = 0; i < currentOrder.length; i++) {
+                for (var i in currentOrder) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                    if (i+1 < currentOrder.length) {
-                        var next_to =  me.cacheData.pageConfig[currentOrder[i+1].id].activeDate;
-                    } else {
-                        var next_to =  to;
-                    }
-                    
-                    if (now.isSame(to, 'day') || now.isBetween(to, next_to, 'day')) {
+                    if (now.isSame(to, 'day')) {
                         list = currentOrder.slice(i);
                         break;
                     }
@@ -1465,7 +1459,6 @@ var App = {
                         id: list[i].id
                     });
                 }
-
                 calendarType = "intro";
             } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
                 list = me.cacheData.pageConfig.peakCalendar;
@@ -2019,7 +2012,7 @@ var App = {
             }
             Bridge.pushWindow({
                 // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: /^bainuo\:/igm.test(nalink) ? decodeURIComponent(nalink) : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
+                nuomi: /^bainuo\:/igm.test(nalink) ? nalink : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
                 "nuomi-webapp": link,
                 "map-webapp": link,
                 "map-ios": link,
@@ -2031,13 +2024,13 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
             $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
             me.createSoftImg($('[tab-id="' + tabId + '"]'));
-        }).on('tap', '.subSessionTab-btn', function() {
+        }).on('touchend', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
             // $('body').on('tap', 'section:not(.subSessionTab)', function () {
             //     $('.subSessionTab').removeClass('active');
             //     $('body').off('tap', 'section:not(.subSessionTab)');
             // })
-        }).on('tap', '.subSessionTab .close-btn', function() {
+        }).on('touchend', '.subSessionTab .close-btn', function() {
             $('.subSessionTab').removeClass('active');
             $('body').off('tap', 'section:not(.subSessionTab)');
         }).on('tap', '.J-more-ticket', function() { //更多热门景点
