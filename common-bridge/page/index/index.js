@@ -367,8 +367,6 @@ var App = {
             }, 500);
         }
 
-        _settings.callback && _settings.callback();
-
         arr_innerHtml.length = 0;
 
         if (me.isLazyload) {
@@ -1444,15 +1442,9 @@ var App = {
 
         if (me.cacheData.pageConfig.mainMeeting) {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
-                for (var i = 0; i < currentOrder.length; i++) {
+                for (var i in currentOrder) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                    if (i+1 < currentOrder.length) {
-                        var next_to =  me.cacheData.pageConfig[currentOrder[i+1].id].activeDate;
-                    } else {
-                        var next_to =  to;
-                    }
-                    
-                    if (now.isSame(to, 'day') || now.isBetween(to, next_to, 'day')) {
+                    if (now.isSame(to, 'day')) {
                         list = currentOrder.slice(i);
                         break;
                     }
@@ -1467,7 +1459,6 @@ var App = {
                         id: list[i].id
                     });
                 }
-
                 calendarType = "intro";
             } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
                 list = me.cacheData.pageConfig.peakCalendar;
@@ -1740,28 +1731,23 @@ var App = {
 
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
         }).on('fixPriceDataReady', function() {
-            me.renderLayout({
-                callback: function() {
-                    alert(1);
-                    $('.section-item').lazyelement({
-                        threshold: 200,
-                        supportAsync: !0,
-                        onScrollStop: function(element) {
-                            var id = $(element).attr('id'),
-                                sectionType = $(element).attr('section-type');
-                            if (sectionType == 'mainMeeting') { //渲染分会场
-                                me.renderMainMeeting(me.baseOrder_Key[id]);
-                            } else if (sectionType == 'promotionList') {
-                                me.renderPromotionList(me.baseOrder_Key[id]);
-                            } else if (sectionType == 'fixPrice') {
-                                me.renderFixprice(me.baseOrder_Key[id]);
-                            }
-                        }
-                    });
-                    alert(2);
+            me.renderLayout();
+
+            $('.section-item').lazyelement({
+                threshold: 200,
+                supportAsync: !0,
+                onScrollStop: function(element) {
+                    var id = $(element).attr('id'),
+                        sectionType = $(element).attr('section-type');
+                    if (sectionType == 'mainMeeting') { //渲染分会场
+                        me.renderMainMeeting(me.baseOrder_Key[id]);
+                    } else if (sectionType == 'promotionList') {
+                        me.renderPromotionList(me.baseOrder_Key[id]);
+                    } else if (sectionType == 'fixPrice') {
+                        me.renderFixprice(me.baseOrder_Key[id]);
+                    }
                 }
             });
-
         });
 
         // $(".img-box img,.pic").lazyload({
