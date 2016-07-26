@@ -2031,16 +2031,11 @@ var App = {
             $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
             $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
             me.createSoftImg($('[tab-id="' + tabId + '"]'));
-        }).on('touchend', '.subSessionTab-btn', function() {
+        }).on('tap', '.subSessionTab-btn', function() {
             $('.subSessionTab').addClass('active');
-            // $('body').on('tap', 'section:not(.subSessionTab)', function () {
-            //     $('.subSessionTab').removeClass('active');
-            //     $('body').off('tap', 'section:not(.subSessionTab)');
-            // })
-        }).on('touchend', '.subSessionTab .close-btn', function() {
-            $('.subSessionTab').removeClass('active');
-            $('body').off('tap', 'section:not(.subSessionTab)');
-        }).on('tap', '.J-more-ticket', function() { //更多热门景点
+            $('body').on('tap', '.subSessionTab-btn', _hideSubsessionTab)
+        }).on('touchend', '.subSessionTab .close-btn', _hideSubsessionTab)
+        .on('tap', '.J-more-ticket', function() { //更多热门景点
             var _sid = me.cacheData.gps_sid,
                 _cityid = me.cacheData.gps_cityid,
                 _timeout = 0;
@@ -2101,6 +2096,11 @@ var App = {
                 });
             }
         });
+        
+        function _hideSubsessionTab () {
+            $('.subSessionTab').removeClass('active');
+            $('body').off('tap', '.subSessionTab-btn', _hideSubsessionTab);
+        }
 
         return this;
     },
