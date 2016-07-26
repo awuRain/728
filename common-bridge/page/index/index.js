@@ -1853,9 +1853,6 @@ var App = {
                 });
                 return false;
             }
-            // if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
-            //     return false;
-            // }
             me.getDiscount({
                 id: id
             });
