@@ -292,7 +292,7 @@ var App = {
 
         return me;
     },
-    renderLayout: function(opts) { //组织分会场顺序
+    renderLayout: function(opts) { //渲染各会场layout
         var me = this,
             tpl = me.tpl_layout || $('#tpl-layout').html(),
             _settings = opts || {},
@@ -303,7 +303,6 @@ var App = {
         me.tpl_layout = tpl;
 
         me.mainMeetingOrder_cp = $.extend([], me.mainMeetingOrder);
-
         for (var i = 0, len = me.baseOrder.length; i < len; i++) { //组织主会场基本模块 layout
             _item = $.extend(me.baseOrder[i]);
             !me.baseOrder_Key[_item.id] && (me.baseOrder_Key[_item.id] = _item);
@@ -343,7 +342,6 @@ var App = {
                     _item.className = _item.className ? (_item.className + ' section-item-' + _item.id + '-' + _item.discount) : (' section-item-' + _item.id + '-' + _item.discount);
                 }
             }
-
             arr_innerHtml.push(me.createSection(_item));
         }
 
@@ -362,12 +360,13 @@ var App = {
 
         if ($.trim(html).length) {
             $('.J-placeholder-layout').replaceWith(html);
-            setTimeout(function() { //手动触发一下分会场模块的渲染
-                $(window).trigger('scroll');
-            }, 500);
+            _settings.callback && _settings.callback();
+            // setTimeout(function() { //手动触发一下分会场模块的渲染
+            //     $(window).trigger('scroll');
+            // }, 500);
         }
 
-        arr_innerHtml.length = 0;
+        // arr_innerHtml.length = 0;
 
         if (me.isLazyload) {
             return me;
@@ -379,6 +378,37 @@ var App = {
             isBackground: 1
         });
         me.isLazyload = 1;
+
+        return me;
+    },
+    renderMainMeetingLayout: function(opts) { //渲染各专场layout
+        var me = this,
+            _settings = opts || {},
+            list = [],
+            current = me.cacheData.mainMeeting[me.cacheData.sid],
+            _arr_innerHtml = [],
+            pageConfigItem;
+
+        me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选需要显示的区块
+            if (current[item.id] && current[item.id].list.length) {
+                list.push(item);
+            }
+        });
+
+        me.cacheData.currentOrder = list;
+
+        _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
+
+        me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
+            item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
+            _arr_innerHtml.push(me.createSection(item));
+        });
+
+        $('.J-placeholder-mainMeeting').html(_arr_innerHtml.join(''));
+
+        me.renderPageTab();
+
+        _settings.callback && _settings.callback();
 
         return me;
     },
@@ -793,25 +823,20 @@ var App = {
     loadDataRelyonLoc: function(opts) { //加载基于地理位置的模块
         var me = this,
             _settings = opts || {};
+
         setTimeout(function() {
             me.getPromotionList().always(function() {
                 me.getFixprice()
             }).always(function() {
-                setTimeout(function() {
-                    if (me.cacheData.channel.name == 'nuomi') {
-                        setTimeout(function() {
-                            me.getMainMeeting();
-                        }, 350)
-                    }
-                    if (me.cacheData.channel.name == 'map_scope') {
-                        setTimeout(function() {
-                            me.getMapPromotionIndex({ "id": "map-promotion" });
-                            me.getMapTicket({ "id": "map-ticket" });
-                        }, 350)
-                    }
-                }, 350)
+                if (me.cacheData.channel.name == 'nuomi') {
+                    me.getMainMeeting();
+                }
+                if (me.cacheData.channel.name == 'map_scope') {
+                    me.getMapPromotionIndex({ "id": "map-promotion" });
+                    me.getMapTicket({ "id": "map-ticket" });
+                }
             });
-        }, 0)
+        }, 100)
 
         return me;
     },
@@ -923,9 +948,6 @@ var App = {
         // $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         // $('.J-placeholder-' + _settings.id + '-empty').remove();
-        $(me).trigger('dataLoaded', [{
-            name: _settings.id
-        }]);
 
         return me;
     },
@@ -1065,9 +1087,6 @@ var App = {
 
         $('.J-loading').removeClass('show').addClass('hide');
 
-        $(me).trigger('dataLoaded', [{
-            name: 'promotion'
-        }]);
         return me;
     },
     createTicketList: function(opts) { //创建门票卡片
@@ -1093,7 +1112,9 @@ var App = {
         var me = this,
             deferred = $.Deferred(),
             _dataReady = function() {
-                $(me).trigger('mainMeetingBySidDataReady');
+                setTimeout(function() {
+                    $(me).trigger('mainMeetingBySidDataReady');
+                }, 0);
                 deferred.resolve();
             };
 
@@ -1193,9 +1214,7 @@ var App = {
         $('#' + _settings.id).removeClass('hide').addClass('show');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         // $('.J-placeholder-' + _settings.id + '-empty').remove();
-        $(me).trigger('dataLoaded', [{
-            name: _settings.id
-        }]);
+
         return me;
     },
     getDiscount: function(opts) { //领券
@@ -1329,9 +1348,7 @@ var App = {
                 activeInfo: ACTIVEINFO
             })
             $('.J-placeholder-coupon').html(html);
-            $(me).trigger('dataLoaded', [{
-                name: 'coupon'
-            }]);
+
         } else {
             $('.J-placeholder-coupon').remove();
             // html = Juicer($('#tpl-coupon').html(), {
@@ -1444,12 +1461,12 @@ var App = {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
                 for (var i = 0; i < currentOrder.length; i++) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                    if (i+1 < currentOrder.length) {
-                        var next_to =  me.cacheData.pageConfig[currentOrder[i+1].id].activeDate;
+                    if (i + 1 < currentOrder.length) {
+                        var next_to = me.cacheData.pageConfig[currentOrder[i + 1].id].activeDate;
                     } else {
-                        var next_to =  to;
+                        var next_to = to;
                     }
-                    
+
                     if (now.isSame(to, 'day') || now.isBetween(to, next_to, 'day')) {
                         list = currentOrder.slice(i);
                         break;
@@ -1589,6 +1606,8 @@ var App = {
             cacheData: me.cacheData
         });
         $(html).prependTo('body');
+        me.provinceSelect = me.provinceSelect || {};
+        me.provinceSelect.offsetTop = $('.J-province-select').offset().top;
         return me;
     },
     renderFooter: function() { //渲染footer
@@ -1612,6 +1631,8 @@ var App = {
             tpl = me.tpl_pageTab || $('#tpl-pageTab').html();
 
         me.tpl_pageTab = tpl;
+
+        $('.J-page-tab').remove();
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
@@ -1704,57 +1725,52 @@ var App = {
                 .loadDataRelyonLoc({
                     is_init: 1
                 });
-        }).on('dataLoaded', function(e, data) { //所有请求已加载完成
-            var _data = data || {};
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
-            var list = [],
-                current = me.cacheData.mainMeeting[me.cacheData.sid],
-                _arr_innerHtml = [],
-                pageConfigItem;
 
-            me.mainMeetingOrder.forEach(function(item, index) { //按照分会场指定顺序筛选
-                item = $.extend({}, me.baseOrder_Key[item.id], me.cacheData.pageConfig[item.id], item);
-                if (current[item.id] && current[item.id].list.length) {
-                    list.push($.extend({}, me.cacheData.pageConfig[item.id], { "id": item.id }));
-                }
-            });
-
-            me.cacheData.currentOrder = list;
-
-            _arr_innerHtml.push('<div class="J-placeholder J-placeholder-page-tab"></div>');
-
-            me.cacheData.currentOrder.forEach(function(item, index) { //组织分会场
-                item = $.extend({}, me.baseOrder_Key[item.id], item);
-                pageConfigItem = me.cacheData.pageConfig[item.id] || {};
-                item.className = item.className ? item.className + ' section-item-inner' : ' section-item-inner';
-                item.activeDate = pageConfigItem.activeDate;
-                _arr_innerHtml.push(me.createSection(item));
-            });
-
-            $('.J-placeholder-mainMeeting').html(_arr_innerHtml.join(''));
-
-            $('.J-page-tab').remove();
-            me.renderPageTab();
+            setTimeout(function() {
+                me.renderMainMeetingLayout({
+                    callback: function() {
+                        $('.section-item').lazyelement({
+                            threshold: 200,
+                            supportAsync: !0,
+                            onScrollStop: function(element) {
+                                var id = $(element).attr('id'),
+                                    sectionType = $(element).attr('section-type');
+                                if (sectionType == 'mainMeeting') { //渲染分会场
+                                    me.renderMainMeeting(me.baseOrder_Key[id]);
+                                } else if (sectionType == 'promotionList') {
+                                    me.renderPromotionList(me.baseOrder_Key[id]);
+                                } else if (sectionType == 'fixPrice') {
+                                    me.renderFixprice(me.baseOrder_Key[id]);
+                                }
+                            }
+                        });
+                    }
+                });
+            }, 100)
 
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
         }).on('fixPriceDataReady', function() {
-            me.renderLayout();
-
-            $('.section-item').lazyelement({
-                threshold: 200,
-                supportAsync: !0,
-                onScrollStop: function(element) {
-                    var id = $(element).attr('id'),
-                        sectionType = $(element).attr('section-type');
-                    if (sectionType == 'mainMeeting') { //渲染分会场
-                        me.renderMainMeeting(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'promotionList') {
-                        me.renderPromotionList(me.baseOrder_Key[id]);
-                    } else if (sectionType == 'fixPrice') {
-                        me.renderFixprice(me.baseOrder_Key[id]);
+            me.renderLayout({
+                callback: function() {
+                    if (me.cacheData.channel.name == 'map_scope') {
+                        $('.section-item').lazyelement({
+                            threshold: 200,
+                            supportAsync: !0,
+                            onScrollStop: function(element) {
+                                var id = $(element).attr('id'),
+                                    sectionType = $(element).attr('section-type');
+                                if (sectionType == 'promotionList') {
+                                    me.renderPromotionList(me.baseOrder_Key[id]);
+                                } else if (sectionType == 'fixPrice') {
+                                    me.renderFixprice(me.baseOrder_Key[id]);
+                                }
+                            }
+                        });
                     }
                 }
             });
+
         });
 
         // $(".img-box img,.pic").lazyload({
@@ -1773,10 +1789,20 @@ var App = {
         $(window).on('scroll', function() { //页面内导航的显示/隐藏
             clearTimeout(_scrollTimer);
             _scrollTimer = setTimeout(function() {
+                // var $provinceSelect = $('.J-province-select');
                 $targetPlaceholder = $('.J-placeholder-mainMeeting').eq(0);
+
                 var scrollTop = $('body').scrollTop(),
                     lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),
                     left = 0;
+
+                // console.log(scrollTop, '$provinceSelect:', $provinceSelect, me.provinceSelect.offsetTop, $provinceSelect.css('margin-top'))
+                // if (scrollTop >= me.provinceSelect.offsetTop - parseFloat($provinceSelect.css('margin-top'))) {
+                //     $provinceSelect.addClass('active');
+                // } else {
+                //     $provinceSelect.removeClass('active');
+                // }
+
                 $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
                     var $item = $(item);
                     if ((scrollTop >= $item.offset().top - 60 && scrollTop < $item.offset().top + $item.offset().height - 60)) {
@@ -2040,12 +2066,12 @@ var App = {
                 _cityid = me.cacheData.gps_cityid,
                 _timeout = 0;
 
-            if (me.gps == 0) { //定位失败
+            if (me.cacheData.gps_success == 0) { //定位失败
                 _timeout = 3000;
             }
 
             setTimeout(function() {
-                if (me.gps == 0) { //定位失败
+                if (me.cacheData.gps_success == 0) { //定位失败
                     Bridge.toast('亲~定位失败了哟~~~');
                 }
                 Bridge.pushWindow({
@@ -2163,9 +2189,7 @@ var App = {
         // me.lazyLoadImg('.J-placeholder-ctrip');
         // me.getMapForeign();
         _settings.callback && _settings.callback();
-        $(me).trigger('dataLoaded', [{
-            name: 'ctrip'
-        }]);
+
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         return me;
     },
@@ -2233,9 +2257,7 @@ var App = {
         // me.lazyLoadImg('.J-placeholder-foreign');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
         _settings.callback && _settings.callback();
-        $(me).trigger('dataLoaded', [{
-            name: 'foreign'
-        }]);
+
         return me;
     },
     getMapTicket: function(opts) { //获取推荐门票
@@ -2338,9 +2360,7 @@ var App = {
         }
         // me.lazyLoadImg('.J-placeholder-ticket');
         me.createSoftImg($('.J-placeholder-' + _settings.id));
-        $(me).trigger('dataLoaded', [{
-            name: 'ticket'
-        }]);
+
         return me;
     },
     getMapPromotionIndex: function(opts) { //获取立减数据
@@ -2391,9 +2411,7 @@ var App = {
         $('.J-loading').hide();
         $(window).trigger('scroll');
         me.renderMapPromotion(_settings);
-        $(me).trigger('dataLoaded', [{
-            name: 'promotion'
-        }]);
+
         return me;
     },
     renderMapPromotion: function(opts) { //渲染立减区域
