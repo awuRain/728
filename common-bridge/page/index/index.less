@@ -722,7 +722,7 @@ body {
 
 .page {
     &>.section-item {
-        &:nth-child(2n) {
+        &:nth-child(2n+1) {
             background: @color-section-purple;
             &:before {
                 background: @color-section-purple;
@@ -739,7 +739,7 @@ body {
             //     }
             // }
         }
-        &:nth-child(2n+1) {
+        &:nth-child(2n) {
             background: @color-section-yellow;
             &:before {
                 background: @color-section-yellow;
