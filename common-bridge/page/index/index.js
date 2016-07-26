@@ -1444,9 +1444,15 @@ var App = {
 
         if (me.cacheData.pageConfig.mainMeeting) {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
-                for (var i in currentOrder) {
+                for (var i = 0; i < currentOrder.length; i++) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
-                    if (now.isSame(to, 'day')) {
+                    if (i+1 < currentOrder.length) {
+                        var next_to =  me.cacheData.pageConfig[currentOrder[i+1].id].activeDate;
+                    } else {
+                        var next_to =  to;
+                    }
+                    
+                    if (now.isSame(to, 'day') || now.isBetween(to, next_to, 'day')) {
                         list = currentOrder.slice(i);
                         break;
                     }
@@ -1461,6 +1467,7 @@ var App = {
                         id: list[i].id
                     });
                 }
+
                 calendarType = "intro";
             } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
                 list = me.cacheData.pageConfig.peakCalendar;
