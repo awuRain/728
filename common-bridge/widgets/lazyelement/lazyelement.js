@@ -62,7 +62,7 @@ $.fn.lazyelement = function(t) {
                 if (d >= a && e >= d || c >= a && e >= c || a >= d && c >= e) {
                     n.lazyelement = "actived";
                     t.onScrollStop(n);
-                    $(window).trigger("scroll");
+                    $(window).trigger("scroll.lazyelement");
                 }
             }
         }
@@ -74,7 +74,7 @@ $.fn.lazyelement = function(t) {
             }
         };
         t = $.extend({}, r, t),
-            $window.on("scrollStop orientationchange", n);
+            $window.on("scrollStop.lazyelement orientationchange.lazyelement", n);
         var a, e, l = this,
             d = this.selector;
         $(document).ready(function() {
@@ -84,8 +84,8 @@ $.fn.lazyelement = function(t) {
                 t.originalEvent && t.originalEvent.persisted && n()
             })
     },
-    $(window).on("scroll", _throttle(50, function() {
-        $(window).trigger("scrollStop")
+    $(window).on("scroll.lazyelement", _throttle(40, function() {
+        $(window).trigger("scrollStop.lazyelement")
     }));
 
 $.fn.unlazyelement = function(opts) {
