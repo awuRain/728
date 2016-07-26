@@ -294,7 +294,11 @@
                             <p>（每人每种优惠券只能领用1张哦！）</p>
                         {@/if}
                     {@else}
-                        <p>恭喜你~<br>领取成功~</p>
+                        {@if data.id && data.id == 99}
+                            <p>${pageConfig.package.text}</p>
+                        {@else}
+                            <p>恭喜你~<br>领取成功~</p>
+                        {@/if}
                     {@/if}
                     <span class="flayer-btn-ok J-flayer-close">我知道了</span>
                 </div>
