@@ -1466,7 +1466,7 @@ footer {
         margin-top: -1%;
         width: 50%;
         &:after {
-            margin-left: 20%;
+            margin-left: 50%;
             content: '';
             display: block;
             width: 33%;
@@ -1479,7 +1479,7 @@ footer {
     .mainSessionTab-btn {
         &:after {
             background-position: 100% 0;
-            margin-left: 50%;
+            margin-left: 20%;
         }
     }
     .game-btn {
@@ -1768,21 +1768,28 @@ footer {
     left: 0;
     transform: translate3d(0, 0, 0);
     opacity: 1;
-    transition: all .2s .1s;
+    transition: all .1s .1s;
     &.active {
         transform: translate3d(0, -98%, 0);
         opacity: 1;
     }
     .close-btn {
         position: absolute;
-        width: 25/16rem;
-        height: 25/16rem;
-        right: 5/16rem;
-        top: 5/16rem;
-        background-color: #fe9617;
-        background-image: url('./img/flayer-btn-close.png');
-        background-size: cover;
-        border-radius: 50%;
+        display: inline-block;
+        right: 0;
+        top: 0;
+        width: 50/16rem;
+        padding: 8/16rem 8/16rem 18/16rem 18/16rem;
+        &:after {
+            content: '';
+            width: 100%;
+            padding-bottom: 100%;
+            display: inline-block;
+            background-color: #fe9617;
+            background-image: url('./img/flayer-btn-close.png');
+            background-size: cover;
+            border-radius: 50%;
+        }
     }
     ul {
         width: 80%;
@@ -1801,7 +1808,7 @@ footer {
         }
         a {
             color: #444;
-            font-size: 10/16rem;
+            font-size: 14/16rem;
             padding: 5/16rem 10/16rem;
             display: inline-block;
             font-weight: bold;
