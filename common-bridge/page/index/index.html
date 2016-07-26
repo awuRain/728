@@ -401,24 +401,16 @@
     <%
         var pageConfig = cacheData.pageConfig,
             channel = cacheData.channel,
-            subSession = pageConfig.subSession,
-            j = 0;
-            for(var i in subSession) {
-                if (subSession[i].title) {j++;}
-            }
-            var isOdd = (j%2 != 0);
+            subSession = pageConfig.subSession;
     %>
     <section class="subSessionTab">
         <span class="close-btn"></span>
         <ul>
-            {@each subSession as item, index}
+            {@each subSession as item}
                 {@if item.title}
                     <li><a class="J-jumpBnr" data-link="${item.link}" data-nalink="${item.nalink}" pb-id="${item['pb-id']}">${item.title}</a></li>
                 {@/if}
             {@/each}
-            {@if isOdd}
-                <li class="fake-li"><a>abc</a></li>
-            {@/if}
         </ul>
     </section>
 </script>
