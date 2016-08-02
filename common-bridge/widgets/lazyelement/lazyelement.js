@@ -34,8 +34,8 @@ $.fn.lazyelement = function(t) {
                 e = n[1],
                 t.supportAsync && (l = $(d)),
                 l = $($.map(l, function(n) {
-                    return n.lazyelement || o(n) ? null : n
-                })),
+                    return n.lazyelement || o(n) || n.pause ? null : n
+                }));
                 l.each(i)
         }
 
@@ -87,6 +87,18 @@ $.fn.lazyelement = function(t) {
     $(window).on("scroll.lazyelement", _throttle(40, function() {
         $(window).trigger("scrollStop.lazyelement")
     }));
+
+$.fn.pauselazyelement = function(opts) {
+    var me = this;
+
+    function init() {
+        me.forEach(function(item, index) {
+            item.pause = !item.pause;
+        });
+    }
+    init();
+}
+
 
 $.fn.unlazyelement = function(opts) {
     var me = this;

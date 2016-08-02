@@ -17,17 +17,7 @@
             </section>
         </div>
     </section>
-    <footer>
-        <div class="trapezium"></div>
-        <div class="subSessionTab-wrap"></div>
-        <div class="footer-cont-wrap">
-            <div class="footer-cont">
-                <a class="mainSessionTab-btn">主会场</a>
-                <a class="game-btn J-jumpBnr">游戏</a>
-                <a class="subSessionTab-btn">子会场</a>
-            </div>
-        </div>
-    </footer>
+    <div class="J-placeholder J-placeholder-footer"></div>
 </section>
 
 <div class="J-placeholder J-placeholder-jumpBnr-rb"></div>
@@ -88,6 +78,8 @@
             default: className = '';
         }
         {# 
+        console.log('is_sale:',is_sale);
+        console.log('cloudy:',cloudy);
         console.log('renderFor:',renderFor);
         console.log('flags:',flags);
         console.log('cardNum:',cardNum);
@@ -103,22 +95,25 @@
         {@each data as item, index}
             <%
                 id = item.id || '';
-                uid = item.poi_uid || '';
+                uid = item.poi_uid || item.uid || '';
                 td_id = item.td_id || '';
-                ticket_id = item.ticket_id || '';
+                ticket_id = item.ticket_id || item.ticketId || '';
                 src = item.src || '';
-                grounpon_id = item.grounpon_id || '',
+                if(renderFor == 'ctrip'){
+                    src = 'qunar';
+                }
+                grounpon_id = item.grounpon_id || item.tuanId || '',
                 qunar_id = item.qunar_id || '';
                 ctrip_id = item.ctrip_id || '';
                 min_price = item.min_price || 0;
                 max_price = item.max_price || 0;
-                current_price = item.current_price || item.price || min_price || 0;
-                market_price = item.market_price || item.ori_price || max_price || 0;
-                pic = item.pic_url || item.image || item.pic || '';
-                title = item.poi_name || item.title || '';
-                city = item.city || '';
+                current_price = item.current_price || item.price || min_price || item.sale_price || 0;
+                market_price = item.market_price || item.ori_price || max_price ||  item.originPrice || item.mprice || 0;
+                pic = item.pic_url || item.image || item.pic || item.groupon_tiny_image || item.picUrl || '';
+                title = item.poi_name || item.title || item.poiName || item.ticket_name || item.name || '';
+                city = item.city || item.city_name || '';
                 saleNum = item.saleNum;
-                webappUrl = item.webapp_url || '';
+                webappUrl = item.webapp_url || item.groupon_webapp_url || '';
                 score = item.score || 0;
                 pid = item.pid || '';
                 type = item.type || type;
@@ -139,74 +134,95 @@
                     market_price = min_price;
                 }
             %>
-            {@if index < cardNum}
-                <li>
-                    <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}" data-pid="${pid}">
-                        <div class="ticket-item-container">
-                            {@if flags.length}
-                                <p class="flag-wrap">
-                                    $${flags.join('')}
-                                </p>
-                            {@/if}
-                            <div class="img-wrap">
-                                <img data-src="${pic}" />
-                                {@if direction == 'vertical'}
-                                    <div class="img-btm">
-                                        <em>${city}</em>
-                                        {@if score}
-                                            <div class="stars-wrap">
-                                                <div class="stars" data-stars="${score}"><span style="width:{score*2/10*100}%"></span></div>
-                                            </div>
-                                        {@/if}
-                                    </div>
+            {#@if cloudy.indexOf(grounpon_id) < 0}
+                {@if index < cardNum}
+                    <li>
+                        <div class="ticket-item ${direction == 'vertical' ? 'ticket-item-v' : ''} ${className}" data-id="${id}" data-uid="${uid}" data-td_id="${td_id}" data-ticket_id="${ticket_id}" data-qunar_id="${qunar_id}" data-ctrip_id="${ctrip_id}" data-src="${src}" data-grounpon_id="${grounpon_id}" data-webappurl="${webappUrl}" data-pid="${pid}">
+                            <div class="ticket-item-container">
+                                {@if flags.length}
+                                    <p class="flag-wrap">
+                                        $${flags.join('')}
+                                    </p>
                                 {@/if}
-                            </div>
-                            <div class="ticket-main">
-                                <div class="ticket-title">
-                                    {@if direction != 'vertical'}
-                                        <em>${city}</em>
-                                    {@/if}
-                                    <p>${title}</p>
-                                </div>
-                                {@if direction != 'vertical'}
-                                    {@if pageConfig_id.limitNum}
-                                        <div>
-                                            <p class="ticket-saleInfo">限量${pageConfig_id.limitNum}份</p>
+                                <div class="img-wrap">
+                                    <img data-src="${pic}" />
+                                    {@if direction == 'vertical'}
+                                        <div class="img-btm">
+                                            <em>${city}</em>
+                                            {@if score}
+                                                <div class="stars-wrap">
+                                                    <div class="stars" data-stars="${score}"><span style="width:{score*2/10*100}%"></span></div>
+                                                </div>
+                                            {@/if}
                                         </div>
                                     {@/if}
-                                {@/if}
-                                <div class="price-wrap">
-                                    {@if direction == 'vertical'}
-                                        <span class="price price-now price-floor price-font16"><em><strong>${current_price}</strong></em></span>
-                                        {@if type == 'onedaytour' || type == 'scenehotel'}
-                                            <button class="btn-buy">抢购</button>
-                                        {@else}
-                                            <span class="price price-original price-marketPrice price-font10"><em><strong>${market_price}</strong></em></span>
+                                </div>
+                                <div class="ticket-main">
+                                    <div class="ticket-title">
+                                        {@if direction != 'vertical'}
+                                            <em>${city}</em>
                                         {@/if}
+                                        <p>${title}</p>
+                                    </div>
+                                    {@if direction != 'vertical'}
+                                        {@if pageConfig_id.limitNum}
+                                            <div>
+                                                <p class="ticket-saleInfo">限量${pageConfig_id.limitNum}份</p>
+                                            </div>
+                                        {@/if}
+                                    {@/if}
+                                    {@if renderFor == 'promotionIndex'}
+                                        {@if item.tag.length}
+                                            <div class="tags-wrap clearfix">
+                                                {@each item.tag as tag}
+                                                    <span class="tag-type"><em>${tag}</em></span>
+                                                {@/each}
+                                            </div>
+                                        {@/if}
+                                    {@/if}
+                                    <div class="price-wrap">
+                                    {@if renderFor == 'promotionIndex'}
+                                        <span class="price-minus"><em>${is_sale ? item.promotion : '立即预订'}</em></span>
+                                        <span class="price price-cur"><em>${parseInt(current_price, 10)}</em>起</span>
                                     {@else}
-                                        <span class="price price-now price-discount price-font20"><em><strong>${current_price}</strong></em></span>
-                                        <span class="price price-original price-originalPrice"><em><strong>${market_price}</strong></em></span>
-                                        <!-- <span class="price price-now"><em>10</em></span>
-                                            <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
-                                            <span class="price price-now price-nounit price-floor"><em>10</em></span>
-                                            <span class="price price-original"><em>200</em></span>
-                                            <span class="price price-now price-floor"><em>10</em></span>
-                                            <span class="price price-original price-floor"><em>200</em></span>
-                                            <span class="price price-now price-nounit"><em>10</em></span>
-                                            <span class="price price-original price-floor price-nounit"><em>200</em></span>
-                                            <span class="price price-original price-floor"><em>200</em></span>
-                                            <span class="price price-original price-floor price-marketPrice"><em>200</em></span>
-                                            <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
-                                            <span class="price price-original price-nounit"><em>200</em></span>
-                                            <span class="price price-now price-discount"><em>10</em></span>
-                                            <span class="price price-original"><em>200</em></span> -->
+                                        {@if direction == 'vertical'}
+                                            {@if renderFor == 'ctrip' || renderFor == 'foreign' || renderFor == 'ticket'}
+                                                <span class="price price-now price-font16"><em><strong>${current_price}</strong></em></span>
+                                            {@else}
+                                                <span class="price price-now price-floor price-font16"><em><strong>${current_price}</strong></em></span>
+                                            {@/if}
+                                            {@if type == 'onedaytour' || type == 'scenehotel'}
+                                                <button class="btn-buy">抢购</button>
+                                            {@else}
+                                                {@if renderFor != 'promotionIndex'}
+                                                    <span class="price price-original price-marketPrice price-font10"><em><strong>${market_price}</strong></em></span>
+                                                {@/if}
+                                            {@/if}
+                                        {@else}
+                                            <span class="price price-now price-discount price-font20"><em><strong>${current_price}</strong></em></span>
+                                            <span class="price price-original price-originalPrice"><em><strong>${market_price}</strong></em></span>
+                                            <!-- <span class="price price-now"><em>10</em></span>
+                                                <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
+                                                <span class="price price-now price-nounit price-floor"><em>10</em></span>
+                                                <span class="price price-original"><em>200</em></span>
+                                                <span class="price price-now price-floor"><em>10</em></span>
+                                                <span class="price price-original price-floor"><em>200</em></span>
+                                                <span class="price price-now price-nounit"><em>10</em></span>
+                                                <span class="price price-original price-floor price-nounit"><em>200</em></span>
+                                                <span class="price price-original price-floor"><em>200</em></span>
+                                                <span class="price price-original price-floor price-marketPrice"><em>200</em></span>
+                                                <span class="price price-original price-floor price-marketPrice price-font10"><em>200</em></span>
+                                                <span class="price price-original price-nounit"><em>200</em></span>
+                                                <span class="price price-now price-discount"><em>10</em></span>
+                                                <span class="price price-original"><em>200</em></span> -->
+                                        {@/if}
                                     {@/if}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-            {@/if}
+                    </li>
+                {@/if}
+            {#@/if}
         {@/each}
     </ul>
 </script>
@@ -218,15 +234,13 @@
             promotionList = cacheData.promotionList || {},
             promotionList_sid = promotionList[cacheData.sid] || {},
             promotionList_sid_list = promotionList_sid.list || [],
-            startTime = 0,
             startDate,
             text;
     %>
     <div class="tab-hd">
         {@each promotionList_sid_list as item, index}
             <%
-                startTime = item.start_time * 1000;
-                startDate = new Date(startTime);
+                startDate = new Date(item.start_time * 1000);
 
                 if(item.status == 0) {
                     text = '即将开始'
@@ -245,20 +259,84 @@
     </div>
 </script>
 
+<script type="text/template" id="tpl-fixPrice">
+    <%
+        var pageConfig = cacheData.pageConfig,
+            channel = cacheData.channel,
+            fixPrice = cacheData.fixPrice || {},
+            fixPrice_sid = fixPrice[cacheData.sid] || {},
+            fixPrice_sid_list = fixPrice_sid.list || [],
+            startDate,
+            text;
+    %>
+    {@if fixPrice_sid_list.length == 2}
+        <div class="tab-hd">
+            {@each fixPrice_sid_list as item, index}
+                <%
+                    startDate = new Date(item.sku_list[0].daily_start_time * 1000);
+
+                    if(item.status == 0) {
+                        text = '抢购结束'
+                    } else if(item.status == 1) {
+                        text = '抢购中'
+                    } else if(item.status == 2) {
+                        text = '即将开始'
+                    }
+                %>
+                <button class="${item.status == 1 ? 'active' : ''}" tab-for="${data['tab' + (index - 0 + 1)].id}" tab-relFor="${data['tab' + (index - 0 + 1)].rel}"><em>${numFomat(startDate.getHours(), 2)}:${numFomat(startDate.getMinutes(), 2)}</em><span>${text}</span></button>
+            {@/each}
+        </div>
+    {@/if}
+    <div class="BN-list">
+        $${data.tab1.html}
+        $${data.tab2.html}
+    </div>
+</script>
+
 <script type="text/template" id="tpl-mainMeeting">
     <%
         var pageConfig = cacheData.pageConfig,
             pageConfig_id = pageConfig[data.id] || {},
             channel = cacheData.channel,
-            showBtmBanner = pageConfig_id.showBtmBanner || 0;
+            showBtmBanner = pageConfig_id.showBtmBanner || 0,
+            showPages = data.showPages || 0,
+            cacheData_id = cacheData[data.id] || {},
+            cacheData_id_sid = cacheData_id[cacheData.sid] || {},
+            cacheData_id_sid_pn = cacheData_id_sid.pn,
+            cacheData_id_sid_pn_data = cacheData_id_sid['pn' + cacheData_id_sid_pn],
+            cacheData_id_sid_rn = cacheData_id_sid.rn,
+            cacheData_id_sid_total = cacheData_id_sid.total,
+            page_cur = Math.floor(cacheData_id_sid_pn/cacheData_id_sid_rn) + 1,
+            totalPages = Math.ceil(cacheData_id_sid_total/cacheData_id_sid_rn);
+
+        {#console.log('data.id:',data.id);
+        console.log('cacheData_id:',cacheData_id);
+        console.log('cacheData_id_sid:',cacheData_id_sid);
+        console.log('cacheData_id_sid_pn:',cacheData_id_sid_pn);
+        console.log('cacheData_id_sid_pn_data:',cacheData_id_sid_pn_data);
+        console.log('cacheData_id_sid_rn:',cacheData_id_sid_rn);
+        console.log('page_cur:',page_cur);
+        console.log('totalPages:',totalPages);}
     %>
     <div class="BN-list BN-list-cols${data.colsNum}">
         $${data.list.html}
+        {@if showPages}
+            <div class="page-info J-page-info flex flex-pack-justify flex-align-center" data-pagefor="${data.id}">
+                <div class="flex-1">
+                    <span class="" pb-id="">${page_cur} / ${totalPages}</span>
+                </div>
+                <div class="prev-page" data-type="prev" pb-id="">上一页</div>
+                <div class="next-page" data-type="next" pb-id="">下一页</div>
+            </div>
+        {@/if}
+        
         {@if pageConfig_id.showBtmBanner && pageConfig_id.banner_pic}
             <p class="more-link J-jumpBnr" data-link="${pageConfig_id.banner_link}" data-nalink="${pageConfig_id.banner_nalink}" pb-id="${pageConfig_id['pb-id']}">
                 <img src="${pageConfig_id.banner_pic}">
             </p>
         {@/if}
+
+        $${data.moreHtml}
     </div>
 </script>
 
@@ -367,8 +445,6 @@
             channel = cacheData.channel,
             list = list;
             calendarType = calendarType;
-            console.log('list');
-            console.log(list);
     %>
     {@if channel.name == "nuomi"}
         <section class="calendar">
@@ -425,13 +501,20 @@
             channel = cacheData.channel;
     %>
     <footer>
-        <div class="footer-cont-wrap">
-            <div class="footer-cont">
-                <a class="subSessionTab-btn">子会场</a>
-                <a class="game-btn">游戏</a>
-                <a class="mainSessionTab-btn">主会场</a>
+        {@if channel.name == 'nuomi'}
+            <div class="trapezium"></div>
+            <div class="subSessionTab-wrap"></div>
+            <div class="footer-cont-wrap">
+                <div class="footer-cont">
+                    <a class="mainSessionTab-btn">主会场</a>
+                    <a class="game-btn J-jumpBnr" data-link="${pageConfig.footer.lottery.link}" data-nalink="${pageConfig.footer.lottery.nalink}" pb-id="${pageConfig.footer.lottery['pb-id']}">游戏</a>
+                    <a class="subSessionTab-btn">子会场</a>
+                </div>
             </div>
-        </div>
+        {@else if channel.name == 'map_scope'}
+            <span class="logo-map"></span>
+            <p>百度地图版权所有@2016</p>
+        {@/if}
     </footer>
 </script>
 
@@ -560,254 +643,6 @@
             </div>
         </nav>
         <div class="tab-holder"></div>
-    {@/if}
-</script>
-
-<script type="text/template" id="tpl-map-promotion">
-    <%
-        var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel,
-            promotionIndex = cacheData.promotionIndex,
-            promotionData = promotionIndex[cacheData.city_code] || {},
-            promotionList = promotionData.promotionList || {},
-            list = promotionList.list || [],
-            is_sale = promotionData.is_sale || 0,
-            ticketDetail_can_go = cacheData.ticketDetail_can_go || 0,
-            orderFill_can_go = cacheData.orderFill_can_go || 0,
-            width = 980/2,
-            height = 330/2;
-    %>
-    {@if list.length}
-        <div class="ticket-list-wrap">
-            <ul class="ticket-list">
-                {@each list as item,index}
-                    <li>
-                        <div class="ticket-item J-Detail J-poi" data-uid="${item.uid}" data-qunar_id="${item.td_id}" pb-id="pageConfig.mapPromotion['pb-id']">
-                            <span class="img-box img-wrap"><img data-src="${item.picUrl}" /></span>
-                            {#<span class="img-box img-wrap" data-purl="${item.picUrl}"></span>}
-                            <div class="ticket-title-wrap flex flex-pack-justify flex-align-center">
-                                <div class="flex-1">
-                                    <div class="ticket-title flex flex-align-center">
-                                        <p class="flex-1 flex flex-pack-center">
-                                            {@if item.city}
-                                                <em>${item.city}</em>
-                                            {@/if}
-                                            ${item.poiName}
-                                        </p>
-                                    </div>
-                                    <div class="tags-wrap clearfix">
-                                        {@each item.tag as tag}
-                                            <span class="tag-type"><em>${tag}</em></span>
-                                        {@/each}
-                                    </div>
-                                </div>
-                                <div class="price-wrap">
-                                    <span class="price-minus"><em>${is_sale ? item.promotion : '立即预订'}</em></span>
-                                    <span class="price price-cur"><em>${parseInt(item.price,10)}</em>起</span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                {@/each}
-            </ul>
-        </div>
-    {@/if}
-</script>
-
-<script type="text/template" id="tpl-map-ticket">
-    <%
-        var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel,
-            promotionIndex = cacheData.promotionIndex,
-            promotionData = promotionIndex[cacheData.city_code],
-            ticket = cacheData.ticket,
-            nativeInfo = cacheData.nativeInfo || {},
-            ticketDetail_can_go = cacheData.ticketDetail_can_go || 0,
-            orderFill_can_go = cacheData.orderFill_can_go || 0;
-    %>
-    {@if ticket.length}
-        <div class="ticket-list-wrap">
-            <div class="ticket-list J-ticket-list BN-list BN-list-cols2" tab-content="ticket">
-                <ul>
-                    {@each ticket as item,index}
-                        {@if index <= 15}
-                            <li>
-                                {# 
-                                    <div class="ticket-item ticket-item-v J-poi flex flex-pack-justify J-Detail ${pageConfig.mapTicket['show_tag'] == 1 ? 'ticket-item-discount' : ''}" data-uid="${item.uid}" data-qunar_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
-                                }
-                                    <div class="ticket-item ticket-item-v J-poi flex flex-pack-justify J-Detail" data-uid="${item.uid}" data-td_id="${item.id}" pb-id="pageConfig.mapTicket['pb-id']">
-                                    <div class="img-box img-wrap"><img data-src="${item.pic}" /></div>
-                                    {#<div class="img-box img-wrap" data-purl="${item.pic}"></div>}
-                                    <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                        <div class="ticket-title">
-                                            <p>
-                                                {@if channel.name == "map_scope"}
-                                                    {@if item.city_name}
-                                                        <em>${item.city_name.replace('市','')}</em>
-                                                    {@/if}
-                                                {@else}
-                                                    {@if item.star}
-                                                        <em>${item.star}</em>
-                                                    {@/if}
-                                                {@/if}
-                                                ${item.name}
-                                            </p>
-                                        </div>
-                                        <div class="price-wrap">
-                                            <span class="price price-now"><em>${item.price}</em>起</span>
-                                            {@if item.originPrice && item.originPrice > item.price}
-                                                <span class="price price-original price-marketPrice price-font10"><em><strong>${item.originPrice}</strong></em></span>
-                                            {@/if}
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        {@/if}
-                    {@/each}
-                </ul>
-                <p class="more-link"><span class="J-more-ticket">更多超值景点门票</span></p>
-            </div>
-        </div>
-    {@/if}
-</script>
-
-<script type="text/template" id="tpl-map-foreign">
-    <%
-        var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel,
-            pn = cacheData.foreign_pn,
-            rn = cacheData.foreign_rn,
-            page_cur = pn/rn,
-            total = cacheData.foreign_total,
-            pages = cacheData.Math.ceil(total/rn),
-            list = cacheData.foreign[pn] || [],
-            ticketDetail_can_go = cacheData.ticketDetail_can_go || 0,
-            orderFill_can_go = cacheData.orderFill_can_go || 0,
-            mustUp = cacheData.mustUp || 0,
-            width = 345/2,
-            height = 192/2,
-            pageClass= '',
-            whereGo = 'J-Detail',
-            score = 0;
-        console.log('foreign',list);
-        if(ticketDetail_can_go){
-            whereGo = 'J-Detail-ticket';
-        }else if(orderFill_can_go){
-            whereGo = 'J-orderFill';
-        }
-        if(mustUp){
-            whereGo = 'J-noDetail';
-        }
-    %>
-    {@if list.length}
-        <div class="ticket-list-wrap">
-            <div class="ticket-list BN-list">
-                <ul>
-                    {@each list as item,index}
-                        <li>
-                            <div class="ticket-item ticket-item ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" pb-id="{pageConfig.mapForeign['pb-id']}">
-                                <div class="ticket-item-container">
-                                    <div class="img-box img-wrap"><img data-src="${item.pic}" /></div>
-                                    {#<div class="img-box img-wrap" data-purl="${item.pic}"></div>}
-                                    <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                        <div class="ticket-title-wrap">
-                                            <div class="ticket-title flex">
-                                                <p class="flex-1">
-                                                    {@if item.country}
-                                                        <em>${item.country}</em>
-                                                    {@/if}
-                                                    ${item.ticket_name}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="price-wrap">
-                                            <span class="price price-now price-font20"><em><strong>${item.sale_price}</strong></em></span>
-                                            {@if item.market_price && item.market_price > item.sale_price}
-                                                <span class="price price-original"><em><strong>${item.market_price}</strong></em></span>
-                                            {@/if}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {@/each}
-                </ul>
-            </div>
-            {@if pages > 1}
-                <div class="page-info J-page-info flex flex-pack-justify flex-align-center" data-item="foreign">
-                    <div class="flex-1">
-                        <span class="${pageClass}" pb-id="{pageConfig.mapCtrip['page-change']}">${page_cur-0+1} / ${pages}</span>
-                    </div>
-                    <div class="prev-page" data-type="prev" pb-id="{pageConfig.mapForeign['page-change']}">上一页</div>
-                    <div class="next-page" data-type="next" pb-id="{pageConfig.mapForeign['page-change']}">下一页</div>
-                </div>
-            {@/if}
-        </div>
-    {@/if}
-</script>
-
-<script type="text/template" id="tpl-map-ctrip">
-    <%
-        var pageConfig = cacheData.pageConfig,
-            channel = cacheData.channel,
-            pn = cacheData.ctrip_pn,
-            rn = cacheData.ctrip_rn,
-            page_cur = pn/rn,
-            total = cacheData.ctrip_total,
-            pages = cacheData.Math.ceil(total/rn),
-            list = cacheData.ctrip[pn] || [],
-            ticketDetail_can_go = cacheData.ticketDetail_can_go || 0,
-            orderFill_can_go = cacheData.orderFill_can_go || 0,
-            width = 345/2,
-            height = 192/2,
-            pageClass= '',
-            whereGo = 'J-Detail';
-        if(ticketDetail_can_go){
-            whereGo = 'J-Detail-ticket';
-        }else if(orderFill_can_go){
-            whereGo = 'J-orderFill';
-        }
-    %>
-    {@if list.length}
-        <div class="ticket-list-wrap">
-            <div class="ticket-list BN-list BN-list-cols2">
-                <ul>
-                    {@each list as item,index}
-                        <li>
-                            <div class="ticket-item ticket-item-v ${whereGo} J-sku" data-uid="${item.uid}" data-td_id="${item.td_id}" data-ticketid="${item.ticketId}" data-qunar_id="${item.qunar_id}" data-ticket_id="${item.ticket_id}" data-partner_id="ctripticket" data-ticket_id="${item.ticket_id}" data-partner_id="${item.scope_id}" data-scope_name="${item.scope_name}" data-productid="${item.productId}" pb-id="{pageConfig.mapCtrip['pb-id']}">
-                                <div class="img-box img-wrap"><img data-src="${item.picUrl}" /></div>
-                                {#<div class="img-box img-wrap" data-src="${item.picUrl}"></div>}
-                                <div class="ticket-main flex-1 flex flex-v flex-pack-justify">
-                                    <div class="ticket-title">
-                                        <p>
-                                            {@if item.city}
-                                                <em>${item.city}</em>
-                                            {@/if}
-                                            ${item.poiName}
-                                        </p>
-                                    </div>
-                                    <div class="price-wrap">
-                                        <span class="price price-now price-floor price-font16"><em><strong>${item.price}</strong></em></span>
-                                        {@if item.mprice && item.mprice > item.price}
-                                            <span class="price price-original price-marketPrice price-font10"><em><strong>${item.mprice}</strong></em></span>
-                                        {@/if}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {@/each}
-                </ul>
-            </div>
-            {@if pages > 1}
-                <div class="page-info J-page-info flex flex-pack-justify flex-align-center" data-item="ctrip">
-                    <div class="flex-1">
-                        <span class="${pageClass}" pb-id="{pageConfig.mapCtrip['page-change']}">${page_cur-0+1} / ${pages}</span>
-                    </div>
-                    <div class="prev-page" data-type="prev" pb-id="{pageConfig.mapCtrip['page-change']}">上一页</div>
-                    <div class="next-page" data-type="next" pb-id="{pageConfig.mapCtrip['page-change']}">下一页</div>
-                </div>
-            {@/if}
-        </div>
     {@/if}
 </script>
 

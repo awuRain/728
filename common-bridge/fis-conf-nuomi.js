@@ -1,4 +1,5 @@
 var deploy = 'http://cp01-qa-lvyou-001.cp01.baidu.com:8080/';
+var deploy = 'http://cp01-lvyou-rd-shahe.epc.baidu.com:8080/';
 //var deploy = 'http://tc-lvyou-24.epc.baidu.com:8080/';
 // var deploy = 'http://cq01-cp01-centos41-testing001-3.epc.baidu.com:8080/';
 //var deploy = 'http://cp01-yxtocp060.vm.baidu.com:8080/';
