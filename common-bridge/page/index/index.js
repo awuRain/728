@@ -235,12 +235,6 @@ var App = {
         },
         type: 'link'
     }, {
-        id: 'olympic',
-        attrs: {
-            'section-type': 'mainMeeting'
-        },
-        type: 'link'
-    }, {
         id: 'qixi',
         attrs: {
             'section-type': 'mainMeeting'
@@ -259,6 +253,12 @@ var App = {
         type: 'link'
     }, {
         id: 'water',
+        attrs: {
+            'section-type': 'mainMeeting'
+        },
+        type: 'link'
+    }, {
+        id: 'olympic',
         attrs: {
             'section-type': 'mainMeeting'
         },
@@ -1617,6 +1617,7 @@ var App = {
 
         if (me.cacheData.pageConfig.mainMeeting) {
             if (now.isBefore(me.cacheData.pageConfig.mainMeeting.introEndDate)) {
+
                 for (var i = 0; i < currentOrder.length; i++) {
                     var to = me.cacheData.pageConfig[currentOrder[i].id].activeDate;
                     if (i + 1 < currentOrder.length) {
@@ -1625,7 +1626,7 @@ var App = {
                         var next_to = to;
                     }
 
-                    if (now.isSame(to, 'day') || now.isBetween(to, next_to, 'day')) {
+                    if (now.isSame(to, 'day') || (now.isBetween(to, next_to, 'day') && now.isAfter(moment(next_to).subtract(100, 'day')))) {
                         list = currentOrder.slice(i);
                         break;
                     }
@@ -1635,18 +1636,37 @@ var App = {
                     list = currentOrder.slice(-3);
                 }
 
+                var periodDates = me.cacheData.pageConfig.peakCalendar.slice(1);
+
+                var concated = false;
+
                 for (var i in list) {
                     list[i] = $.extend({}, me.cacheData.pageConfig[list[i].id], {
                         id: list[i].id
                     });
+                    if (!concated) {
+                        list = list.concat(periodDates);
+                        concated = true;
+                    }
+                    figureDay(list[i], now);
                 }
-
                 calendarType = "intro";
             } else if (now.isBefore(me.cacheData.pageConfig.mainMeeting.peakEndDate)) {
                 list = me.cacheData.pageConfig.peakCalendar;
+                for (var i in list) {
+                    figureDay(list[i], now);
+                }
                 calendarType = "peak";
             } else {
                 list = me.cacheData.pageConfig.peakCalendar;
+                for (var i in list) {
+                    list[i].day = "otherday";
+                }
+                var new_list = [];
+                new_list.push($.extend(list[0], {'day': 'otherday'}));
+                new_list.push({'activeDate': '2016-08-08', 'dateRange': '8.5 - 8.7', 'title': '巅峰狂欢', 'day': 'yestoday'});
+                new_list.push($.extend(list[list.length-1], {'day': 'today'}));
+                list = new_list;
                 calendarType = "return";
             }
 
@@ -1658,12 +1678,21 @@ var App = {
 
             $('.J-placeholder-calendar').html(html);
         }
-
         return me;
 
         function moment2Str(momentObj, separator) {
             var separator = separator || '-'
             return momentObj.year() + separator + ((momentObj.month() + 1) >= 10 ? (momentObj.month() + 1) : '0' + (momentObj.month() + 1)) + separator + ((momentObj.date()) >= 10 ? (momentObj.date()) : '0' + (momentObj.date()))
+        }
+
+        function figureDay (item, now) {
+            if (now.isSame(item.activeDate, 'day') && item.dateRange) {
+                item.day = 'today';
+            } else if ((moment(moment2Str(now)).subtract(1, 'day').isSame(item.activeDate, 'day') && item.dateRange)) {
+                item.day = 'yestoday';
+            } else {
+                item.day = 'otherday';
+            }
         }
     },
     renderHeader: function() { //渲染header
