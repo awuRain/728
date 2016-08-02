@@ -1664,11 +1664,14 @@ html.map_scope {
                     width: 39/2/16rem;
                     height: 100%;
                     background-image: url('./img/dates.jpg');
-                    background-position: 50% 0;
+                    background-position: 49% 0;
                     background-repeat: no-repeat;
                     background-size: cover;
                 }
-                &:nth-child(1) {
+                &.yestoday:after {
+                    background-position: 94% 0;
+                }
+                &.today {
                     .list-cont {
                         background-color: #ffff00;
                         color: #ac1e10;
@@ -1677,31 +1680,8 @@ html.map_scope {
                         background-position: 0 0;
                     }
                 }
-            }
-            ul.peak-list {
-                width: 90%;
-                background-color: #e50218;
-                li {
-                    .flex-1;
-                    .list-cont {
-                        background-color: #e50118;
-                        color: #fff;
-                    }
-                    &:nth-child(2) {
-                        .list-cont {
-                            background-color: #ffff00;
-                            color: #ac1e10;
-                        }
-                    }
-                    &:after {
-                        background-position: 94% 0;
-                    }
-                    &:nth-child(2):after {
-                        background-position: 0 0;
-                    }
-                    &:nth-child(3):after {
-                        background-position: 50% 0;
-                    }
+                &.otherday:after {
+                    background-position: 50% 0;
                 }
             }
             ul.return-list {
@@ -1709,25 +1689,6 @@ html.map_scope {
                 background-color: #e50218;
                 li {
                     .flex-1;
-                    .list-cont {
-                        background-color: #e50118;
-                        color: #fff;
-                    }
-                    &:nth-child(3) {
-                        .list-cont {
-                            background-color: #ffff00;
-                            color: #ac1e10;
-                        }
-                    }
-                    &:after {
-                        background-position: 50% 0;
-                    }
-                    &:nth-child(2):after {
-                        background-position: 94% 0;
-                    }
-                    &:nth-child(3):after {
-                        background-position: 0 0;
-                    }
                 }
             }
         }
