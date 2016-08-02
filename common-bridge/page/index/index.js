@@ -26,6 +26,11 @@ var numFomat = function(num, length) {
 }
 
 Juicer.register('numFomat', numFomat);
+Juicer.register('Math', Math);
+
+var cloudy = [ //rd 肥家了 我来组成 cloudy 该数组用来记录需要排除的团单id
+
+];
 
 // 日期格式化
 var dateFomat = function(date) {
@@ -122,79 +127,95 @@ var App = {
         return me;
     },
     baseOrder: [{
-            id: 'promotionList',
-            title: '爆款抢购',
-            attrs: {
-                'section-type': 'promotionList'
-            },
-            type: 'poi',
-            dependOnLoc: 1
-        }, {
-            id: 'fixPrice',
-            title: '爆款折扣',
-            activeDate: '2016-07-17',
-            endDate: '2016-07-20',
-            attrs: {
-                'section-type': 'fixPrice'
-            },
-            type: 'orderFill',
-            dependOnLoc: 1
-        }, {
-            id: 'mainMeeting',
-            title: '嗨翻出游主题趴',
-            orderFor: 'nuomi',
-            dependOnLoc: 1
-        }, {
-            id: 'playflower',
-            title: '热门城市玩花样',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }, {
-            id: 'playflower2',
-            title: '热门城市玩花样2',
-            attrs: {
-                'section-type': 'playflower'
-            },
-            orderFor: 'nuomi',
-            dependOnLoc: 0
-        }
-        /*, {
-                id: 'map-promotion',
-                title: 'promotion',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-ticket',
-                title: 'ticket',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 1
-            }, {
-                id: 'map-foreign',
-                title: 'foreign',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }, {
-                id: 'map-ctrip',
-                title: 'ctrip',
-                attrs: {
-                    'section-type': 'bbb'
-                },
-                orderFor: 'map_scope',
-                dependOnLoc: 0
-            }*/
-    ],
+        id: 'promotionList',
+        title: '爆款抢购',
+        attrs: {
+            'section-type': 'promotionList'
+        },
+        type: 'poi',
+        dependOnLoc: 1
+    }, {
+        id: 'fixPrice',
+        title: '爆款折扣',
+        activeDate: '2016-07-17',
+        endDate: '2016-07-20',
+        attrs: {
+            'section-type': 'fixPrice'
+        },
+        type: 'orderFill',
+        dependOnLoc: 1
+    }, {
+        id: 'hotRanking',
+        title: '本地热销',
+        attrs: {
+            'section-type': 'hotRanking'
+        },
+        type: 'link',
+        cardNum: 6,
+        orderFor: 'nuomi',
+        dependOnLoc: 1
+    }, {
+        id: 'mainMeeting',
+        title: '嗨翻出游主题趴',
+        orderFor: 'nuomi',
+        dependOnLoc: 1
+    }, {
+        id: 'playflower',
+        title: '热门城市玩花样',
+        attrs: {
+            'section-type': 'playflower'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'playflower2',
+        title: '热门城市玩花样2',
+        attrs: {
+            'section-type': 'playflower2'
+        },
+        orderFor: 'nuomi',
+        dependOnLoc: 0
+    }, {
+        id: 'promotionIndex',
+        title: 'promotionIndex',
+        attrs: {
+            'section-type': 'promotionIndex'
+        },
+        type: 'poi',
+        cardNum: 10,
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'ticket',
+        title: 'ticket',
+        attrs: {
+            'section-type': 'ticket'
+        },
+        type: 'poi',
+        cardNum: 10,
+        orderFor: 'map_scope',
+        dependOnLoc: 1
+    }, {
+        id: 'foreign',
+        title: 'foreign',
+        attrs: {
+            'section-type': 'foreign'
+        },
+        type: 'sku',
+        cardNum: 10,
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }, {
+        id: 'ctrip',
+        title: 'ctrip',
+        attrs: {
+            'section-type': 'ctrip'
+        },
+        type: 'sku',
+        cardNum: 10,
+        orderFor: 'map_scope',
+        dependOnLoc: 0
+    }],
     mainMeetingOrder: [{
         id: 'scenic',
         attrs: {
@@ -253,6 +274,7 @@ var App = {
 
         me.baseOrder = me.baseOrder.filter(function(item, index) {
             if (!item.orderFor || item.orderFor == me.cacheData.channel.name) {
+                me.baseOrder_Key[item.id] = item;
                 return item;
             }
         });
@@ -276,18 +298,23 @@ var App = {
             me.baseOrder_Key[item.id] = item;
         });
 
-        for (var i = 0, len = me.mainMeetingOrder.length; i < len; i++) { //调整分会场顺序
-            _item = $.extend(me.mainMeetingOrder[i]);
-            pageConfigItem = me.cacheData.pageConfig[_item.id] || {};
+        var theTopMeeting = me.mainMeetingOrder.filter(function(item, index) {
+            pageConfigItem = me.cacheData.pageConfig[item.id] || {};
             _activeDate = pageConfigItem.activeDate;
-            if (me.cacheData.now >= new Date(_activeDate) - 0) {
-                me.mainMeetingOrder.unshift($.extend(me.mainMeetingOrder[i], {
-                    cardNum: 10,
-                    className: 'section-item-top'
-                }));
-                me.mainMeetingOrder.splice(i + 1, 1);
-                break;
+
+            if (me.cacheData.now >= new Date(_activeDate)) {
+                item.index = index;
+                return item;
             }
+        });
+        theTopMeeting = theTopMeeting[theTopMeeting.length - 1];
+
+        if (theTopMeeting) {
+            me.mainMeetingOrder.splice(theTopMeeting.index, 1);
+            me.mainMeetingOrder.unshift($.extend(theTopMeeting, {
+                cardNum: 10,
+                className: 'section-item-top'
+            }));
         }
 
         return me;
@@ -319,17 +346,16 @@ var App = {
                 if ($.isEmptyObject(cacheData_id_sid) || !cacheData_id_sid_list.length) {
                     continue;
                 }
-                //8.6折扣未开始或已结束
+                //8.6模块
                 if (_item.id == 'fixPrice') {
-                    _start_time = cacheData_id_sid.start_time ? cacheData_id_sid.start_time * 1000 : 0;
-                    _end_time = cacheData_id_sid.end_time ? cacheData_id_sid.end_time * 1000 : 0;
-                    if (!_start_time || !_end_time || (me.cacheData.now < new Date(_start_time) - 0 && me.cacheData.now >= new Date(_end_time) - 0)) {
+                    pageConfigItem.is_open = 1;
+                    if (cacheData_id_sid_list.length == 0 || pageConfigItem.is_open != 1) { //数据为空时不展示8.6模块
                         continue;
                     }
                 }
-                //限量抢
+                //折扣限量抢
                 if (_item.id == 'promotionList') {
-                    if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣模块
+                    if (cacheData_id_sid_list.length == 0) { //数据为空时不展示折扣限量抢
                         continue;
                     }
                     if (cacheData_id_sid_list[0] && cacheData_id_sid_list[0].poi_list && cacheData_id_sid_list[0].poi_list.length == 0) { //数据为空时不展示折扣模块
@@ -532,6 +558,7 @@ var App = {
         var me = this,
             _settings = opts || {},
             deferred = $.Deferred();
+
         Bridge.Loader.get({
             url: Bridge.host + '/business/ajax/gettime/',
             dataType: 'jsonp',
@@ -553,18 +580,6 @@ var App = {
             }
         });
         return deferred;
-    },
-    checkOnline: function() { //检测网络状态
-        var me = this;
-        me.online = 1;
-        setInterval(function() {
-            if (navigator && navigator.onLine) {
-                me.online = 1;
-            } else {
-                me.online = 0;
-            }
-        }, 2000);
-        return me;
     },
     showLog: function() {
         var me = this;
@@ -625,7 +640,11 @@ var App = {
             });
         } else if (type == 'fixPrice') {
             data = me.cacheData.fixPrice[me.cacheData.sid] || {};
-            $.each(data.list || [], function(indx, item) {
+            data = data.list || [];
+            $.each((data[0] || {}).sku_list || [], function(index, item) {
+                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic'];
+            });
+            $.each((data[1] || {}).sku_list || [], function(index, item) {
                 item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=210&height=206&quality=100&align=middle,middle&src=' + item['pic'];
             });
         } else if (type == 'mainMeeting') {
@@ -635,8 +654,38 @@ var App = {
                     card['pic'] && (card['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic']);
                     card['image'] && (card['image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['image']);
                     card['pic_url'] && (card['pic_url'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + card['pic_url']);
-
                 });
+            });
+        } else if (type == 'ctrip') {
+            data = me.cacheData.ctrip[me.cacheData.sid] || {};
+            data = data['pn' + data.pn] || {};
+            $.each(data.list || [], function(id, item) {
+                item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + item['picUrl'];
+            });
+        } else if (type == 'foreign') {
+            data = me.cacheData.foreign[me.cacheData.sid] || {};
+            data = data['pn' + data.pn] || {};
+            $.each(data.list || [], function(id, item) {
+                item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + item['picUrl'];
+            });
+        } else if (type == 'promotionIndex') {
+            data = me.cacheData.promotionIndex[me.cacheData.sid] || {};
+            data = data['pn' + data.pn] || {};
+            data = data.promotionList || {};
+            $.each(data.list || [], function(id, item) {
+                item['picUrl'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=712&height=266&quality=100&align=middle,middle&src=' + item['picUrl'];
+            });
+        } else if (type == 'ticket') {
+            data = me.cacheData.ticket[me.cacheData.sid] || {};
+            data = data['pn' + data.pn] || {};
+            $.each(data.list || [], function(id, item) {
+                item['pic'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + item['pic'];
+            });
+        } else if (type == 'hotRanking') {
+            data = me.cacheData.hotRanking[me.cacheData.sid] || {};
+            data = data['pn' + data.pn] || {};
+            $.each(data.list || [], function(id, item) {
+                item['groupon_tiny_image'] = 'http://webmap1.map.bdimg.com/maps/services/thumbnails?width=320&height=240&quality=100&align=middle,middle&src=' + item['groupon_tiny_image'];
             });
         }
 
@@ -714,10 +763,11 @@ var App = {
     renderDomainList: function() { //渲染省份/城市列表
         var me = this,
             _sid = sessionStorage.getItem('sid') || '',
-            _province_sid = sessionStorage.getItem('procince_sid') || '',
+            _province_sid = sessionStorage.getItem('province_sid') || '',
+            _city_sid = sessionStorage.getItem('city_sid') || '',
             _sname,
             _city_code,
-            _cityid,
+            _cityid = me.dasouParams.cityid || '',
             _fun = function(opts) {
                 var _settings = opts || {};
 
@@ -732,17 +782,20 @@ var App = {
                     me.cacheData.gps_sid = DEFAULTACTIVEINFO.sid;
                     me.cacheData.gps_sname = DEFAULTACTIVEINFO.sname;
                     me.cacheData.province_sid = DEFAULTACTIVEINFO.sid;
+                    me.cacheData.city_sid = DEFAULTACTIVEINFO.sid;
                 } else { //gps 定位成功
                     me.cacheData.gps_success = 1;
                     me.cacheData.gps_sid = _settings.sid;
                     me.cacheData.gps_sname = _settings.sname;
                     me.cacheData.province_sid = _settings.province_sid;
+                    me.cacheData.city_sid = _settings.city_sid;
                 }
-
                 me.cacheData.sid = me.cacheData.gps_sid;
                 me.cacheData.sname = me.cacheData.gps_sname;
                 me.cacheData.city_code = me.cacheData.provinceList[me.cacheData.province_sid].city_code;
                 me.cacheData.cityid = me.cacheData.provinceList[me.cacheData.province_sid].cityid;
+
+                me.cacheData.isHotCity = _settings.city_sid in me.cacheData.domainList.city ? 1 : 0; //标记当前位置是否在热门城市列表中
 
                 me.setCacheDataToSession();
 
@@ -750,6 +803,7 @@ var App = {
                     if (!me.dasouParams.cityid) {
                         sessionStorage.setItem('sid', me.cacheData.sid);
                         sessionStorage.setItem('province_sid', me.cacheData.province_sid);
+                        sessionStorage.setItem('city_sid', me.cacheData.city_sid);
                     }
                 } catch (e) {
                     console.warn(e);
@@ -764,18 +818,32 @@ var App = {
 
         $('.J-loading').text('正在获取当前位置...');
 
+        if (me.cacheData.domainOrder.cityidKey[_cityid]) { //通过大搜推广进入页面
+            _fun({
+                sid: me.cacheData.domainOrder.cityidKey[_cityid].sid,
+                sname: me.cacheData.domainOrder.cityidKey[_cityid].sname,
+                province_sid: me.cacheData.domainOrder.cityidKey[_cityid].sid,
+                city_sid: me.cacheData.domainOrder.cityidKey[_cityid].sid
+            });
+            return me;
+        }
+
         if (_sid.length) {
             if (_sid in me.cacheData.domainList.city) {
                 _sname = me.cacheData.domainList.city[_sid].city;
                 _province_sid = me.cacheData.domainList.city[_sid].province_sid;
+                _city_sid = _sid;
             } else if (_sid in me.cacheData.domainList.province) {
                 _sname = me.cacheData.domainList.province[_sid];
                 _province_sid = _sid;
+                _city_sid = _city_sid;
             }
+
             _fun({
                 sid: _sid,
                 sname: _sname,
-                province_sid: _province_sid
+                province_sid: _province_sid,
+                city_sid: _city_sid
             });
             return me;
         }
@@ -786,7 +854,8 @@ var App = {
             _fun({
                 sid: '',
                 sname: '',
-                province_sid: ''
+                province_sid: '',
+                city_sid: ''
             });
 
             console.warn('getProvinceSid 超时 将已北京作为默认省份');
@@ -802,20 +871,24 @@ var App = {
                     _sid = me.cacheData.gps_city.sid;
                     _sname = me.cacheData.gps_city.sname;
                     _province_sid = me.cacheData.gps_province.sid;
+                    _city_sid = _sid;
                 } else if (me.cacheData.gps_province.sid in me.cacheData.domainList.province) { //当前位置在省份列表中
                     _sid = me.cacheData.gps_province.sid;
                     _sname = me.cacheData.gps_province.sname;
                     _province_sid = _sid;
+                    _city_sid = me.cacheData.gps_city.sid;
                 }
             } else {
                 _sid = '';
                 _sname = '';
                 _province_sid = '';
+                _city_sid = '';
             }
             _fun({
                 sid: _sid,
                 sname: _sname,
-                province_sid: _province_sid
+                province_sid: _province_sid,
+                city_sid: _city_sid
             });
         });
         return me;
@@ -823,20 +896,11 @@ var App = {
     loadDataRelyonLoc: function(opts) { //加载基于地理位置的模块
         var me = this,
             _settings = opts || {};
-
         setTimeout(function() {
             me.getPromotionList().always(function() {
                 me.getFixprice()
-            }).always(function() {
-                if (me.cacheData.channel.name == 'nuomi') {
-                    me.getMainMeeting();
-                }
-                if (me.cacheData.channel.name == 'map_scope') {
-                    me.getMapPromotionIndex({ "id": "map-promotion" });
-                    me.getMapTicket({ "id": "map-ticket" });
-                }
             });
-        }, 100)
+        }, 50)
 
         return me;
     },
@@ -860,7 +924,8 @@ var App = {
         }
 
         Bridge.Loader.get({
-            url: Bridge.host + '/business/ajax/promotion/getfixprice/',
+            // url: Bridge.host + '/business/ajax/promotion/getfixprice/',
+            url: 'http://cp01-lvyou-rd-shahe.epc.baidu.com:8080/business/ajax/promotion/getfixprice/',
             dataType: 'jsonp',
             data: $.extend({}, {
                 sid: me.cacheData.sid,
@@ -895,62 +960,158 @@ var App = {
     },
     renderFixprice: function(opts) { //渲染8.6爆款折扣
         var me = this,
-            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            tpl = me.tpl_fixPrice || $('#tpl-fixPrice').html(),
             _settings = opts || {},
+            createFlag = function(status) {
+                var text, className;
+                if (status == 2) {
+                    text = '即将开始';
+                    className = 'flag-comming';
+                } else if (status == 1) {
+                    text = '8.6特价';
+                    className = 'flag-discount';
+                } else if (status == 0) {
+                    text = '抢购结束';
+                    className = 'flag-past';
+                } else {
+                    return
+                }
+                return '<em class="' + className + '">' + text + '</em>'
+            },
             html = '',
             fixPrice = me.cacheData.fixPrice || {},
             fixPrice_sid = fixPrice[me.cacheData.sid] || {},
-            _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
-            _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
-        // if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
-        //     $('#' + _settings.id).removeClass('show').addClass('hide');
-        //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
-        //     return me;
-        // }
+            fixPrice_sid_list = fixPrice_sid.list || [],
+            show_tabNum = 0,
+            active_tab1 = 1,
+            active_tab2 = 0,
+            tab1 = {},
+            tab2 = {};
 
-        me.tpl_mainMeeting = tpl;
+        me.tpl_fixPrice = tpl;
+
+        if (fixPrice_sid_list.length == 2) {
+            active_tab2 = me.cacheData.now >= fixPrice_sid_list[0].sku_list[0].daily_start_time * 1000 ? 1 : 0;
+        } else if (fixPrice_sid_list.length == 1) {
+            active_tab2 = 0;
+        }
+        active_tab1 = !active_tab2;
+
+        if (fixPrice_sid_list.length >= 1) {
+            show_tabNum++;
+            tab1 = {
+                id: fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                rel: fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                html: me.createTicketList({
+                    renderFor: _settings.id,
+                    type: me.baseOrder_Key[_settings.id]['type'],
+                    direction: 'horizontal',
+                    data: fixPrice_sid_list[0].sku_list,
+                    discount: fixPrice_sid_list[0].discount,
+                    attrs: {
+                        'tab-id': fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                        'tab-rel': fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                        'style': 'display:' + (active_tab1 ? 'block' : 'none')
+                    },
+                    createFlag: createFlag
+                })
+            };
+        }
+
+        if (fixPrice_sid_list.length == 2) {
+            show_tabNum++;
+            tab2 = {
+                id: fixPrice_sid_list[1].sku_list[0].daily_start_time,
+                rel: fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                html: me.createTicketList({
+                    renderFor: _settings.id,
+                    type: me.baseOrder_Key[_settings.id]['type'],
+                    data: fixPrice_sid_list[1].sku_list,
+                    discount: fixPrice_sid_list[0].discount,
+                    attrs: {
+                        'tab-id': fixPrice_sid_list[1].sku_list[0].daily_start_time,
+                        'tab-rel': fixPrice_sid_list[0].sku_list[0].daily_start_time,
+                        'style': 'display:' + (active_tab2 ? 'block' : 'none')
+                    },
+                    createFlag: createFlag
+                })
+            };
+        }
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
             data: $.extend({}, {
-                id: _settings.id,
-                colsNum: 1,
-                list: {
-                    id: _settings.id,
-                    html: me.createTicketList({
-                        renderFor: _settings.id,
-                        type: _settings['type'],
-                        cardNum: _settings['cardNum'],
-                        // direction: 'vertical',
-                        data: fixPrice_sid.list || [],
-                        createFlag: function(status) {
-                            var text, className;
-                            if (status == 2) {
-                                text = '即将开始';
-                                className = 'flag-comming';
-                            } else if (status == 1) {
-                                text = '8.6特价';
-                                className = 'flag-discount';
-                            } else if (status == 0) {
-                                text = '抢购结束';
-                                className = 'flag-past';
-                            } else {
-                                return
-                            }
-                            return '<em class="' + className + '">' + text + '</em>'
-                        }
-                    })
-                }
+                tab1: tab1,
+                tab2: tab2
             })
         });
 
         $('.J-placeholder-' + _settings.id).html(html);
-        // $('#' + _settings.id).removeClass('hide').addClass('show');
-        me.createSoftImg($('.J-placeholder-' + _settings.id));
-        // $('.J-placeholder-' + _settings.id + '-empty').remove();
+
+        me.createSoftImg($('.J-placeholder-' + _settings.id).find('.BN-list ul').eq(active_tab1 ? 0 : 1));
+
+        $('.J-loading').removeClass('show').addClass('hide');
 
         return me;
     },
+    // renderFixprice: function(opts) { //渲染8.6爆款折扣
+    //     var me = this,
+    //         tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+    //         _settings = opts || {},
+    //         html = '',
+    //         fixPrice = me.cacheData.fixPrice || {},
+    //         fixPrice_sid = fixPrice[me.cacheData.sid] || {},
+    //         _start_time = fixPrice_sid.start_time ? fixPrice_sid.start_time * 1000 : 0,
+    //         _end_time = fixPrice_sid.end_time ? fixPrice_sid.end_time * 1000 : 0;
+    //     // if ($.isEmptyObject(fixPrice_sid) || fixPrice_sid.list.length == 0 || (me.cacheData.now < _start_time && me.cacheData.now >= _end_time) || !_start_time || !_end_time) {
+    //     //     $('#' + _settings.id).removeClass('show').addClass('hide');
+    //     //     !$('.J-placeholder-' + _settings.id + '-empty').length && $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+    //     //     return me;
+    //     // }
+
+    //     me.tpl_mainMeeting = tpl;
+
+    //     html = Juicer(tpl, {
+    //         cacheData: me.cacheData,
+    //         data: $.extend({}, {
+    //             id: _settings.id,
+    //             colsNum: 1,
+    //             list: {
+    //                 id: _settings.id,
+    //                 html: me.createTicketList({
+    //                     renderFor: _settings.id,
+    //                     type: _settings['type'],
+    //                     cardNum: _settings['cardNum'],
+    //                     // direction: 'vertical',
+    //                     data: fixPrice_sid.list || [],
+    //                     createFlag: function(status) {
+    //                         var text, className;
+    //                         if (status == 2) {
+    //                             text = '即将开始';
+    //                             className = 'flag-comming';
+    //                         } else if (status == 1) {
+    //                             text = '8.6特价';
+    //                             className = 'flag-discount';
+    //                         } else if (status == 0) {
+    //                             text = '抢购结束';
+    //                             className = 'flag-past';
+    //                         } else {
+    //                             return
+    //                         }
+    //                         return '<em class="' + className + '">' + text + '</em>'
+    //                     }
+    //                 })
+    //             }
+    //         })
+    //     });
+
+    //     $('.J-placeholder-' + _settings.id).html(html);
+    //     // $('#' + _settings.id).removeClass('hide').addClass('show');
+    //     me.createSoftImg($('.J-placeholder-' + _settings.id));
+    //     // $('.J-placeholder-' + _settings.id + '-empty').remove();
+
+    //     return me;
+    // },
     getPromotionList: function() { //获取爆款折扣列表
         var me = this,
             deferred = $.Deferred(),
@@ -1022,7 +1183,7 @@ var App = {
             promotionList = me.cacheData.promotionList || {},
             promotionList_sid = promotionList[me.cacheData.sid] || {},
             promotionList_sid_list = promotionList_sid.list || [],
-            show_tab1, show_tab2, html;
+            active_tab1, active_tab2, html;
         me.tpl_promotionList = tpl;
 
         // if (promotionList_sid_list.length == 0) {
@@ -1036,8 +1197,16 @@ var App = {
             return me;
         }
 
-        show_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
-        show_tab1 = !show_tab2;
+        active_tab2 = me.cacheData.now >= promotionList_sid_list[1].start_time * 1000 ? 1 : 0;
+        active_tab1 = !active_tab2;
+
+        if (promotionList_sid_list[0].status == 1) {
+            active_tab2 = 0;
+            active_tab1 = 1;
+        } else if (promotionList_sid_list[1].status == 0) {
+            active_tab2 = 1;
+            active_tab1 = 0;
+        }
 
         html = Juicer(tpl, {
             cacheData: me.cacheData,
@@ -1054,7 +1223,7 @@ var App = {
                         attrs: {
                             'tab-id': promotionList_sid_list[0].start_time,
                             'tab-rel': promotionList_sid_list[0].start_time,
-                            'style': 'display:' + (show_tab1 ? 'block' : 'none')
+                            'style': 'display:' + (active_tab1 ? 'block' : 'none')
                         },
                         flags: [
                             createFlag(promotionList_sid_list[0].status, promotionList_sid_list[0].discount)
@@ -1072,7 +1241,7 @@ var App = {
                         attrs: {
                             'tab-id': promotionList_sid_list[1].start_time,
                             'tab-rel': promotionList_sid_list[0].start_time,
-                            'style': 'display:' + (show_tab2 ? 'block' : 'none')
+                            'style': 'display:' + (active_tab2 ? 'block' : 'none')
                         },
                         flags: [
                             createFlag(promotionList_sid_list[1].status, promotionList_sid_list[1].discount)
@@ -1083,7 +1252,7 @@ var App = {
         });
         $('.J-placeholder-' + _settings.id).html(html);
 
-        me.createSoftImg($('.J-placeholder-' + _settings.id).find('.BN-list ul').eq(show_tab1 ? 0 : 1));
+        me.createSoftImg($('.J-placeholder-' + _settings.id).find('.BN-list ul').eq(active_tab1 ? 0 : 1));
 
         $('.J-loading').removeClass('show').addClass('hide');
 
@@ -1103,7 +1272,9 @@ var App = {
                 cardNum: _settings.cardNum || 6,
                 renderFor: _settings.renderFor || '',
                 createFlag: _settings.createFlag,
-                discount: _settings.discount || 1
+                discount: _settings.discount || 1,
+                is_sale: _settings.is_sale || 0,
+                cloudy: cloudy || []
             });
         me.tpl_ticketList = tpl;
         return html;
@@ -1164,7 +1335,7 @@ var App = {
             _settings = opts || {},
             html = '',
             mainMeeting = me.cacheData.mainMeeting || {},
-            mainMeeting_sid = me.cacheData.mainMeeting[me.cacheData.sid] || {},
+            mainMeeting_sid = mainMeeting[me.cacheData.sid] || {},
             mainMeeting_sid_id = mainMeeting_sid[_settings.id] || {};
 
         if ($.isEmptyObject(mainMeeting_sid_id) || mainMeeting_sid_id.list.length == 0) {
@@ -1407,7 +1578,7 @@ var App = {
                     break;
                 }
             }
-            if (item.id == 'map-foreign' || item.id == 'map-ctrip') {
+            if (item.id == 'foreign' || item.id == 'ctrip') {
                 isListEmpty = 0;
             }
 
@@ -1427,22 +1598,9 @@ var App = {
         if (me.cacheData.channel.name == 'nuomi') {
             me.renderPlayFlower()
                 .renderPlayFlower2()
-                .renderSubSessionTab();
-        }
-        if (me.cacheData.channel.name == 'map_scope') {
-            me.getMapForeign({ "id": "map-foreign" });
-            me.getMapCtrip({ "id": "map-ctrip" });
         }
 
         $('.J-loading').text('').removeClass('show').addClass('hide');
-
-        if (me.cacheData.channel.name == 'nuomi') {
-            $('footer .game-btn').attr({
-                'data-link': me.cacheData.pageConfig.footer.lottery.link,
-                'data-nalink': me.cacheData.pageConfig.footer.lottery.nalink,
-                "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id']
-            });
-        }
 
         return me;
     },
@@ -1508,15 +1666,12 @@ var App = {
             return momentObj.year() + separator + ((momentObj.month() + 1) >= 10 ? (momentObj.month() + 1) : '0' + (momentObj.month() + 1)) + separator + ((momentObj.date()) >= 10 ? (momentObj.date()) : '0' + (momentObj.date()))
         }
     },
-
     renderHeader: function() { //渲染header
         var me = this,
             html = '';
         var headerPics = me.cacheData.pageConfig.headerPics;
 
         var now = moment(me.cacheData.now);
-
-        console.log(headerPics);
 
         for (var i in headerPics) {
             if (now.isSame(headerPics[i].activeDate, 'day')) {
@@ -1555,7 +1710,6 @@ var App = {
 
         return me;
     },
-
     renderSubSessionTab: function() {
         var me = this,
             html;
@@ -1566,7 +1720,6 @@ var App = {
         $('.subSessionTab-wrap').html(html);
         return me;
     },
-
     renderPlayFlower: function() {
         var me = this,
             html;
@@ -1613,15 +1766,25 @@ var App = {
     renderFooter: function() { //渲染footer
         var me = this,
             html = '';
-        if (me.cacheData.channel.name == 'map_scope') {
-            return me;
-        } else {
-            $('footer').addClass('active');
-        }
+        // if (me.cacheData.channel.name == 'map_scope') {
+        //     return me;
+        // } else {
+        //     $('footer').addClass('active');
+        // }
         html = Juicer($('#tpl-footer').html(), {
             cacheData: me.cacheData
         });
-        $('.J-placeholder-footer').html(html);
+        $('.J-placeholder-footer').replaceWith(html);
+
+        // if (me.cacheData.channel.name == 'nuomi') {
+        //     $('footer .game-btn').attr({
+        //         'data-link': me.cacheData.pageConfig.footer.lottery.link,
+        //         'data-nalink': me.cacheData.pageConfig.footer.lottery.nalink,
+        //         "pb-id": me.cacheData.pageConfig.footer.lottery['pb-id']
+        //     });
+        // }
+
+        me.renderSubSessionTab();
 
         return me;
     },
@@ -1689,9 +1852,17 @@ var App = {
         if (_settings.item && $('.section-item-' + _settings.item).length) {
             top = $('.section-item-' + _settings.item).offset().top - 40;
             clearTimeout(me.cacheData._timer);
+            $('.section-item-inner').pauselazyelement();
             me.cacheData._timer = setTimeout(function() {
+
                 $('html,body').scrollTop(top);
-            }, 100);
+
+                setTimeout(function() {
+                    $('.section-item-inner').pauselazyelement();
+                    $(window).trigger('scroll');
+                }, 200);
+
+            }, 50);
         }
         return me;
     },
@@ -1725,52 +1896,49 @@ var App = {
                 .loadDataRelyonLoc({
                     is_init: 1
                 });
+
+            if (me.cacheData.channel.name == 'map_scope') {
+                me.getForeign();
+                me.getCtrip();
+            }
         }).on('mainMeetingBySidDataReady', function() { //分会场数据 ready
-
-            setTimeout(function() {
-                me.renderMainMeetingLayout({
-                    callback: function() {
-                        $('.section-item').lazyelement({
-                            threshold: 200,
-                            supportAsync: !0,
-                            onScrollStop: function(element) {
-                                var id = $(element).attr('id'),
-                                    sectionType = $(element).attr('section-type');
-                                if (sectionType == 'mainMeeting') { //渲染分会场
-                                    me.renderMainMeeting(me.baseOrder_Key[id]);
-                                } else if (sectionType == 'promotionList') {
-                                    me.renderPromotionList(me.baseOrder_Key[id]);
-                                } else if (sectionType == 'fixPrice') {
-                                    me.renderFixprice(me.baseOrder_Key[id]);
-                                }
+            me.renderMainMeetingLayout({
+                callback: function() {
+                    $('.section-item-inner').lazyelement({
+                        // threshold: 100,
+                        threshold: -30,
+                        supportAsync: !0,
+                        onScrollStop: function(element) {
+                            var id = $(element).attr('id'),
+                                sectionType = $(element).attr('section-type');
+                            if (sectionType == 'mainMeeting') { //渲染分会场
+                                me.renderMainMeeting(me.baseOrder_Key[id]);
                             }
-                        });
-                    }
-                });
-            }, 100)
-
+                            /*else if (sectionType == 'promotionList') {
+                                                                   // me.renderPromotionList(me.baseOrder_Key[id]);
+                                                               } else if (sectionType == 'fixPrice') {
+                                                                   // me.renderFixprice(me.baseOrder_Key[id]);
+                                                               }*/
+                        }
+                    });
+                }
+            });
         }).on('promotionListReady', function() { //爆款折扣渲染 ready
         }).on('fixPriceDataReady', function() {
             me.renderLayout({
                 callback: function() {
-                    if (me.cacheData.channel.name == 'map_scope') {
-                        $('.section-item').lazyelement({
-                            threshold: 200,
-                            supportAsync: !0,
-                            onScrollStop: function(element) {
-                                var id = $(element).attr('id'),
-                                    sectionType = $(element).attr('section-type');
-                                if (sectionType == 'promotionList') {
-                                    me.renderPromotionList(me.baseOrder_Key[id]);
-                                } else if (sectionType == 'fixPrice') {
-                                    me.renderFixprice(me.baseOrder_Key[id]);
-                                }
-                            }
-                        });
+                    if (me.cacheData.channel.name == 'nuomi') {
+                        me.getMainMeeting();
+                        me.getHotRanking();
                     }
+                    if (me.cacheData.channel.name == 'map_scope') {
+                        me.getPromotionIndex();
+                        me.getTicket();
+                    }
+                    me.renderPromotionList(me.baseOrder_Key['promotionList']);
+                    me.renderFixprice(me.baseOrder_Key['fixPrice']);
                 }
             });
-
         });
 
         // $(".img-box img,.pic").lazyload({
@@ -1795,13 +1963,6 @@ var App = {
                 var scrollTop = $('body').scrollTop(),
                     lastId = $('.J-placeholder-mainMeeting .section-item-inner').eq(0).attr('id'),
                     left = 0;
-
-                // console.log(scrollTop, '$provinceSelect:', $provinceSelect, me.provinceSelect.offsetTop, $provinceSelect.css('margin-top'))
-                // if (scrollTop >= me.provinceSelect.offsetTop - parseFloat($provinceSelect.css('margin-top'))) {
-                //     $provinceSelect.addClass('active');
-                // } else {
-                //     $provinceSelect.removeClass('active');
-                // }
 
                 $('.J-placeholder-mainMeeting .section-item-inner').each(function(index, item) {
                     var $item = $(item);
@@ -1833,556 +1994,702 @@ var App = {
                     $('.J-btn-toTop').removeClass('active');
                     $('.tab-holder').removeClass('active', height);
                 }
-            }, 100);
+            }, 50);
         });
 
         $('body').on('tap', '.J-province-select', function() { //打开省份列表
-            me.renderFlayer({
-                type: 'domainList',
-                is_show: 1
-            });
-        }).on('tap', '.province-li', function(e) { //省份切换
-            var sid = $(this).data('sid'),
-                province_sid = $(this).attr('data-province_sid') || sid;
-            if (sid == me.cacheData.sid) {
-                $('.J-flayer-close').trigger('tap');
-                return me;
-            }
-            $('.province-li').removeClass('active');
-            $(this).addClass('active');
-            $('#J_cur-pro').html(me.cacheData.sname = $(this).data('sname'));
-            me.cacheData.sid = sid || me.cacheData.sid;
-            me.cacheData.province_sid = province_sid || me.cacheData.province_sid;
-            $('.J-flayer-close').trigger('tap');
-
-            try {
-                sessionStorage.setItem('sid', me.cacheData.sid);
-                sessionStorage.setItem('province_sid', me.cacheData.province_sid);
-            } catch (e) {
-
-            }
-            // $('.section-item').unlazyelement();
-
-            me.loadDataRelyonLoc();
-        }).on('tap', '.J-btn-help', function() { //活动规则
-            me.renderFlayer({
-                type: 'help',
-                is_show: 1
-            });
-        }).on('tap', '.coupon-item', function() { //领取优惠券
-            var id = $(this).data('id');
-            if (me.is_login != 1) { //未登录
-                Bridge.toLogin({
-                    success: function() {
-                        location.reload();
-                    }
+                me.renderFlayer({
+                    type: 'domainList',
+                    is_show: 1
                 });
-                return false;
-            }
-            // if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
-            //     return false;
-            // }
-            me.getDiscount({
-                id: id
-            });
-        }).on('tap', '.J-flayer-close', function() { //隐藏浮层
-            $('.flayer').removeClass('show').addClass('hide');
-        }).on('touchend', '.J-btn-toTop', function() { //回到顶部
-            $('.J-page-container').scrollTop(0);
-            $('body').scrollTop(0);
-        }).on('tap', '.J-link', function() { //进入自营团单页
-            var webappUrl = $(this).attr('data-webappurl'),
-                grounpon_id = $(this).attr('data-grounpon_id'),
-                __params = $.extend({}, _params),
-                _arr = [];
-
-            for (var key in __params) {
-                _arr.push(key + '=' + __params[key])
-            }
-
-            Bridge.pushWindow({
-                nuomi: "bainuo://tuandetail?tuanid=" + grounpon_id,
-                "nuomi-webapp": webappUrl + (/\?/i.test(webappUrl) ? '&' : '?') + _arr.join('&'),
-                data: $.extend({}, _params)
-            });
-        }).on('tap', '.J-orderFill', function() { //进入门票填单页
-            var src = $(this).attr('data-src'),
-                ctrip_id = $(this).attr('data-ctrip_id') || '',
-                qunar_id = $(this).attr('data-qunar_id') || '',
-                pid = $(this).attr('data-pid') || '',
-                uid = $(this).attr('data-uid') || '',
-                ticket_id = $(this).attr('data-ticket_id') || '';
-
-            var scope_id = src == 'qunar' ? qunar_id : ctrip_id,
-                td_id = scope_id;
-
-            Bridge.pushWindow({
-                page: 'orderFill',
-                data: {
-                    nuomi: $.extend({
-                        ticket_id: ticket_id,
-                        td_id: td_id,
-                        scope_id: scope_id,
-                        partner_id: src,
-                        uid: uid
-                    }, _params),
-                    map: $.extend({
-                        "param": '{"partner_id":"' + src + '","scope_id":"' + scope_id + '","ticket_id":"' + pid + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"map_scope"}',
-                        "popRoot": "no"
-                    }, _params),
-                    'nuomi-webapp': $.extend({
-                        td_id: td_id,
-                        partner_id: src,
-                        scope_id: scope_id,
-                        ticket_id: ticket_id,
-                        uid: uid
-                    }, _params),
-                    'map-webapp': $.extend({
-                        partner_id: src,
-                        scope_id: scope_id,
-                        ticket_id: pid,
-                        uid: uid
-                    }, _params)
+            }).on('tap', '.province-li', function(e) { //省份切换
+                var sid = $(this).data('sid'),
+                    province_sid = $(this).attr('data-province_sid') || sid;
+                if (sid == me.cacheData.sid) {
+                    $('.J-flayer-close').trigger('tap');
+                    return me;
                 }
-            });
-        }).on('tap', '.J-no-poi', function() { //无法进入 poi 详情页
-            Bridge.toast('需升级至百度地图V9.2以上版本方可购买');
-        }).on('tap', '.J-poi', function() { //进入poi详情页
-            var uid = $(this).attr('data-uid') || '',
-                qunar_id = $(this).attr('data-qunar_id') || '';
+                $('.province-li').removeClass('active');
+                $(this).addClass('active');
+                $('#J_cur-pro').html(me.cacheData.sname = $(this).data('sname'));
+                me.cacheData.sid = sid || me.cacheData.sid;
+                me.cacheData.province_sid = province_sid || me.cacheData.province_sid;
+                $('.J-flayer-close').trigger('tap');
 
-            Bridge.pushWindow({
-                page: 'poiDetail',
-                data: {
-                    nuomi: $.extend({
-                        td_id: qunar_id
-                    }, _params),
-                    map: $.extend({
-                        uid: uid
-                    }, _params),
-                    'nuomi-webapp': $.extend({
-                        td_id: qunar_id
-                    }, _params),
-                    'map-webapp': $.extend({
-                        uid: uid,
-                        qt: 'ninf',
-                        industry: 'scope'
-                    }, _params)
+                try {
+                    sessionStorage.setItem('sid', me.cacheData.sid);
+                    sessionStorage.setItem('province_sid', me.cacheData.province_sid);
+                } catch (e) {
+
                 }
-            });
-        }).on('tap', '.J-sku', function() { //进入sku详情页
-            var ticket_id = $(this).attr('data-ticketid'),
-                td_id = $(this).attr('data-td_id');
+                // $('.section-item').unlazyelement();
 
-            var scope_id = td_id;
-
-            var __params = $.extend({
-                    pids: ticket_id,
-                    ticket_id: ticket_id,
-                    scope_id: scope_id,
-                }, _params),
-                _arr = [];
-
-            for (var key in __params) {
-                _arr.push(key + '=' + __params[key])
-            }
-
-            Bridge.pushWindow({
-                nuomi: "bainuo://component?compid=lvyou&comppage=detail",
-                "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/ticket/detail/detail.html?' + _arr.join('&'),
-                "map-android": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
-                "map-ios": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
-                "map-webapp": 'http://map.baidu.com/mobile/webapp/scope/ticketDetail/qt=scope_getoneticket&src=qunar&' + _arr.join('&'),
-                data: __params
-            });
-        }).on('tap', '.J-scenehotel', function() { //进入景酒详情页
-            var id = $(this).attr('data-id');
-            var __params = $.extend({
-                    product_id: id
-                }, _params),
-                _arr = [];
-            for (var key in __params) {
-                _arr.push(key + '=' + __params[key])
-            }
-            Bridge.pushWindow({
-                nuomi: "bainuo://component?compid=lvyou&comppage=sceneryhotel_detail",
-                "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/sceneryhotel/detail/detail.html?' + _arr.join('&'),
-                data: $.extend({
-                    product_id: id
-                }, _params)
-            });
-        }).on('tap', '.J-onedaytour', function() { //进入一日游详情页
-            var id = $(this).attr('data-id');
-            var __params = $.extend({
-                    product_id: id
-                }, _params),
-                _arr = [];
-            for (var key in __params) {
-                _arr.push(key + '=' + __params[key])
-            }
-            Bridge.pushWindow({
-                nuomi: "bainuo://component?compid=lvyou&comppage=travel_detail",
-                "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/travel/detail/index.html?' + _arr.join('&'),
-                data: $.extend({
-                    product_id: id
-                }, _params)
-            });
-        }).on('tap', '.J-page-tab li', function() { //页中导航 锚点
-            var $link = $(this),
-                href = $link.data('href'),
-                name = $link.data('name'),
-                $sectionItem, top;
-            $sectionItem = $('.J-section-item-' + name);
-            me.goToSection({
-                item: name
-            });
-            $link.addClass('active').siblings('li').removeClass('active');
-        }).on('tap', '.J-jumpBnr', function() { //banner位点击
-            var link = $(this).data('link'),
-                nalink = $(this).attr('data-nalink') || '';
-            if (link.length == 0) {
-                return me;
-            }
-            Bridge.pushWindow({
-                // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
-                nuomi: /^bainuo\:/igm.test(nalink) ? nalink : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
-                "nuomi-webapp": link,
-                "map-webapp": link,
-                "map-ios": link,
-                "map-android": link
-            });
-        }).on('tap', '[tab-for]', function() { //tab 切换
-            var tabId = $(this).attr('tab-for'),
-                tabRel = $(this).attr('tab-relFor');
-            $('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
-            $('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
-            me.createSoftImg($('[tab-id="' + tabId + '"]'));
-        }).on('tap', '.subSessionTab-btn', function() {
-            $('.subSessionTab').addClass('active');
-            $('body').on('tap', '.subSessionTab-btn', _hideSubsessionTab)
-        }).on('touchend', '.subSessionTab .close-btn', _hideSubsessionTab)
-        .on('tap', '.J-more-ticket', function() { //更多热门景点
-            var _sid = me.cacheData.gps_sid,
-                _cityid = me.cacheData.gps_cityid,
-                _timeout = 0;
-
-            if (me.cacheData.gps_success == 0) { //定位失败
-                _timeout = 3000;
-            }
-
-            setTimeout(function() {
-                if (me.cacheData.gps_success == 0) { //定位失败
-                    Bridge.toast('亲~定位失败了哟~~~');
+                me.loadDataRelyonLoc();
+            }).on('tap', '.J-btn-help', function() { //活动规则
+                me.renderFlayer({
+                    type: 'help',
+                    is_show: 1
+                });
+            }).on('tap', '.coupon-item', function() { //领取优惠券
+                var id = $(this).data('id');
+                if (me.is_login != 1) { //未登录
+                    Bridge.toLogin({
+                        success: function() {
+                            location.reload();
+                        }
+                    });
+                    return false;
                 }
+                // if ($(this).hasClass('coupon-item-out') || $(this).hasClass('coupon-item-picked')) {
+                //     return false;
+                // }
+                me.getDiscount({
+                    id: id
+                });
+            }).on('tap', '.J-flayer-close', function() { //隐藏浮层
+                $('.flayer').removeClass('show').addClass('hide');
+            }).on('touchend', '.J-btn-toTop', function() { //回到顶部
+                $('.J-page-container').scrollTop(0);
+                $('body').scrollTop(0);
+            }).on('tap', '.J-link', function() { //进入自营团单页
+                var webappUrl = $(this).attr('data-webappurl'),
+                    grounpon_id = $(this).attr('data-grounpon_id'),
+                    __params = $.extend({}, _params),
+                    _arr = [];
+
+                for (var key in __params) {
+                    _arr.push(key + '=' + __params[key])
+                }
+
                 Bridge.pushWindow({
-                    page: 'poiList',
+                    nuomi: "bainuo://tuandetail?tuanid=" + grounpon_id,
+                    "nuomi-webapp": webappUrl + (/\?/i.test(webappUrl) ? '&' : '?') + _arr.join('&'),
+                    data: $.extend({}, _params)
+                });
+            }).on('tap', '.J-orderFill', function() { //进入门票填单页
+                var src = $(this).attr('data-src'),
+                    ctrip_id = $(this).attr('data-ctrip_id') || '',
+                    qunar_id = $(this).attr('data-qunar_id') || '',
+                    pid = $(this).attr('data-pid') || '',
+                    uid = $(this).attr('data-uid') || '',
+                    ticket_id = $(this).attr('data-ticket_id') || '';
+
+                var scope_id = src == 'qunar' ? qunar_id : ctrip_id,
+                    td_id = scope_id;
+
+                Bridge.pushWindow({
+                    page: 'orderFill',
                     data: {
                         nuomi: $.extend({
-                            sid: _sid,
-                            tag_id: 0
+                            ticket_id: ticket_id,
+                            td_id: td_id,
+                            scope_id: scope_id,
+                            partner_id: src,
+                            uid: uid
+                        }, _params),
+                        map: $.extend({
+                            "param": '{"partner_id":"' + src + '","scope_id":"' + scope_id + '","ticket_id":"' + pid + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"map_scope"}',
+                            "popRoot": "no"
                         }, _params),
                         'nuomi-webapp': $.extend({
-                            sid: _sid
+                            td_id: td_id,
+                            partner_id: src,
+                            scope_id: scope_id,
+                            ticket_id: ticket_id,
+                            uid: uid
                         }, _params),
                         'map-webapp': $.extend({
-                            c: _cityid
+                            partner_id: src,
+                            scope_id: scope_id,
+                            ticket_id: pid,
+                            uid: uid
                         }, _params)
                     }
                 });
-            }, _timeout);
-        }).on('tap', '.J-page-info', function(e) { //分页
-            var item = $(this).data('item'),
-                Item = item.replace(/(\w)/, function(v) {
-                    return v.toUpperCase()
-                }),
-                $target = $(e.target),
-                type = $target.data('type'),
-                page_cur, rn, pages;
-            if (item && type) {
-                rn = me.cacheData[item.toLocaleLowerCase() + '_rn'];
-                page_cur = me.cacheData[item.toLocaleLowerCase() + '_pn'] / rn;
-                pages = Math.ceil(me.cacheData[item.toLocaleLowerCase() + '_total'] / rn);
-                pages = pages < 0 ? 0 : pages;
-                if (type == 'next') {
-                    page_cur = ++page_cur >= pages ? pages - 1 : page_cur;
-                } else if (type == 'prev') {
-                    page_cur = --page_cur < 0 ? 0 : page_cur;
-                } else if (type == 'page') {
-                    page_cur = parseInt($target.data('page_num'), 10);
-                }
-                me['getMap' + Item]({
-                    pn: page_cur * rn,
-                    rn: rn,
-                    id: 'map-' + item,
-                    callback: function() {
-                        me.goToSection({
-                            item: item
-                        });
+            }).on('tap', '.J-no-poi', function() { //无法进入 poi 详情页
+                Bridge.toast('需升级至百度地图V9.2以上版本方可购买');
+            }).on('tap', '.J-poi', function() { //进入poi详情页
+                var uid = $(this).attr('data-uid') || '',
+                    qunar_id = $(this).attr('data-qunar_id') || '';
+
+                Bridge.pushWindow({
+                    page: 'poiDetail',
+                    data: {
+                        nuomi: $.extend({
+                            td_id: qunar_id
+                        }, _params),
+                        map: $.extend({
+                            uid: uid
+                        }, _params),
+                        'nuomi-webapp': $.extend({
+                            td_id: qunar_id
+                        }, _params),
+                        'map-webapp': $.extend({
+                            uid: uid,
+                            qt: 'ninf',
+                            industry: 'scope'
+                        }, _params)
                     }
                 });
-            }
-        });
-        
-        function _hideSubsessionTab () {
+            }).on('tap', '.J-sku', function() { //进入sku详情页
+                var ticket_id = $(this).attr('data-ticket_id'),
+                    td_id = $(this).attr('data-td_id');
+
+                var scope_id = td_id;
+
+                var __params = $.extend({
+                        pids: ticket_id,
+                        ticket_id: ticket_id,
+                        scope_id: scope_id,
+                    }, _params),
+                    _arr = [];
+
+                for (var key in __params) {
+                    _arr.push(key + '=' + __params[key])
+                }
+
+                Bridge.pushWindow({
+                    nuomi: "bainuo://component?compid=lvyou&comppage=detail",
+                    "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/ticket/detail/detail.html?' + _arr.join('&'),
+                    "map-android": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
+                    "map-ios": 'baidumap://map/component?comName=scenery&target=scenery_default_web_page_openapi&param={"page":"ticketDetailPage","title":"门票详情","pids":"' + ticket_id + '","scope_id":"' + scope_id + '","extra":[],"is_adult_ticket":0,"is_into_scope":0,"order_from":"mapmap","is_miaosha":"1"}&ldata=' + me.params.ldata + '&mode=NORMAL_MODE&popRoot=no',
+                    "map-webapp": 'http://map.baidu.com/mobile/webapp/scope/ticketDetail/qt=scope_getoneticket&src=qunar&' + _arr.join('&'),
+                    data: __params
+                });
+            }).on('tap', '.J-scenehotel', function() { //进入景酒详情页
+                var id = $(this).attr('data-id');
+                var __params = $.extend({
+                        product_id: id
+                    }, _params),
+                    _arr = [];
+                for (var key in __params) {
+                    _arr.push(key + '=' + __params[key])
+                }
+                Bridge.pushWindow({
+                    nuomi: "bainuo://component?compid=lvyou&comppage=sceneryhotel_detail",
+                    "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/sceneryhotel/detail/detail.html?' + _arr.join('&'),
+                    data: $.extend({
+                        product_id: id
+                    }, _params)
+                });
+            }).on('tap', '.J-onedaytour', function() { //进入一日游详情页
+                var id = $(this).attr('data-id');
+                var __params = $.extend({
+                        product_id: id
+                    }, _params),
+                    _arr = [];
+                for (var key in __params) {
+                    _arr.push(key + '=' + __params[key])
+                }
+                Bridge.pushWindow({
+                    nuomi: "bainuo://component?compid=lvyou&comppage=travel_detail",
+                    "nuomi-webapp": 'http://lvyou.baidu.com/static/foreign/page/travel/detail/index.html?' + _arr.join('&'),
+                    data: $.extend({
+                        product_id: id
+                    }, _params)
+                });
+            }).on('tap', '.J-page-tab li', function() { //页中导航 锚点
+                var $link = $(this),
+                    href = $link.data('href'),
+                    name = $link.data('name'),
+                    $sectionItem, top;
+                $sectionItem = $('.J-section-item-' + name);
+                me.goToSection({
+                    item: name
+                });
+                $link.addClass('active').siblings('li').removeClass('active');
+            }).on('tap', '.J-jumpBnr', function() { //banner位点击
+                var link = $(this).data('link'),
+                    nalink = $(this).attr('data-nalink') || '';
+                if (link.length == 0) {
+                    return me;
+                }
+                Bridge.pushWindow({
+                    // nuomi: "bainuo://component?a=1&url=" + encodeURIComponent(link),
+                    nuomi: /^bainuo\:/igm.test(nalink) ? nalink : "bainuo://component?a=1&url=" + encodeURIComponent(nalink),
+                    "nuomi-webapp": link,
+                    "map-webapp": link,
+                    "map-ios": link,
+                    "map-android": link
+                });
+            }).on('tap', '[tab-for]', function() { //tab 切换
+                var tabId = $(this).attr('tab-for'),
+                    tabRel = $(this).attr('tab-relFor'),
+                    $sectionItem = $(this).parents('.section-item');
+                $sectionItem.find('[tab-rel="' + tabRel + '"]').removeClass('show').addClass('hide');
+                $sectionItem.find('[tab-id="' + tabId + '"]').removeClass('hide').addClass('show');
+                me.createSoftImg($sectionItem.find('[tab-id="' + tabId + '"]'));
+            }).on('tap', '.subSessionTab-btn', function() {
+                $('.subSessionTab').addClass('active');
+                $('body').on('tap', '.subSessionTab-btn', _hideSubsessionTab)
+            }).on('touchend', '.subSessionTab .close-btn', _hideSubsessionTab)
+            .on('tap', '.J-more-ticket', function() { //更多热门景点
+                var _sid = me.cacheData.gps_sid,
+                    _cityid = me.cacheData.gps_cityid,
+                    _timeout = 0;
+
+                if (me.cacheData.gps_success == 0) { //定位失败
+                    _timeout = 3000;
+                }
+
+                setTimeout(function() {
+                    if (me.cacheData.gps_success == 0) { //定位失败
+                        Bridge.toast('亲~定位失败了哟~~~');
+                    }
+                    Bridge.pushWindow({
+                        page: 'poiList',
+                        data: {
+                            nuomi: $.extend({
+                                sid: _sid,
+                                tag_id: 0
+                            }, _params),
+                            'nuomi-webapp': $.extend({
+                                sid: _sid
+                            }, _params),
+                            'map-webapp': $.extend({
+                                c: _cityid
+                            }, _params)
+                        }
+                    });
+                }, _timeout);
+            }).on('tap', '.J-page-info', function(e) { //分页
+                var pageFor = $(this).data('item') || $(this).attr('data-pagefor'),
+                    Item = pageFor.replace(/(\w)/, function(v) {
+                        return v.toUpperCase()
+                    }),
+                    $target = $(e.target),
+                    type = $target.data('type'),
+                    cacheData_id = me.cacheData[pageFor] || {},
+                    cacheData_id_sid = cacheData_id[me.cacheData.sid] || {},
+                    cacheData_id_sid_pn = cacheData_id_sid.pn,
+                    cacheData_id_sid_rn = cacheData_id_sid.rn,
+                    cacheData_id_sid_total = cacheData_id_sid.total,
+                    page_cur, totalPages, fn_name;
+
+                if (pageFor && type) {
+                    page_cur = Math.floor(cacheData_id_sid_pn / cacheData_id_sid_rn);
+                    totalPages = Math.ceil(cacheData_id_sid_total / cacheData_id_sid_rn);
+                    totalPages = totalPages < 0 ? 0 : totalPages;
+
+                    if (type == 'next') {
+                        page_cur = ++page_cur >= totalPages ? totalPages - 1 : page_cur;
+                    } else if (type == 'prev') {
+                        page_cur = --page_cur < 0 ? 0 : page_cur;
+                    } else if (type == 'page') {
+                        page_cur = parseInt($target.data('page_num'), 10);
+                    }
+
+                    if (pageFor == 'hotRanking') {
+                        fn_name = 'getHotRanking';
+                    } else if (pageFor == 'ctrip') {
+                        fn_name = 'getCtrip';
+                    } else if (pageFor == 'foreign') {
+                        fn_name = 'getForeign';
+                    }
+                    fn_name && me[fn_name]({
+                        pn: page_cur * cacheData_id_sid_rn,
+                        rn: cacheData_id_sid_rn,
+                        callback: function() {
+                            me.goToSection({
+                                item: pageFor
+                            });
+                        }
+                    });
+                }
+            });
+
+        function _hideSubsessionTab() {
             $('.subSessionTab').removeClass('active');
             $('body').off('tap', '.subSessionTab-btn', _hideSubsessionTab);
         }
 
         return this;
     },
-    getMapCtrip: function(opts) { //获取携程列表
-        var me = this,
+    getCtrip: function(opts) { //获取携程列表
+        var deferred = $.Deferred(),
+            me = this,
             _settings = opts || {},
             pn = _settings.pn || 0,
-            // rn = _settings.rn || 18,
             rn = _settings.rn || 10,
-            total = me.cacheData.ctrip_total;
+            _dataReady = function() {
+                me.cacheData.ctrip[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.ctrip[me.cacheData.sid]['rn'] = rn;
+
+                // var _timer = setInterval(function() {
+                // if ($('#ctrip').length > 0) {
+                // clearInterval(_timer);
+                me.renderCtrip(me.baseOrder_Key['ctrip']);
+                _settings.callback && _settings.callback();
+                // }
+                // }, 100);
+
+            };
+
         me.cacheData.ctrip = me.cacheData.ctrip || {};
-        if (me.cacheData.ctrip_pn == pn) {
+        me.cacheData.ctrip[me.cacheData.sid] = me.cacheData.ctrip[me.cacheData.sid] || {};
+
+        if (me.cacheData.ctrip[me.cacheData.sid]['pn' + pn]) { //请求的 pn 已经缓存过
+            _dataReady();
             return me;
         }
-        if (me.cacheData.ctrip[pn]) {
-            me.cacheData.ctrip_pn = pn;
-            me.cacheData.ctrip_rn = rn;
-            me.renderMapCtrip(_settings);
+
+        if (!('ctrip' in me.baseOrder_Key)) {
             return me;
         }
+
         Bridge.Loader.get({
             url: Bridge.host + '/business/ajax/promotion/getctriplist',
             dataType: 'jsonp',
-            data: {
+            data: $.extend({}, {
                 activity_name: 'duanwu',
                 pn: pn,
-                rn: rn
-            },
-            success: function(res) {
-                if (res.errno != 0) {
-                    Bridge.toast('获取携程列表:' + res.msg);
-                    return false;
-                }
-                me.cacheData.ctrip[pn] = res.data.list || [];
-                me.cacheData.ctrip_pn = pn;
-                me.cacheData.ctrip_rn = rn;
-                me.cacheData.ctrip_total = res.data.total;
-                me.reSizeImg({
-                    type: 'ctrip',
-                });
-                me.renderMapCtrip(_settings);
-            },
-            fail: function() {
-
-            }
-        });
-        return me;
-    },
-    renderMapCtrip: function(opts) { //渲染携程列表
-        var me = this,
-            html = Juicer($('#tpl-map-ctrip').html(), {
-                cacheData: me.cacheData,
-                activeInfo: ACTIVEINFO
-            }),
-            _settings = opts || {};
-        $('.J-placeholder-map-ctrip').html(html);
-        if (!html.length) {
-            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-ctrip');
-        }
-        // me.lazyLoadImg('.J-placeholder-ctrip');
-        // me.getMapForeign();
-        _settings.callback && _settings.callback();
-
-        me.createSoftImg($('.J-placeholder-' + _settings.id));
-        return me;
-    },
-    getMapForeign: function(opts) { //获取海外特价列表
-        var me = this,
-            _settings = opts || {},
-            pn = _settings.pn || 0,
-            // rn = _settings.rn || 20,
-            rn = _settings.rn || 10,
-            total = me.cacheData.foreign_total;
-        if (me.cacheData.noForeign) {
-            // $('.J-placeholder-foreign').remove();
-            return me;
-        }
-        me.cacheData.foreign = me.cacheData.foreign || {};
-        if (me.cacheData.foreign_pn == pn) {
-            return me;
-        }
-        if (me.cacheData.foreign[pn]) {
-            me.cacheData.foreign_pn = pn;
-            me.cacheData.foreign_rn = rn;
-            me.renderMapForeign(_settings);
-            return me;
-        }
-        Bridge.Loader.get({
-            url: Bridge.host + '/business/ajax/overseasale/getsalelistsku',
-            dataType: 'jsonp',
-            data: {
-                activity_name: 'duanwu',
-                pn: pn,
-                rn: rn
-            },
+                rn: rn,
+                t: T
+            }, me.params),
             success: function(res) {
                 if (res.errno != 0) {
                     Bridge.toast('获取携程列表:' + res.msg);
                     return me;
                 }
-                me.cacheData.foreign[pn] = res.data.list || [];
-                me.cacheData.foreign_pn = pn;
-                me.cacheData.foreign_rn = rn;
-                me.cacheData.foreign_total = res.data.total;
+
+                me.cacheData.ctrip[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.ctrip[me.cacheData.sid]['rn'] = rn;
+                me.cacheData.ctrip[me.cacheData.sid]['pn' + pn] = res.data || {};
+                me.cacheData.ctrip[me.cacheData.sid]['total'] = res.data.total || 0;
+
                 me.reSizeImg({
-                    type: 'foreign',
+                    type: 'ctrip'
                 });
-                me.renderMapForeign(_settings);
+
+                _dataReady();
             },
             fail: function() {
                 Bridge.toast('网络错误, 请稍候重试');
             }
         });
-        return me;
-    },
-    renderMapForeign: function(opts) { //渲染海外特价列表
-        var me = this,
-            _settings = opts || {},
-            html = Juicer($('#tpl-map-foreign').html(), {
-                cacheData: me.cacheData,
-                settings: _settings
-            }),
-            _settings = opts || {};
-        $('.J-placeholder-map-foreign').html(html);
-        if (!html.length) {
-            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-foreign');
-        }
-        // me.lazyLoadImg('.J-placeholder-foreign');
-        me.createSoftImg($('.J-placeholder-' + _settings.id));
-        _settings.callback && _settings.callback();
 
-        return me;
+        return deferred;
     },
-    getMapTicket: function(opts) { //获取推荐门票
+    renderCtrip: function(opts) { //渲染携程列表
         var me = this,
-            url,
-            _settings = opts,
-            _query = {
-                sid: me.cacheData.sid,
-                pn: 1,
-                rn: 28,
-                category: 'qunar-jingdian'
-            },
-            item, jtem;
-        if (me.cacheData.channel.name == 'nuomi') {
-            Bridge.Loader.get({
-                url: Bridge.host + '/business/ajax/searchnew/',
-                dataType: 'jsonp',
-                data: _query,
-                success: function(res) {
-                    if (res.errno != 0) {
-                        Bridge.toast('获取推荐门票:' + res.msg);
-                        return me;
-                    }
-                    me.cacheData.ticket = res.data.list || [];
-                    me.reSizeImg({
-                        type: 'ticket'
-                    });
-                    //景点列表中重复的poi 点需要过滤掉
-                    // var promotionIndex = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
-                    // final
-                    var promotionIndex = me.cacheData.promotionIndex[100000000] || {},
-                        promotionList = promotionIndex.promotionList || {},
-                        list = promotionList.list || [];
-                    for (var index in list) {
-                        item = list[index];
-                        for (var jndex in me.cacheData.ticket) {
-                            jtem = me.cacheData.ticket[jndex];
-                            if (item.td_id == jtem.id || jtem.price == 0) {
-                                me.cacheData.ticket.splice(jndex, 1);
-                            }
-                        }
-                    }
-                    me.renderMapTicket(_settings);
-                },
-                fail: function() {
-                    Bridge.toast('网络错误, 请稍候重试');
-                }
-            });
-        } else {
-            _query.qt = 'scope_favorable';
-            _query.city_id = me.cacheData.city_code;
-            _query.rn = 80;
-            Bridge.Loader.get({
-                url: 'http://client.map.baidu.com/scope',
-                dataType: 'jsonp',
-                data: _query,
-                success: function(res) {
-                    if (res.err_no != 0) {
-                        Bridge.toast('获取门票列表:' + res.err_msg);
-                        return false;
-                    }
-                    me.cacheData.ticket = res.data.list || [];
-                    //景点列表中重复的poi 点需要过滤掉
-                    var promotionIndex = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
-                        promotionList = promotionIndex.promotionList || {},
-                        list = promotionList.list || [];
-                    for (var index in list) {
-                        item = list[index];
-                        for (var jndex in me.cacheData.ticket) {
-                            jtem = me.cacheData.ticket[jndex];
-                            if (item.td_id == jtem.id || jtem.price == 0) {
-                                me.cacheData.ticket.splice(jndex, 1);
-                            }
-                        }
-                    }
-                    me.renderMapTicket(_settings);
-                },
-                fail: function() {
-                    Bridge.toast('网络错误, 请稍候重试');
-                }
-            });
-        }
-        return me;
-    },
-    renderMapTicket: function(opts) { //渲染推荐门票区域
-        var me = this,
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
             _settings = opts || {},
-            html = '';
+            html = '',
+            ctrip = me.cacheData.ctrip || {},
+            ctrip_sid = ctrip[me.cacheData.sid] || {},
+            ctrip_sid_pn = ctrip_sid['pn' + (ctrip_sid.pn || 0)],
+            ctrip_sid_rn = ctrip_sid.rn || 10,
+            ctrip_sid_pn_list = ctrip_sid_pn.list || [];
 
-        me.reSizeImg({
-            type: 'ticket'
-        });
-        html = Juicer($('#tpl-map-ticket').html(), {
+        if ($.isEmptyObject(ctrip_sid)) {
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+            return me;
+        }
+
+        me.tpl_mainMeeting = tpl;
+
+        html = Juicer(tpl, {
             cacheData: me.cacheData,
-            settings: _settings
+            data: $.extend({}, {
+                id: _settings.id,
+                colsNum: 2,
+                showPages: 1,
+                list: {
+                    id: _settings.id,
+                    html: me.createTicketList({
+                        renderFor: _settings.id,
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
+                        direction: 'vertical',
+                        data: ctrip_sid_pn_list || [],
+                        createFlag: function(renderFor) {
+                            var text, className;
+
+                            text = '热销';
+
+                            className = 'flag-discount';
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
+                    })
+                }
+            })
         });
-        $('.J-placeholder-map-ticket').html(html);
-        if (!html.length) {
-            $('<div class="J-placeholder J-placeholder-empty" />').insertAfter('.J-placeholder-map-ticket');
-        }
-        // me.lazyLoadImg('.J-placeholder-ticket');
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         me.createSoftImg($('.J-placeholder-' + _settings.id));
 
         return me;
     },
-    getMapPromotionIndex: function(opts) { //获取立减数据
-        var me = this,
+    getForeign: function(opts) { //获取海外特价列表
+        var deferred = $.Deferred(),
+            me = this,
             _settings = opts || {},
+            pn = _settings.pn || 0,
+            rn = _settings.rn || 10,
             _dataReady = function() {
-                me.renderMapPromotionIndex(_settings);
+                me.cacheData.foreign[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.foreign[me.cacheData.sid]['rn'] = rn;
+
+                // var _timer = setInterval(function() {
+                //     if ($('#foreign').length > 0) {
+                //         clearInterval(_timer);
+                me.renderForeign(me.baseOrder_Key['foreign']);
+                _settings.callback && _settings.callback();
+                //     }
+                // }, 100);
+
             };
-        me.cacheData.promotionIndex = me.cacheData.promotionIndex || {};
-        me.cacheData.promotionIndex[me.cacheData.city_code] = me.cacheData.promotionIndex[me.cacheData.city_code] || null;
-        if (me.cacheData.promotionIndex[me.cacheData.city_code]) {
+
+        me.cacheData.foreign = me.cacheData.foreign || {};
+        me.cacheData.foreign[me.cacheData.sid] = me.cacheData.foreign[me.cacheData.sid] || {};
+
+        if (me.cacheData.foreign[me.cacheData.sid]['pn' + pn]) { //请求的 pn 已经缓存过
             _dataReady();
+            return me;
+        }
+
+        if (!('foreign' in me.baseOrder_Key)) {
+            return me;
+        }
+
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/overseasale/getsalelistsku',
+            dataType: 'jsonp',
+            data: $.extend({}, {
+                activity_name: 'duanwu',
+                pn: pn,
+                rn: rn,
+                t: T
+            }, me.params),
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('获取海外特价列表:' + res.msg);
+                    return me;
+                }
+
+                me.cacheData.foreign[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.foreign[me.cacheData.sid]['rn'] = rn;
+                me.cacheData.foreign[me.cacheData.sid]['pn' + pn] = res.data || {};
+                me.cacheData.foreign[me.cacheData.sid]['total'] = res.data.total || 0;
+
+                me.reSizeImg({
+                    type: 'foreign'
+                });
+
+                _dataReady();
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
+            }
+        });
+
+        return deferred;
+    },
+    renderForeign: function(opts) { //渲染海外特价列表
+        var me = this,
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            _settings = opts || {},
+            html = '',
+            foreign = me.cacheData.foreign || {},
+            foreign_sid = foreign[me.cacheData.sid] || {},
+            foreign_sid_pn = foreign_sid['pn' + (foreign_sid.pn || 0)],
+            foreign_sid_rn = foreign_sid.rn || 10,
+            foreign_sid_pn_list = foreign_sid_pn.list || [];
+
+        if ($.isEmptyObject(foreign_sid)) {
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+            return me;
+        }
+
+        me.tpl_mainMeeting = tpl;
+
+        html = Juicer(tpl, {
+            cacheData: me.cacheData,
+            data: $.extend({}, {
+                id: _settings.id,
+                colsNum: 2,
+                showPages: 1,
+                list: {
+                    id: _settings.id,
+                    html: me.createTicketList({
+                        renderFor: _settings.id,
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
+                        direction: 'vertical',
+                        data: foreign_sid_pn_list || [],
+                        createFlag: function(renderFor) {
+                            var text, className;
+
+                            text = '热销';
+
+                            className = 'flag-discount';
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
+                    })
+                }
+            })
+        });
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+
+        return me;
+    },
+    getTicket: function(opts) { //获取推荐门票
+        var deferred = $.Deferred(),
+            me = this,
+            _settings = opts || {},
+            pn = _settings.pn || 1,
+            rn = _settings.rn || 10,
+            _dataReady = function() {
+                me.cacheData.ticket[me.cacheData.province_sid]['pn'] = pn;
+                me.cacheData.ticket[me.cacheData.province_sid]['rn'] = rn;
+
+                me.renderTicket(me.baseOrder_Key['ticket']);
+                _settings.callback && _settings.callback();
+
+            };
+
+        me.cacheData.ticket = me.cacheData.ticket || {};
+        me.cacheData.ticket[me.cacheData.province_sid] = me.cacheData.ticket[me.cacheData.province_sid] || {};
+
+        if (me.cacheData.ticket[me.cacheData.province_sid]['pn' + pn]) { //请求的 pn 已经缓存过
+            _dataReady();
+            return me;
+        }
+
+        if (!('ticket' in me.baseOrder_Key)) {
+            return me;
+        }
+
+        Bridge.Loader.get({
+            url: 'http://client.map.baidu.com/scope',
+            dataType: 'jsonp',
+            data: $.extend({
+                sid: me.cacheData.province_sid,
+                city_id: me.cacheData.city_code,
+                pn: pn,
+                rn: rn,
+                category: 'qunar-jingdian',
+                qt: 'scope_favorable'
+            }, me.params),
+            success: function(res) {
+                if (res.err_no != 0) {
+                    Bridge.toast('获取推荐门票:' + res.err_msg);
+                    return false;
+                }
+
+                me.cacheData.ticket[me.cacheData.province_sid]['pn'] = pn;
+                me.cacheData.ticket[me.cacheData.province_sid]['rn'] = rn;
+                me.cacheData.ticket[me.cacheData.province_sid]['pn' + pn] = res.data || {};
+                me.cacheData.ticket[me.cacheData.province_sid]['total'] = res.data.total || 0;
+
+                me.reSizeImg({
+                    type: 'ticket'
+                });
+
+                _dataReady();
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
+            }
+        });
+
+        return deferred;
+    },
+    renderTicket: function(opts) { //渲染推荐门票区域
+        var me = this,
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            _settings = opts || {},
+            html = '',
+            ticket = me.cacheData.ticket || {},
+            ticket_sid = ticket[me.cacheData.province_sid] || {},
+            ticket_sid_pn = ticket_sid['pn' + (ticket_sid.pn || 0)],
+            ticket_sid_rn = ticket_sid.rn || 10,
+            ticket_sid_pn_list = ticket_sid_pn.list || [];
+
+        if ($.isEmptyObject(ticket_sid)) {
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+            return me;
+        }
+
+        me.tpl_mainMeeting = tpl;
+
+        html = Juicer(tpl, {
+            cacheData: me.cacheData,
+            data: $.extend({}, {
+                id: _settings.id,
+                colsNum: 2,
+                moreHtml: '<p class="more-link"><span class="J-more-ticket">更多超值景点门票</span></p>',
+                list: {
+                    id: _settings.id,
+                    html: me.createTicketList({
+                        renderFor: _settings.id,
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
+                        direction: 'vertical',
+                        data: ticket_sid_pn_list || [],
+                        createFlag: function(renderFor) {
+                            var text, className;
+
+                            text = '热销';
+
+                            className = 'flag-discount';
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
+                    })
+                }
+            })
+        });
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+
+        return me;
+    },
+    getPromotionIndex: function(opts) { //获取立减数据
+        var deferred = $.Deferred(),
+            me = this,
+            _settings = opts || {},
+            pn = _settings.pn || 1,
+            rn = _settings.rn || 10,
+            _dataReady = function() {
+                me.cacheData.promotionIndex[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.promotionIndex[me.cacheData.sid]['rn'] = rn;
+
+                // var _timer = setInterval(function() {
+                //     if ($('#promotionIndex').length > 0) {
+                //         clearInterval(_timer);
+                me.renderPromotionIndex(me.baseOrder_Key['promotionIndex']);
+                _settings.callback && _settings.callback();
+                //     }
+                // }, 100);
+
+            };
+
+        me.cacheData.promotionIndex = me.cacheData.promotionIndex || {};
+        me.cacheData.promotionIndex[me.cacheData.sid] = me.cacheData.promotionIndex[me.cacheData.sid] || {};
+
+        // if (me.cacheData.promotionIndex[me.cacheData.sid]['pn' + pn]) { //请求的 pn 已经缓存过
+        //     _dataReady();
+        //     return me;
+        // }
+
+        if (!('promotionIndex' in me.baseOrder_Key)) {
             return me;
         }
 
         Bridge.Loader.get({
             url: Bridge.host + '/business/ajax/ticket/getpromotionindex/',
             dataType: 'jsonp',
-            data: $.extend({}, {
-                // promotion_scene_key: me.cacheData.city_code,
-                // final
-                promotion_scene_key: 100000000,
+            data: $.extend({
+                sid: me.cacheData.province_sid,
                 promotion_product_show: me.cacheData.channel.name,
                 request_device: 'webapp',
                 activity_id: me.cacheData.channel.activity_id,
@@ -2390,46 +2697,195 @@ var App = {
             }, me.params),
             success: function(res) {
                 if (res.errno != 0) {
-                    Bridge.toast('获取其它门票信息:' + res.msg);
-                    return me;
+                    Bridge.toast('获取立减门票:' + res.err_msg);
+                    return false;
                 }
-                me.cacheData.promotionIndex[me.cacheData.city_code] = res.data || null;
+                me.cacheData.promotionIndex[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.promotionIndex[me.cacheData.sid]['rn'] = rn;
+                me.cacheData.promotionIndex[me.cacheData.sid]['pn' + pn] = res.data || {};
+
                 me.reSizeImg({
                     type: 'promotionIndex'
                 });
+
                 _dataReady();
             },
             fail: function() {
                 Bridge.toast('网络错误, 请稍候重试');
             }
         });
-        return me;
-    },
-    renderMapPromotionIndex: function(opts) { //渲染立减信息
-        var me = this,
-            _settings = opts;
-        $('.J-loading').hide();
-        $(window).trigger('scroll');
-        me.renderMapPromotion(_settings);
 
-        return me;
+        return deferred;
     },
-    renderMapPromotion: function(opts) { //渲染立减区域
+    renderPromotionIndex: function(opts) { //渲染立减信息
         var me = this,
-            _settings = opts,
-            html = Juicer($('#tpl-map-promotion').html(), {
-                cacheData: me.cacheData,
-                activeInfo: ACTIVEINFO
-            }),
-            promotionData = me.cacheData.promotionIndex[me.cacheData.city_code] || {},
-            promotionList = promotionData.promotionList || {},
-            list = promotionList.list || [];
-        if (list.length == 0) {
-            $('#map-promotion').remove();
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            _settings = opts || {},
+            html = '',
+            promotionIndex = me.cacheData.promotionIndex || {},
+            promotionIndex_sid = promotionIndex[me.cacheData.sid] || {},
+            promotionIndex_sid_pn = promotionIndex_sid['pn' + (promotionIndex_sid.pn || 0)] || {},
+            promotionIndex_sid_rn = promotionIndex_sid.rn || 10,
+            promotionIndex_sid_pn_promotionList = promotionIndex_sid_pn.promotionList || {},
+            promotionIndex_sid_pn_promotionList_list = promotionIndex_sid_pn_promotionList.list || [];
+
+        if ($.isEmptyObject(promotionIndex_sid_pn_promotionList) || promotionIndex_sid_pn_promotionList_list.length == 0) {
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
             return me;
         }
-        $('.J-placeholder-map-promotion').html(html);
+
+        me.tpl_mainMeeting = tpl;
+
+        html = Juicer(tpl, {
+            cacheData: me.cacheData,
+            data: $.extend({}, {
+                id: _settings.id,
+                colsNum: 1,
+                list: {
+                    id: _settings.id,
+                    html: me.createTicketList({
+                        renderFor: _settings.id,
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
+                        direction: 'vertical',
+                        data: promotionIndex_sid_pn_promotionList_list || [],
+                        is_sale: promotionIndex_sid_pn.is_sale
+                    })
+                }
+            })
+        });
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
         me.createSoftImg($('.J-placeholder-' + _settings.id));
+        return me;
+    },
+    getHotRanking: function(opts) { //获取当地热销
+        this.baseOrder_Key.hotRanking = this.baseOrder_Key.hotRanking || {};
+        var deferred = $.Deferred(),
+            me = this,
+            _settings = opts || {},
+            pn = _settings.pn || 0,
+            rn = _settings.rn || me.baseOrder_Key.hotRanking.cardNum || 6,
+            _dataReady = function() {
+                me.cacheData.hotRanking[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.hotRanking[me.cacheData.sid]['rn'] = rn;
+
+                me.renderHotRanking(me.baseOrder_Key['hotRanking']);
+
+                _settings.callback && _settings.callback();
+            },
+            hotRanking_sid;
+
+        if (!('hotRanking' in me.baseOrder_Key)) {
+            $('#hotRanking').remove();
+            return me;
+        }
+
+        me.cacheData.hotRanking = me.cacheData.hotRanking || {};
+        me.cacheData.hotRanking[me.cacheData.sid] = me.cacheData.hotRanking[me.cacheData.sid] || {};
+
+        if (me.cacheData.hotRanking[me.cacheData.sid]['pn' + pn]) { //请求的 pn 已经缓存过
+            _dataReady();
+            return me;
+        }
+
+        if (me.cacheData.isHotCity != 0) { //非热门城市才请求
+            $('#hotRanking').remove();
+            return me;
+        }
+
+        Bridge.Loader.get({
+            url: Bridge.host + '/business/ajax/searchnew/',
+            dataType: 'jsonp',
+            data: $.extend({}, {
+                sid: me.cacheData.city_sid,
+                pn: pn,
+                rn: rn,
+                category: 'tuandan',
+                t: T
+            }, me.params),
+            success: function(res) {
+                if (res.errno != 0) {
+                    Bridge.toast('获取当地热销:' + res.msg);
+                    $('#hotRanking').remove();
+                    return me;
+                }
+
+                me.cacheData.hotRanking[me.cacheData.sid]['pn'] = pn;
+                me.cacheData.hotRanking[me.cacheData.sid]['rn'] = rn;
+                me.cacheData.hotRanking[me.cacheData.sid]['pn' + pn] = res.data || {};
+                me.cacheData.hotRanking[me.cacheData.sid]['total'] = res.data.total || 0;
+
+                if (me.cacheData.hotRanking[me.cacheData.sid]['total'] < 4) {
+                    $('#hotRanking').remove();
+                    return me;
+                }
+
+                me.reSizeImg({
+                    type: 'hotRanking'
+                });
+
+                _dataReady();
+            },
+            fail: function() {
+                Bridge.toast('网络错误, 请稍候重试');
+            }
+        });
+
+        return deferred;
+    },
+    renderHotRanking: function(opts) { //渲染当地热销
+        var me = this,
+            tpl = me.tpl_mainMeeting || $('#tpl-mainMeeting').html(),
+            _settings = opts || {},
+            html = '',
+            hotRanking = me.cacheData.hotRanking || {},
+            hotRanking_sid = hotRanking[me.cacheData.sid] || {},
+            hotRanking_sid_pn = hotRanking_sid['pn' + (hotRanking_sid.pn || 0)],
+            hotRanking_sid_rn = hotRanking_sid.rn || me.baseOrder_Key.hotRanking.cardNum,
+            hotRanking_sid_pn_list = hotRanking_sid_pn.list || [];
+
+        if ($.isEmptyObject(hotRanking_sid)) {
+            $('#' + _settings.id).removeClass('show').addClass('hide');
+            $('<div class="J-placeholder-' + _settings.id + '-empty" />').insertAfter('#' + _settings.id);
+            return me;
+        }
+
+        me.tpl_mainMeeting = tpl;
+
+        html = Juicer(tpl, {
+            cacheData: me.cacheData,
+            data: $.extend({}, {
+                id: _settings.id,
+                colsNum: 2,
+                showPages: 1,
+                list: {
+                    id: _settings.id,
+                    html: me.createTicketList({
+                        renderFor: _settings.id,
+                        type: _settings['type'],
+                        cardNum: _settings['cardNum'],
+                        direction: 'vertical',
+                        data: hotRanking_sid_pn_list || [],
+                        createFlag: function(renderFor) {
+                            var text, className;
+
+                            text = '热销';
+
+                            className = 'flag-discount';
+                            return '<em class="' + className + '">' + text + '</em>'
+                        }
+                    })
+                }
+            })
+        });
+        $('.J-placeholder-' + _settings.id).html(html);
+        $('#' + _settings.id).removeClass('hide').addClass('show');
+        me.createSoftImg($('.J-placeholder-' + _settings.id));
+        $('.J-placeholder-' + _settings.id + '-empty').remove();
+
         return me;
     }
 };
