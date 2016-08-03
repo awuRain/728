@@ -924,8 +924,7 @@ var App = {
         }
 
         Bridge.Loader.get({
-            // url: Bridge.host + '/business/ajax/promotion/getfixprice/',
-            url: 'http://cp01-lvyou-rd-shahe.epc.baidu.com:8080/business/ajax/promotion/getfixprice/',
+            url: Bridge.host + '/business/ajax/promotion/getfixprice/',
             dataType: 'jsonp',
             data: $.extend({}, {
                 sid: me.cacheData.sid,
